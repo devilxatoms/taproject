@@ -4,4 +4,4 @@ services:
     hostname: php-container
     image: devilxatoms/taproject
     ports:
-      - "80:80"
+      - "88:80"
