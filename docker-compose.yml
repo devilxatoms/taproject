@@ -4,4 +4,6 @@ services:
     hostname: php-container
     image: devilxatoms/taproject
     ports:
-      - "88:80"
+      - "80:80"
+    volumes:
+      - c:/xampp/htdocs/david:/var/www/html
