@@ -6,4 +6,4 @@ services:
     ports:
       - "80:80"
     volumes:
-      - c:/xampp/htdocs/david:/var/www/html
+      - c:/xampp/htdocs/chat:/var/www/html
