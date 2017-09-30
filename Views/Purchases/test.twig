@@ -1,0 +1,41 @@
+{% block content  %}
+<div id="test">
+    <div class="row">
+        <div class="col-md-12">
+            <vue-products-table-david
+                v-bind:barcode-options="barcodeOptions"
+                v-bind:sku-options="skuOptions"
+                v-bind:name-options="nameOptions"
+                v-bind:rows="rows"
+                v-bind:taxes="taxes">
+            </vue-products-table-david>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+        </div>
+        <div class="col-md-4">
+            <div class="pull-right">
+                <vue-products-table-totals
+                    v-bind:rows="rows">
+                </vue-products-table-totals>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['data'] = {{ data|json_encode|raw }};
+        init.lenght = 0;
+        init = [{
+            title: 'Products Test',
+            file: 'Purchase/test.js',
+            functions: [ {
+                name: 'initTest',
+                args: []
+            }]
+        }];
+    </script>
+{% endblock %}
+{% endblock %}

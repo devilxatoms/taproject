@@ -1,0 +1,102 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="">Cliente:</label>
+            <el-select
+                v-model="customer"
+                filterable
+                remote
+                placeholder=""
+                :remote-method="searchCustomer"
+                :loading="isLoading"
+                @change="onSelectCustomer($event)">
+                <el-option
+                    v-for="customer in listCustomers"
+                    :key="customer.id"
+                    :label="customer.businessName"
+                    :value="customer">
+                    <div>
+                        <span class="pull-left">${ customer.businessName }</span>
+                        <span class="pull-right" style="font-size: 12px; color: light-gray;">${ customer.rfc }</span>
+                    </div>
+                </el-option>
+            </el-select>
+            <button class="btn btn-default"
+                @click="onSaveCustomerButtonClick">
+                <span class="fa fa-plus"></span> Add
+            </button>
+        </div>
+        <el-table
+            :data="customerAssignments"
+            style="width: 100%"
+            height="300">
+            <el-table-column
+                prop="customer.rfc"
+                label="RFC"
+                width="150">
+            </el-table-column>
+            <el-table-column
+                prop="customer.businessName"
+                label="Nombre comercial">
+            </el-table-column>
+            <el-table-column
+                width="120">
+                <template scope="scope">
+                    <el-button type="button" size="small" @click="askForDeleteCustomer(scope)">
+                        <span class="fa fa-trash"></span>
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="">Sucursal:</label>
+            <el-select
+                v-model="subsidiary"
+                filterable
+                remote
+                placeholder=""
+                :remote-method="searchSubsidiary"
+                :loading="isLoading"
+                @change="onSelectSubsidiary($event)">
+                <el-option
+                    v-for="subsidiary in listSubsidiaries"
+                    :key="subsidiary.id"
+                    :label="subsidiary.name"
+                    :value="subsidiary">
+                    <div>
+                        <span class="pull-left">${ subsidiary.name }</span>
+                        <span class="pull-right" style="font-size: 12px; color: light-gray;">${ subsidiary.rfc }</span>
+                    </div>
+                </el-option>
+            </el-select>
+            <button class="btn btn-default"
+                @click="onSaveSubsidiaryButtonClick">
+                <span class="fa fa-plus"></span> Add
+            </button>
+        </div>
+        <el-table
+            :data="subsidiaryAssignments"
+            style="width: 100%"
+            height="300">
+            <el-table-column
+                prop="subsidiary.code"
+                label="Codigo"
+                width="150">
+            </el-table-column>
+            <el-table-column
+                prop="subsidiary.name"
+                label="Nombre">
+            </el-table-column>
+            <el-table-column
+                width="120">
+                <template scope="scope">
+                    <el-button type="button" size="small" @click="askForDeleteSubsidiary(scope)">
+                        <span class="fa fa-trash"></span>
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+</div>

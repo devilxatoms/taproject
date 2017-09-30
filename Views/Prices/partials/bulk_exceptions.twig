@@ -1,0 +1,97 @@
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="">Tipo de filtro:</label>
+            <select>
+                <option value="">Categoria</option>
+                <option value="">Proveedor</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="">Categoria:</label>
+            <el-select
+                v-model="categories"
+                filterable
+                remote
+                multiple
+                placeholder="Please enter a keyword"
+                :remote-method="searchCategory"
+                :loading="isSearchingCategory">
+                <el-option
+                    v-for="category in listCategories"
+                    :key="category.id"
+                    :label="category.name"
+                    :value="category.id">
+                </el-option>
+            </el-select>
+        </div>
+        <div v-if="listSelectedBulkProduct.length > 0">
+            <el-alert
+                :title="'Haz seleccionado ' + listSelectedBulkProduct.length"
+                type="info"
+                close-text="Guardar"
+                @close="saveProductExceptionsSelected">
+            </el-alert>
+        </div>
+
+        <!--
+        <button class="btn btn-default btn-block" @click="addBulkProductExceptions">
+            Agregar excepciones
+        </button>
+    -->
+
+    </div>
+    <div class="col-md-8">
+        <el-table
+            height="350"
+            :data="listBulkProduct"
+            @selection-change="onSelectionChangeBulkProductException($event)"
+            style="width: 100%">
+            <el-table-column
+                type="selection"
+                width="40">
+            </el-table-column>
+            <el-table-column
+                prop="product.barcode"
+                label="Codigo"
+                width="140">
+            </el-table-column>
+            <el-table-column
+                prop="product.name"
+                label="Name">
+            </el-table-column>
+            <el-table-column
+                label="Tipo de valor"
+                width="150">
+                <template scope="scope">
+                    <el-select 
+                        v-model="scope.row.valueType" 
+                        @change="onSelectBulkProductExceptionValueType">
+                        <el-option
+                            v-for="valueType in listValueTypes"
+                            :key="valueType.id"
+                            :label="valueType.name"
+                            :value="valueType">
+                        </el-option>
+                    </el-select>
+                </template>
+            </el-table-column>
+            <el-table-column
+                label="Valor"
+                width="100">
+                <template scope="scope">
+                    <input type="text" v-model="scope.row.value">
+                </template>
+            </el-table-column>
+        </el-table>
+        <el-pagination
+            @current-change="onChangeCurrentListBulkProduct($event)"
+            @size-change="onChangeSizeListBulkProduct($event)"
+            :page-sizes="[10, 20, 30, 50]"
+            :page-size="listBulkProductPagination.pageSize"
+            :total="listBulkProductPagination.total"
+            :current-page.sync="listBulkProductPagination.currentPage"
+            layout="total, sizes, prev, pager, next, jumper">
+        </el-pagination>
+    </div>
+</div>

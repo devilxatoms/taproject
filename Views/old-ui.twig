@@ -1,0 +1,244 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <title>TuAdmin</title>
+        {{ include('stylesheets.twig') }}
+    </head>
+    <body>
+        <div id="uiBody" class="ui-body">
+            <aside id="main-nav" class="main-menu bg-uiColor-dark expanded">
+                <ul class="navigation">
+                    <li>
+                        <span class="module-icon">
+                        </span>
+                        <span class="nav-text cWhite">
+                            &nbsp;TuAdmin
+                        </span>
+                    </li>
+                    <li class="item">
+                        <a @click="openTab('main')" role="button">
+                            <span class="module-icon ta ta-icon-ta-01">
+                            </span>
+                            <span class="nav-text">
+                                Escritorio
+                            </span>
+                        </a>
+                    </li>
+                    {{ include('sidebar2.twig') }}
+                    <li class="item">
+                        <a role="button">
+                            <span class="module-icon ta ta-icon-ta-10">
+                                <span class="path1"></span>
+                            </span>
+                            <span class="nav-text">
+                                Logout
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+            <main class="ui-content">
+                <div class="ui-area collapsed">
+                    <component is="uiLoader" :loader="loader"></component>
+                    <header class="navbar navbar-default navbar-static-top noMargin bg-uiColor-base">
+                        <div class="h30 container-fluid noPadding" >
+                            <a role="button" class="pull-left toggleMenuLateral h30"><span class="module-icon fa fa-bars s20 cWhite"></span> </a>
+                            <div class="navbar-header">
+                                <button
+                                    type="button"
+                                    class="navbar-toggle collapsed noMargin noBorder bgTransparent lateral-trigger"
+                                    data-toggle="collapse"
+                                    data-target="#collapseToggleLateral"
+                                    aria-expanded="false">
+                                    <span class="fa fa-bars cDark s25"></span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="navbar-toggle collapsed noMargin noBorder bgTransparent"
+                                    data-toggle="collapse"
+                                    data-target="#collapseMain"
+                                    aria-expanded="false">
+                                    <span class="fa fa-caret-down cDark s25"></span>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="navbar-toggle collapsed noMargin noBorder bgTransparent"
+                                    data-toggle="collapse"
+                                    data-target="#collapseModuleMenu"
+                                    aria-expanded="false">
+                                    <span class="fa fa-chevron-circle-down cDark s25"></span>
+                                </button>
+                            </div>
+                            <div
+                                class="collapse navbar-collapse noBorder pull-left noPadding"
+                                id="collapseModuleMenu">
+                                <component is="uiMenuControl"
+                                    v-bind:data-model="menuControl"
+                                    class-name="nav nav-tabs"
+                                ></component>
+                            </div>
+                            <div
+                                class="collapse navbar-collapse noBorder pull-right collapse-nav "
+                                id="collapseMain">
+                                <ul class="nav navbar-nav navbar-right bg-uiColor-base noMargin">
+                                    <li class="dropdown">
+                                        <a
+                                            href=""
+                                            data-tooltip="Usuario"
+                                            role="button"
+                                            class="dropdown-toggle has-tooltip"
+                                            data-toggle="dropdown"
+                                            role="button"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">
+                                            <span class="fa fa-user " ></span>
+                                            <span class="hidden-lg hidden-md hidden-sm">Usuario</span>
+
+                                        </a>
+                                        <ul class="dropdown-menu noMargin noPadding">
+                                            <li class="block h100 bgBlue">
+                                                <div class="content contentMiddle text-center">
+                                                    <span class="s80 fa fa-user cWhite"></span>
+                                                </div>
+                                            </li>
+                                            <li>
+                                               <a role="button">Perfil</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Cuenta</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Settings</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a
+                                            class="has-tooltip"
+                                            data-tooltip="Tabs"
+                                            role="button">
+                                            <span class="ui ui-tab"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <component is="uiLateralControl"
+                                            v-bind:data-model="lateralControl"
+                                            class-name="dropdown-menu dropdown" >
+                                        </component>
+                                    </li>
+                                    <li>
+                                        <a class="has-tooltip" data-tooltip="Notificaciones" role="button">
+                                            <span class="fa fa-bell"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="toggleFullScreen has-tooltip align-right" data-tooltip="Pantalla Completa" role="button">
+                                            <span class="fa fa-window-maximize"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="lateral-trigger has-tooltip align-right hidden-sm hidden-xs" data-tooltip="Abrir panel lateral" role="button">
+                                            <span class="fa fa-bars"></span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <component is="uiTabControl"
+                            v-bind:data-model="tabControl"
+                            class-name="nav nav-tabs" >
+                        </component>
+                    </header>
+                    <component is="uiTabContent"
+                        v-bind:data-model="tabContent">
+                    </component>
+                    <component is="uiLateralContent"
+                        v-bind:data-model="lateralControl">
+                    </component>
+                </div>
+            </main>
+            {{ include('lateral.twig') }}
+             <footer>
+                <nav class="navbar navbar-default navbar-fixed-bottom navbar-inverse noBorder bg-uiColor-base noMargin">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-2 col-xs-0 noPadding hidden-sm hidden-xs">
+                                <div class="logofooter block h30 noMargin padd5">
+                                    <img src="public/img/logo_ta.svg">
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-xs-0 hidden-sm hidden-xs">
+                            </div>
+                            <div class="col-md-3 col-xs-8 noPadding">
+                                <div class="block h30">
+                                    <div class="content-fluid contentMiddle">
+                                        <a
+                                            @click="openTab('testContent', 'warehouse')"
+                                            class="fc-uiColor-dark s15 has-tooltip block h30 text-center align-top"
+                                            data-tooltip="Settings" role="button">
+                                            <span class="fa fa-cog content contentMiddle noPadding"></span>
+                                        </a>
+                                    </div>
+                                    <div class="content-fluid contentMiddle">
+                                        <a
+                                            @click="openTab('ejemplos', 'warehouse')"
+                                            class="fc-uiColor-dark s15 has-tooltip block h30 text-center align-top"
+                                            data-tooltip="Soporte" role="button">
+                                            <span class="fa fa-question-circle content contentMiddle noPadding"></span>
+                                        </a>
+                                    </div>
+                                    <div class="content-fluid contentMiddle">
+                                        <a
+                                            class="fc-uiColor-dark s15 has-tooltip block h30 text-center align-top"
+                                            data-tooltip="Agregar a Favoritos"
+                                            role="button">
+                                            <span class="s15 ui ui-whatshot content contentMiddle noPadding"></span>
+                                        </a>
+                                    </div>
+                                    <div class="content-fluid contentMiddle">
+                                        <a
+                                            class="fc-uiColor-dark s15 has-tooltip block h30 text-center align-top"
+                                            data-tooltip="Reportar Error"
+                                            role="button">
+                                            <span class="s15 ui ui-hearing content contentMiddle noPadding"></span>
+                                        </a>
+                                    </div>
+                                    <div class="content-fluid contentMiddle">
+                                        <a
+                                            class="fc-uiColor-dark s15 has-tooltip block h30 text-center align-top"
+                                            data-tooltip="Chat"
+                                            role="button">
+                                            <span class="s15 ui ui-comment content contentMiddle noPadding"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-4 noPadding">
+                                <div id="clockdate" class="block h30 bg-uiColor-dark">
+                                    <div class="clockdate-wrapper content-fluid contentMiddle">
+                                        <div id="date" class="fc-uiColor-clear text-bold"></div>
+                                    </div>
+                                    <div class="clockdate-wrapper content-fluid contentMiddle">
+                                        <div id="clock" class="fc-uiColor-clear text-bold">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </footer>
+            <!-- <div class="context-menu" style="display: none;">
+                <ul class="context-menu-content">
+                    <li id="copiar">Copiar</li>
+                    <li id="mover">Mover</li>
+                    <li id="eliminar">Eliminar</li>
+                </ul>
+            </div> -->
+        </div>
+        {{ include('scripts.twig') }}
+    </body>
+</html>

@@ -1,0 +1,149 @@
+<!-- {% block uidatalist %}
+    {# <h1>test de lista</h1> <div class="ui-data-list"> <ul class="nested"> <li>
+    <div class="btns"> <span class="btn-remove fa fa-times"></span> <span
+    class="btn-edit fa fa-pencil"></span> </div> <label>sucursal 1</label>
+    <p>datos</p> <p>datos</p> <p>datos</p> <ul class="inside"> <li> <div
+    class="btns"> <span class="btn-remove fa fa-times"></span> <span class="btn-edit
+    fa fa-pencil"></span> </div> <label>nombre del contacto</label> <p>datos del
+    contacto que asd addsds </p> <p>datos del contacto</p> </li> <li> <div
+    class="btns"> <span class="btn-remove fa fa-times"></span> <span class="btn-edit
+    fa fa-pencil"></span> </div> <label>nombre del contacto</label> <p>datos del
+    contacto que asd addsds </p> <p>datos del contacto</p> </li> <li> <div
+    class="btns"> <span class="btn-remove fa fa-times"></span> <span class="btn-edit
+    fa fa-pencil"></span> </div> <label>nombre del contacto</label> <p>datos del
+    contacto que asd addsds </p> <p>datos del contacto</p> </li> </ul> <ul
+    class="inside"> <li> <div class="btns"> <span class="btn-remove fa
+    fa-times"></span> <span class="btn-edit fa fa-pencil"></span> </div>
+    <label>otro</label> <p>datos del otro</p> <p>datos del otro</p> </li> <li> <div
+    class="btns"> <span class="btn-remove fa fa-times"></span> <span class="btn-edit
+    fa fa-pencil"></span> </div> <label>otro 2</label> <p>datos del otro</p>
+    <p>datos del otro</p> </li> </ul> </li> <li> <div class="btns"> <span
+    class="btn-remove fa fa-times"></span> <span class="btn-edit fa
+    fa-pencil"></span> </div> <label>sucursal 1</label> <p>datos</p> <p>datos</p>
+    <p>datos</p> <ul class="inside"> <li> <div class="btns"> <span class="btn-remove
+    fa fa-times"></span> <span class="btn-edit fa fa-pencil"></span> </div>
+    <label>nombre del contacto</label> <p>datos del contacto que asd addsds </p>
+    <p>datos del contacto</p> </li> </ul> <ul class="inside"> <li> <div
+    class="btns"> <span class="btn-remove fa fa-times"></span> <span class="btn-edit
+    fa fa-pencil"></span> </div> <label>otro</label> <p>datos del otro</p> <p>datos
+    del otro</p> </li> <li> <div class="btns"> <span class="btn-remove fa
+    fa-times"></span> <span class="btn-edit fa fa-pencil"></span> </div> <label>otro
+    2</label> <p>datos del otro</p> <p>datos del otro</p> </li> <li> <div
+    class="btns"> <span class="btn-remove fa fa-times"></span> <span class="btn-edit
+    fa fa-pencil"></span> </div> <label>otro 2</label> <p>datos del otro</p>
+    <p>datos del otro</p> </li> <li> <div class="btns"> <span class="btn-remove fa
+    fa-times"></span> <span class="btn-edit fa fa-pencil"></span> </div> <label>otro
+    2</label> <p>datos del otro</p> <p>datos del otro</p> </li> <li> <div
+    class="btns"> <span class="btn-remove fa fa-times"></span> <span class="btn-edit
+    fa fa-pencil"></span> </div> <label>otro 2</label> <p>datos del otro</p>
+    <p>datos del otro</p> </li> </ul> </li> </ul> </div> #}
+{% endblock %}
+{% block testmemo %}
+    <h1>test</h1>
+    <a
+        role="button"
+        data-action="openTab"
+        data-route="ejemplos"
+        onclick="alter(this);"
+        class="btn btn-default">
+        ejemplo de forms
+    </a>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        function alter( btn ) {
+            $( btn ).addClass( 'bgRed' );
+        }
+    </script>
+{% endblock %} -->
+
+
+ {% block content %}
+<section>
+    <div class="header-buttons">
+        <div class="btn-group main-buttons">
+            {% include( 'Warehouse/Lines/buttons.twig' ) %}
+        </div>
+    </div>
+    <div class="panel-content">
+        <div id="tableListLines">
+        <!-- Dynamic Table -->
+            <vue-dynamic-table
+                class-name="table table-bordered"
+                v-bind:class="{ fullHeight }"
+                v-bind:filter-enabled="true"
+                v-bind:columns="sourceColumns"
+                v-bind:data-model="listDataLines"
+                v-on:go-to-page="goToPage"
+                v-bind:pagination-options="pageOptions">
+                <template slot="actions" scope="row">
+                    <a class="has-tooltip"  data-tooltip="Editar línea"
+                       v-on:click="onEditClick(row.object)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                    <a  class="has-tooltip" data-tooltip="Eliminar línea" 
+                        v-on:click="onRemoveClick(row.object)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                </template>
+                <template slot="attributes" scope="row">
+                    <div class="expand">
+                        <span v-for="item in row.object.attributes" class="item-badge"> ${ item.name } </span>
+                    </div>
+                </template>
+                <template slot="markets" scope="row">
+                    <div class="expand">
+                        <span v-for="item in row.object.markets" class="item-badge"> ${ item.name } </span>
+                    </div>
+                </template>
+                <template slot="description" scope="row">
+                    <div class="expand">
+                        ${ row.object.line_description }
+                    </div>
+                </template>
+                <template slot="no-rows-found">
+                    <span>No se encontraron resultados</span>
+                </template>
+            </vue-dynamic-table>
+        <!-- Dynamic Table -->
+        </div>
+
+        <div id="Other-List">
+        <!-- Dynamic Table -->
+            <vue-dynamic-table
+                class-name="table table-bordered"
+                v-bind:class="{ fullHeight }"
+                v-bind:filter-enabled="true"
+                v-bind:columns="sourceColumns"
+                v-bind:data-model="listDataLines"
+                v-on:go-to-page="goToPage"
+                v-bind:pagination-options="pageOptions">
+                <template slot="actions" scope="row">
+                    <a class="has-tooltip"  data-tooltip="Editar línea"
+                       v-on:click="onEditClick(row.object)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                    <a  class="has-tooltip" data-tooltip="Eliminar línea" 
+                        v-on:click="onRemoveClick(row.object)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                </template>
+            </vue-dynamic-table>
+        <!-- Dynamic Table -->
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Another Try',
+            file: 'Warehouse/Lines/lines.js',
+            functions: [ {
+                name: 'initListVue',
+                args: [ ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

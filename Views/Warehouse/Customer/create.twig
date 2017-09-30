@@ -1,0 +1,1101 @@
+{% block content  %}
+<!--Nuevo cliente-->
+<section>
+    <style>
+        ul.paginator li {
+            margin: 0px;
+            padding: 0px;
+        }
+        img#img-customer-logo {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+    <div class="container-fluid" id="create-customer-module">
+        <div class="form-purchase">
+            <div class="header-buttons">
+                <!-- Button trigger modal -->
+                <div class="btn-group main-buttons">
+                    <a
+                    role="button"
+                    class="btn btn-success"
+                    v-on:click="customerValidate">
+                    <i aria-hidden="true" class="fa fa-floppy-o"></i>
+                        Guardar datos</a>
+                    <a role="button" class="btn btn-success pull-left" data-panelsize="lg">
+                    Cancelar</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Datos Generales</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div>
+                                <vue-image-picker
+                                        v-model="logoFile"
+                                        class-name="center-block"
+                                        :placeholder="customerLogo"
+                                        width="200"
+                                        height="200"
+                                        text="Choose an image"
+                                        :show-input="true">
+                                </vue-image-picker>
+                            </div>
+                            <div class="form-group">
+                                <label for="legal_name">Razon Social:</label>
+                                <input id="legal_name" name="legal_name" v-model="customer.legalName" @keypress="clearCustomerError('legalName')">
+                                <span v-if="customerValidatorErrors != null" class="cRed">
+                                    ${ customerValidatorErrors.first('legalName') }
+                                </span>
+                            </div>
+                            <div class="form-group">
+                                <label for="rfc">RFC:</label>
+                                <input id="rfc" name="rfc" v-model="customer.rfc" @keypress="clearCustomerError('rfc')" @keypress="clearCustomerError('rfc')">
+                                <span class="cRed" v-if="customerValidatorErrors != null"  class="cRed">${ customerValidatorErrors.first('rfc') }</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="business_name">Nombre Comercial:</label>
+                                        <input id="business_name" name="business_name" v-model="customer.businessName" @keypress="clearCustomerError('businessName')">
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('businessName') }</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="business_activity">Giro:</label>
+                                        <vue-selectize-js
+                                                :selectize-options="listBusinessTypes"
+                                                :selectize-settings="selectizeBusinessTypeSettings"
+                                                @change="clearCustomerError('businessTypeId')"
+                                                v-model="customer.businessTypeId">
+                                        </vue-selectize-js>
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('businessTypeId') }</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4>Direccion Fiscal</h4>
+                            <div class="form-group">
+                               <vue-google-autocomplete
+                                        id="addressfiscal"
+                                        type="regions"
+                                        classname="input"
+                                        placeholder="Buscar su Direccion"
+                                        v-on:placechanged="getAddressData"
+                                        country="mx"
+                                        >
+                               </vue-google-autocomplete>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="street">Calle:</label>
+                                <input id="street" name="street" v-model="customer.addresses[0].street" @keypress="clearCustomerError('street')">
+                                <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('street') }</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="external_number">No Ext.*</label>
+                                        <input id="external_number" name="external_number" class="form-control" v-model="customer.addresses[0].externalNumber" @keypress="clearCustomerError('externalNumber')">
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('externalNumber') }</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="internal_number">No Int.*</label>
+                                        <input id="internal_number" name="internal_number" class="form-control" v-model="customer.addresses[0].internalNumber" @keypress="clearCustomerError('internalNumber')">
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('internalNumber') }</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="postal_code">CP</label>
+                                        <input id="postal_code" name="postal_code" class="form-control" v-model="customer.addresses[0].postalCode" @keypress="clearCustomerError('postalCode')">
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('postalCode') }</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="suburb">Colonia*</label>
+                                        <input id="suburb" name="suburb" class="form-control" v-model="customer.addresses[0].suburb" @keypress="clearCustomerError('suburb')">
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('suburb') }</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="municipality">Municipio*</label>
+                                        <input id="municipality" name="municipality" class="form-control" v-model="customer.addresses[0].municipality" @keypress="clearCustomerError('municipality')">
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('municipality') }</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="town">Ciudad*</label>
+                                        <input id="town" name="town" class="form-control" v-model="customer.addresses[0].town" @keypress="clearCustomerError('town')">
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('town') }</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="state">Estado*</label>
+                                        <input id="state" name="state" class="form-control" v-model="customer.addresses[0].state" @keypress="clearCustomerError('state')">
+                                        <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('state') }</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="country">País*</label>
+                                <input id="country" name="country" class="form-control" v-model="customer.addresses[0].country" @keypress="clearCustomerError('country')">
+                                <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('country') }</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="reference">Referencias</label>
+                                <input id="reference" name="reference" class="form-control" v-model="customer.addresses[0].reference" @keypress="clearCustomerError('reference')">
+                                <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('reference') }</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="phones">Telefono:</label>
+                                        <vue-selectize-js
+                                                selectize-type="Tags"
+                                                :selectize-settings="selectizePhoneSettings"
+                                                v-model="customer.phones">
+                                        </vue-selectize-js>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="emails">Email:</label>
+                                        <vue-selectize-js
+                                                selectize-type="Tags"
+                                                :selectize-settings="selectizeEmailSettings"
+                                                v-model="customer.emails">
+                                        </vue-selectize-js>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="emails">Asegurado</label>
+                                        <input id="si" type="radio" name="asegurado" value="Si" v-model="asegurado">
+                                        <label for="Si">Si</label>
+                                        <input id="no" type="radio" name="asegurado" value="No" v-model="asegurado">                                    
+                                        <label for="No">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Sucursales</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div v-show="!panelSubsidiaryVisible">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-success" @click="addNewSubsidiary()">
+                                            <span class="fa fa-plus"></span> Nueva Sucursal
+                                        </button>
+                                    </div>
+                                </div>
+                                <vue-dynamic-table
+                                        class-name="table table-striped"
+
+                                        :pagination-options="subsidiariesTablePageOptions"
+                                        @go-to-page="goToPageSubsidiariesTable"
+
+                                        :data-model="getSublistSubsidiaries()"
+                                        :columns="subsidiariesTableColumnsModel">
+                                    <template slot="no-rows-found">
+                                        Sin sucursales
+                                    </template>
+                                    <template slot="actions" scope="row">
+                                        <div class="text-right">
+                                            <a role="button" @click="editSubsidiary(row.index)">
+                                                <span class="fa fa-pencil"></span>
+                                            </a>
+                                            <a role="button" @click="askForDeleteSubsidiary(row.index)">
+                                                <span class="fa fa-remove"></span>
+                                            </a>
+                                        </div>
+                                    </template>
+                                </vue-dynamic-table>
+                            </div>
+                            <div v-show="panelSubsidiaryVisible">
+                                <h3>Nueva Sucursal</h3>
+                                <div class="form-group">
+                                    <label for="street">Nombre:</label>
+                                    <input id="name" name="name" v-model="subsidiary.name" @keypress="clearSubsidiaryError('name')">
+      
+                                </div>
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active"><a href="#address" aria-controls="address" role="tab" data-toggle="tab">Direccion</a></li>
+                                    <li role="presentation"><a href="#contacts" aria-controls="contacts" role="tab" data-toggle="tab">Contactos</a></li>
+                                    <li role="presentation"><a href="#consignees" aria-controls="consignees" role="tab" data-toggle="tab">Consignatarios</a></li>
+                                </ul>
+
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="address">
+                                        
+                                       <!--<div class="form-group">
+                                            <vue-google-autocomplete
+                                                    id="<addressC></addressC>"
+                                                    type="regions"
+                                                    classname="input"
+                                                    placeholder="Buscar su Direccion"
+                                                    v-on:placechanged="getAddressDataBranchOffice"
+                                                    country="mx"
+                                            >
+                                          </vue-google-autocomplete>
+
+                                    </div>-->
+                                        <div class="form-group">
+                                            <label for="sub-street">Calle:</label>
+                                            <input id="sub-street" name="street" v-model="subsidiary.address.street" @keypress="clearSubsidiaryError('street')">
+      
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="sub-external-number">No Ext.*</label>
+                                                    <input id="sub-external-number" name="external_number" class="form-control" v-model="subsidiary.address.externalNumber" @keypress="clearSubsidiaryError('externalNumber')">
+      
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="sub-internal-number">No Int.*</label>
+                                                    <input id="sub-internal-number" name="internal_number" class="form-control" v-model="subsidiary.address.internalNumber" @keypress="clearSubsidiaryError('internalNumber')">
+      
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="sub-postal-code">CP</label>
+                                                    <input id="sub-postal-code" name="postal_code" class="form-control" v-model="subsidiary.address.postalCode" @keypress="clearSubsidiaryError('postalCode')">
+      
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sub-suburb">Colonia*</label>
+                                                    <input id="sub-suburb" name="suburb" class="form-control" v-model="subsidiary.address.suburb" @keypress="clearSubsidiaryError('suburb')">
+      
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sub-municipality">Municipio*</label>
+                                                    <input id="sub-municipality" name="municipality" class="form-control" v-model="subsidiary.address.municipality" @keypress="clearSubsidiaryError('municipality')">
+      
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sub-town">Ciudad*</label>
+                                                    <input id="sub-town" name="town" class="form-control" v-model="subsidiary.address.town" @keypress="clearSubsidiaryError('town')">
+      
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sub-state">Estado*</label>
+                                                    <input id="sub-state" name="state" class="form-control" v-model="subsidiary.address.state" @keypress="clearSubsidiaryError('state')">
+      
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sub-country">País*</label>
+                                            <input id="sub-country" name="country" class="form-control" v-model="subsidiary.address.country" @keypress="clearSubsidiaryError('country')">
+      
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sub-reference">Referencias</label>
+                                            <input id="sub-reference" name="reference" class="form-control" v-model="subsidiary.address.reference" @keypress="clearSubsidiaryError('reference')">
+      
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="contacts">
+                                        <div v-show="!panelContactVisible">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-success" @click="addNewContact">
+                                                        <span class="fa fa-plus"></span> Nuevo Contacto
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <vue-dynamic-table
+                                                    class-name="table table-striped"
+
+                                                    :pagination-options="contactsTablePageOptions"
+                                                    @go-to-page="goToPageContactsTable"
+
+                                                    :columns="contactsTableColumnsModel"
+                                                    :data-model="chunksListContacts()[contactsTablePageOptions.currentPage -1]">
+                                                <template slot="no-rows-found">
+                                                    Sin contactos
+                                                </template>
+                                                <template slot="actions" scope="row">
+                                                    <div class="text-right">
+                                                        <a role="button" @click="editContact(row.index)">
+                                                            <span class="fa fa-pencil"></span></a>
+                                                        <a role="button" @click="askForDeleteContact(row.index)">
+                                                            <span class="fa fa-remove"></span>
+                                                        </a>
+                                                    </div>
+                                                </template>
+                                            </vue-dynamic-table>
+                                        </div>
+                                        <div v-show="panelContactVisible">
+                                            <h4>Nuevo contacto</h4>
+                                            <div class="form-group">
+                                                <label>Nombre:</label>
+                                                <input class="inputUnderline form-control" type="text" v-model="contact.name" @keypress="clearContactError('name')">
+      
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Area:</label>
+                                                <input class="inputUnderline form-control" type="text" v-model="contact.workArea" @keypress="clearContactError('workArea')">
+      
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Contraseña:</label>
+                                                <input class="inputUnderline form-control" type="text" v-model="contact.password" @keypress="clearContactError('password')">
+      
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="phones">Telefono:</label>
+                                                        <vue-selectize-js
+                                                                selectize-type="Tags"
+                                                                :selectize-settings="selectizePhoneSettings"
+                                                                v-model="contact.phones">
+                                                        </vue-selectize-js>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="emails">Email:</label>
+                                                        <vue-selectize-js
+                                                                selectize-type="Tags"
+                                                                :selectize-settings="selectizeEmailSettings"
+                                                                v-model="contact.emails">
+                                                        </vue-selectize-js>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-primary" @click="contactValidate()">
+                                                        <span class="fa fa-floppy-o"></span> Guardar
+                                                    </button>
+                                                    <button type="button" class="btn btn-warning" @click="cancelContact()">
+                                                        <span class="fa fa-ban"></span> Cancelar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="consignees">
+                                        <div v-show="!panelConsigneeVisible">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button class="btn btn-success" @click="addNewConsignee">
+                                                        <span class="fa fa-plus"></span> Nuevo Consignatorio
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <vue-dynamic-table
+                                                    class-name="table table-striped"
+
+                                                    @go-to-page="goToPageConsigneesTable"
+                                                    :pagination-options="consigneesTablePageOptions"
+
+                                                    :columns="consigneesTableColumnsModel"
+                                                    :data-model="chunksListConsignees()[consigneesTablePageOptions.currentPage - 1]">
+                                                <template slot="no-rows-found">
+                                                    Sin contactos
+                                                </template>
+                                                <template slot="actions" scope="row">
+                                                    <div class="text-right">
+                                                        <a role="button" @click="editConsignee(row.index)">
+                                                            <span class="fa fa-pencil"></span>
+                                                        </a>
+                                                        <a role="button" @click="askForDeleteConsignee(row.index)">
+                                                            <span class="fa fa-remove"></span>
+                                                        </a>
+                                                    </div>
+                                                </template>
+                                            </vue-dynamic-table>
+                                        </div>
+                                        <div v-show="panelConsigneeVisible">
+                                            <h4>Nuevo consignatario</h4>
+                                            <div class="form-group">
+                                                <label for="sub-street">Nombre:</label>
+                                                <input id="sub-street" name="street" v-model="consignee.name" @keypress="clearConsigneeError('name')">
+      
+                                            </div>
+                                             <!--<div class="form-group">
+                                            <vue-google-autocomplete
+                                                    id="addressConsignatario"
+                                                    type="regions" 
+                                                    classname="input"
+                                                    placeholder="Buscar su Direccion"
+                                                    v-on:placechanged="getAddressDataConsignatario"
+                                                    country="mx"
+                                            >
+                                          </vue-google-autocomplete>
+
+                                            </div>-->
+                                            <div class="form-group">
+                                                <label for="sub- street">Calle:</label>
+                                                <input id="consignee-sub-street" name="street" v-model="consignee.address.street" @keypress="clearConsigneeError('street')">
+      
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="sub-external-number">No Ext.*</label>
+                                                        <input id="consignee-sub-external-number" name="external_number" class="form-control" v-model="consignee.address.externalNumber" @keypress="clearConsigneeError('externalNumber')">
+      
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="sub-internal-number">No Int.*</label>
+                                                        <input id="consignee-sub-internal-number" name="internal_number" class="form-control" v-model="consignee.address.internalNumber" @keypress="clearConsigneeError('internalNumber')">
+      
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <label for="sub-postal-code">CP</label>
+                                                        <input id="consignee-sub-postal-code" name="postal_code" class="form-control" v-model="consignee.address.postalCode" @keypress="clearConsigneeError('postalCode')">
+      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="sub-suburb">Colonia*</label>
+                                                        <input id="consignee-sub-suburb" name="suburb" class="form-control" v-model="consignee.address.suburb" @keypress="clearConsigneeError('suburb')">
+      
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="sub-municipality">Municipio*</label>
+                                                        <input id="consignee-sub-municipality" name="municipality" class="form-control" v-model="consignee.address.municipality" @keypress="clearConsigneeError('municipality')">
+      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="sub-town">Ciudad*</label>
+                                                        <input id="consignee-sub-town" name="town" class="form-control" v-model="consignee.address.town" @keypress="clearConsigneeError('town')">
+      
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="sub-state">Estado*</label>
+                                                        <input id="consignee-sub-state" name="state" class="form-control" v-model="consignee.address.state" @keypress="clearConsigneeError('state')">
+      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="sub-country">País*</label>
+                                                <input id="consignee-sub-country" name="country" class="form-control" v-model="consignee.address.country" @keypress="clearConsigneeError('country')">
+      
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="sub-reference">Referencias</label>
+                                                <input id="sub-reference" name="reference" class="form-control" v-model="consignee.address.reference" @keypress="clearConsigneeError('reference')">
+      
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="phones">Telefono:</label>
+                                                        <vue-selectize-js
+                                                                selectize-type="Tags"
+                                                                :selectize-settings="selectizePhoneSettings"
+                                                                v-model="consignee.phones">
+                                                        </vue-selectize-js>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="emails">Email:</label>
+                                                        <vue-selectize-js
+                                                                selectize-type="Tags"
+                                                                :selectize-settings="selectizeEmailSettings"
+                                                                v-model="consignee.emails">
+                                                        </vue-selectize-js>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <button type="button" class="btn btn-primary" @click="consigneeValidate()">
+                                                        <span class="fa fa-floppy-o"></span> Guardar
+                                                    </button>
+                                                    <button type="button" class="btn btn-warning hola" @click="cancelConsignee()">
+                                                        <span class="fa fa-ban"></span> Cancelar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-primary" @click="subsidiaryValidate()">
+                                            <span class="fa fa-floppy-o"></span> Guardar
+                                        </button>
+                                        <button type="button" class="btn btn-warning" @click="cancelSubsidiary()">
+                                            <span class="fa fa-ban"></span> Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Datos Bancarios</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div v-show="!panelBankAccountVisible">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-success" @click="addNewBankAccount">
+                                            <span class="fa fa-plus"></span> Nueva Cuenta Bancaria
+                                        </button>
+                                    </div>
+                                </div>
+                                <vue-dynamic-table
+                                        class-name="table table-striped"
+
+                                        :pagination-options="bankAccountsTablePageOptions"
+                                        @go-to-page="goToPageBankAccountsTable"
+
+                                        :data-model="chunksListBankAccounts()[bankAccountsTablePageOptions.currentPage - 1]"
+                                        :columns="bankAccountsTableColumnsModel">
+                                    <template slot="no-rows-found">
+                                        No se encontraron cuentas
+                                    </template>
+                                    <template slot="actions" scope="row">
+                                        <div class="text-right">
+                                            <a role="button" @click="editBankAccount(row.index)">
+                                                <span class="fa fa-pencil"></span>
+                                            </a>
+                                            <a role="button" @click="askForDeleteBankAccount(row.index)">
+                                                <span class="fa fa-remove"></span>
+                                            </a>
+                                        </div>
+                                    </template>
+                                </vue-dynamic-table>
+                            </div>
+                            <div v-show="panelBankAccountVisible">
+                                <h3>Nueva Cuenta Bancaria</h3>
+                                <div class="form-group">
+                                    <label for="">Cuenta:</label>
+                                    <input type="text" v-model="bankAccount.account" @keypress="clearBankAccountError('account')">
+      
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Clabe:</label>
+                                    <input type="text" v-model="bankAccount.clabe" @keypress="clearBankAccountError('clabe')">
+      
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Banco:</label>
+                                    <vue-selectize-js
+                                            v-model="bankAccount.bankId"
+                                            @select-option="onSelectBankOption($event)"
+                                            @change="clearBankAccountError('bankId')"
+                                            :selectize-settings="selectizeBankSettings"
+                                            :selectize-options="listBanks">
+                                    </vue-selectize-js>
+                                    
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Sucursal:</label>
+                                    <input type="text" v-model="bankAccount.subsidiary" @keypress="clearBankAccountError('subsidiary')">
+                                    
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-primary" @click="bankAccountValidate()">
+                                            <span class="fa fa-floppy-o"></span> Guardar
+                                        </button>
+                                        <button class="btn btn-warning" @click="cancelBankAccount">
+                                            <span class="fa fa-ban"></span> Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Datos Complementarios</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div v-show="panelSupplementaryData">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div>
+                                <h3>Datos complementarios</h3>
+                                <div class="form-group">
+                                    <label for="">Pagina Web:</label>
+                                    <input type="text" v-model="supplementaryData.webpage">
+                                    
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Redes Sociales:</label>
+                                    <input type="text" v-model="newSocialNetwork">
+                                    <span class="cRed" class="cRed"></span>
+                                    <div class="box-body table-responsive">
+                                        <div class="table-head">
+                                            <div class="table table-striped">
+                                                <thead>
+                                                    <th>Enlaces</th>
+                                                </thead>
+                                            </div>
+                                        </div>
+                                        <div class="table-body">
+                                            <div class="table table-striped">
+                                                <tbody>
+                                                <template v-for="network in customer.networks">
+                                                    <tr>
+                                                        <td><a v-bind:href=network.url>${network.url}</a></td>
+                                                        <td>
+                                                            <a role="button">
+                                                                <span class="fa fa-pencil"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a v-bind:id=network.id role="button" v-on:click="deleteNet($event)">
+                                    
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                                </tbody>
+                                            </div>
+                                        </div>
+                                        <div class="table-body">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Usuario del sistema:</label>
+                                    <input type="text" name="" v-model="supplementaryData.systemuser" >
+                                    
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Fecha de registro:</label>
+                                    <input type="date" >
+                                    
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- termina apartado datos complementarios-->
+
+
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Relación comercial</h3>
+                        </div>
+                        <div class="panel-body">
+
+                            <div v-show="panelSupplementaryData">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            
+
+                            <div>
+                                <h3>Relacion comercial</h3>
+                                <div class="form-group">
+                                    <label for="">Sucursal</label>
+                                        <vue-selectize-js
+                                            @select-option="onSelectSubsidiaryOption($event)"
+                                            v-model="bussinessRelationData.subsidiaryId"
+                                            :selectize-options="listSubsis"
+                                            :selectize-settings="selectizeSubsidiariesSettings"
+                                        >
+                                        </vue-selectize-js>
+                                    
+                                </div>
+                                <div class="form-group">
+
+                                    <label for="">Almacen:</label>
+                                    <vue-selectize-js
+                                            @select-option="onSelectWarehouseOption($event)"
+                                            v-model="bussinessRelationData.warehouseId"
+                                            :selectize-options="listWares"
+                                            :selectize-settings="selectizeWarehousesSettings"
+                                        >
+                                    </vue-selectize-js>
+                                    
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Vendedor:</label>
+                                    <input type="text" name="" v-model="sellerId">
+                                    
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Lista de precios:</label>
+                                    <select id="select-listas">
+
+                                    </select>
+                                    <!--
+                                    <vue-selectize-js
+                                    :selectize-options="listsPrices"
+                                    :selectize-settings="selectizePricesListsSettings">
+                                    </vue-selectize-js> -->
+                                   
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Moneda:</label>
+
+                                    <vue-selectize-js
+                                    v-model="bussinessRelationData.currency"
+                                    :selectize-options="listCurrency"
+                                    :selectize-settings="selectizeCurrencyListSettings"
+                                    >
+
+                                    </vue-selectize-js>
+
+
+                                   
+                                </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Dias de credito:</label>
+                                    <input type="text" v-model="bussinessRelationData.creditdays">
+                                   
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Monto:</label>
+                                    <input type="decimal" v-model="bussinessRelationData.amountBR">
+                                   
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Antiguedad:</label>
+                                    <input type="text" v-model="bussinessRelationData.antiquityBR">
+                                   
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Detalles contables</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div v-show="panelSupplementaryData">
+                                
+                                </div>
+                                <div>
+                                    <h3>Detalles contables</h3>
+                                    
+                                    <div class="form-group">
+                                        <label for="">Cuenta cliente:</label>
+                                        <a value="1" id="cuentaCliente"  v-on:click="openPanelAccount($event)" style="font-size:20px">1001-100-100-101</a>
+                                        <!--input type="text" v-model="accountingDetails.clientAccount"-->
+                                        
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Cuenta anticipos:</label>
+                                        <a value="2" role="button" id="cuentaAnticipos"  v-on:click="openPanelAccount($event)" style="font-size:20px">1001-100-100-102</a>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Cuenta deudor:</label>
+                                        <a value="3" id="cuentaDeudor"  v-on:click="openPanelAccount($event)" style="font-size:20px">1001-100-100-103</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="panel-accountFather" class="col-md-4" style="display: none;">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                
+                            </div>
+                            <div class="form-group">
+                                <div class="panel-body">
+                                    <label>Cuenta padre</label>
+                                    <vue-selectize-js
+                                    @select-option="onSelectAccount($event)"
+                                    v-model="fatherAccount"
+
+                                    :selectize-options="listAccountings"
+                                    :selectize-settings="selectizeAccountingListSettings"
+                                    >               
+                                    </vue-selectize-js>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Cuenta sugerida:</label>
+                                <input maxlength="5" type="text" name="sugerida" v-model="suggestAccount">
+                            </div>
+                            
+                            <div class="form-group">
+                                <button v-on:click="saveAccount" class="btn btn-success">Guardar</button>
+                                <button v-on:click="hidePanelAccount" class="btn btn-default">Cancelar</button>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+            <a
+                role="button"
+                class="btn btn-success"
+                v-on:click="customerValidate">
+                    <i aria-hidden="true" class="fa fa-floppy-o"></i>
+                        Guardar datos</a>
+                <a role="button" class="btn btn-danger pull-left" data-panelsize="lg">
+                Cancelar</a>
+           
+            </div>
+            
+        </div>
+
+        <!-- Modales para eliminar sucursales, consignatarios, contactos -->
+
+        <div class="modal fade bs-example-modal-sm" tabindex="-1"
+             role="dialog" aria-labelledby="modal-delete-subsidiary" id="modal-delete-subsidiary">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+                    </div>
+                    <div class="modal-body">
+                        <template v-if="subsidiaryIndexToDelete >= 0">
+                            ¿Desea eliminar la sucursal: <strong>${ customer.subsidiaries[subsidiaryIndexToDelete].name }</strong>?
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="deleteSubsidiary">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" tabindex="-1"
+             role="dialog" aria-labelledby="modal-delete-contact" id="modal-delete-contact">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+                    </div>
+                    <div class="modal-body">
+                        <template v-if="contactIndexToDelete >= 0">
+                            ¿Desea eliminar el contacto: <strong>${ subsidiary.contacts[contactIndexToDelete].name }</strong>?
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="deleteContact">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade bs-example-modal-sm" tabindex="-1"
+             role="dialog" aria-labelledby="modal-delete-consignee" id="modal-delete-consignee">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+                    </div>
+                    <div class="modal-body">
+                        <template v-if="consigneeIndexToDelete >= 0">
+                            ¿Desea eliminar el consignatario: <strong>${ subsidiary.consignees[consigneeIndexToDelete].name }</strong>?
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="deleteConsignee">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" tabindex="-1"
+             role="dialog" aria-labelledby="modal-delete-bank-account" id="modal-delete-bank-account">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+                    </div>
+                    <div class="modal-body">
+                        <template v-if="bankAccountIndexToDelete >= 0">
+                            ¿Desea eliminar la cuenta bancaria: <strong>${ customer.bankAccounts[bankAccountIndexToDelete].account }</strong>?
+                        </template>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="deleteBankAccount">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" tabindex="-1"
+             role="dialog" aria-labelledby="modal-delete-bank-account" id="modal-success-save">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            <span class="fa fa-check"></span> Exito
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        Cambios guardados currectamente.
+                    </div>
+                    <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button> -->
+                        <a type="button" class="btn btn-primary"  v-on:click="closeForm">Aceptar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade bs-example-modal-sm" tabindex="-1"
+             role="dialog" aria-labelledby="modal-delete-bank-account" id="modal-success-save">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            <span class="fa fa-exclamation-circle"></span> Error
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        Cambios guardados currectamente.
+                    </div>
+                    <div class="modal-footer">
+
+                        <a type="button" class="btn btn-default" data-dismiss="modal">Cancelar</a>
+                        <a type="button" class="btn btn-primary" v-on:click="closeForm">Aceptar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Fin de los modales
+        <vue-modal-alert ref="alert" icon-class="fa fa-check"></vue-modal-alert> -->
+
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['banks'] = {{ banks|json_encode|raw }};
+        uiVars['businessTypes'] = {{ businessTypes|json_encode|raw }};
+        uiVars['subsis'] = {{ subsis|json_encode|raw }};
+        uiVars['warehouses'] = {{ warehouses | json_encode |raw }};
+        uiVars['sellers'] = null;
+        uiVars['currencies'] = {{ currencies | json_encode | raw }};
+        uiVars['accounts'] = {{ accounts | json_encode | raw }};
+
+        {% if customer %}
+            uiVars['customer'] = {{ customer|json_encode| raw }};
+        {% else %}
+            uiVars['customer'] = null;
+        {% endif %}
+        init.length = 0;
+        init = [ {
+            title: 'Cliente',
+            file: 'Warehouse/Customer/createCustomer.js',
+            functions: [ {
+                name: 'iniciarModuloCreateCustomer',
+                args: [ uiVars['businessTypes'],
+                        uiVars['banks'],
+                        uiVars['customer'],
+                        uiVars['subsis'],
+                        uiVars['warehouses'],
+                        uiVars['sellers'],
+                        uiVars['currencies'],
+                        uiVars['accounts']]
+            } ]
+        } ];
+    </script>
+{% endblock %}

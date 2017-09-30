@@ -1,0 +1,67 @@
+{% block content %}
+<section>
+    <div class="box box-default">
+        <div class="box-header">
+            <h3 class="box-title">DATOS PARA AGREGAR NUEVA ZONA</h3>
+            <div class="box-tools pull-right">
+
+            </div>
+        </div>
+        <div class="box-body">
+            <form method="POST" id="addZone">
+                <div class="row">
+                    <div class="col-md-12">
+                        
+                        <input type="hidden" id="id" value="{{ Zones.id }}">
+                        <div class="form-group">
+                            <label for="">Clave </label>
+                            <input type="text" class="form-control" name="key" id="key" maxlength="10" placeholder="Clave" value="{{ Zones.key }}" >
+
+                        </div>
+                        <div class="form-group">
+                            <label for="">Nombre </label>
+                            <input type="text" class="form-control" name="name" id="name" maxlength="20" placeholder="Nombre" value="{{ Zones.name }}" >
+
+                        </div>
+                        <div class="form-group">
+                            <label for="">Descripción</label>
+                            <textarea type="text" class="form-control" name="description" id="description" maxlength="245" placeholder="Descripcion">{{ Zones.description }}</textarea>
+
+                        </div>
+
+                    
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button  class="btn btn-success">Guardar</button>
+                </div>
+            </form>
+
+        </div>
+
+
+    </div>
+    </div>
+
+    </div>
+</section>
+{% endblock %} {% block loadScripts %}
+
+<script id="scriptContainer" type="text/javascript">
+    
+    init.lenght = 0;
+    init = [{
+
+        title: 'Agregra Nueva Zona',
+        file: 'System/Zones/addZone.js',
+        functions: [{
+            name: 'addZones',
+            args: [  ]
+        }]
+    }];
+
+</script>
+
+{% endblock %}

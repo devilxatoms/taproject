@@ -1,0 +1,143 @@
+{% block content %}
+    <section>
+        <div id="forma-orden">
+            <sm-form-buttons
+                modulo="ordenes"
+                :data="orden"
+                :id-proceso="0"
+                @cargar="value => { cargar(value) }"
+                @limpiar="limpiar()">
+            </sm-form-buttons>
+            <div class="panel-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <sm-form-salesman
+                            :folio="orden.folio"
+                            @folio="value => { orden.folio = value }"
+                            :vendedor="orden.responsibleId"
+                            @vendedor="value => { orden.responsibleId = value }"
+                            :sucursal="orden.subsidiaryId"
+                            @sucursal="value => { orden.subsidiaryId = value }"
+                            :almacen="orden.warehouseId"
+                            @almacen="value => { orden.warehouseId = value }"
+                            :creacion="orden.createdAt"
+                            @creacion="value => { orden.createdAt = value }"
+                            :vendedor-options="vendedorOptions"
+                            :sucursal-options="sucursalOptions"
+                            :muestra-sucursal="{{ render['subsidiary']|json_encode|raw }}"
+                            :muestra-almacen="{{ render['warehouse']|json_encode|raw }}">
+                        </sm-form-salesman>
+                        <sm-form-customer
+                            :id-cliente="orden.customerId"
+                            @id-cliente="value => { orden.customerId = value }"
+                            :nombre="orden.businessName"
+                            @nombre="value => { orden.businessName = value }"
+                            :nombre-legal="orden.legalName"
+                            @nombre-legal="value => { orden.legalName = value }"
+                            :rfc="orden.rfc"
+                            @rfc="value => { orden.rfc = value }"
+                            :moneda="orden.currency"
+                            @moneda="value => { orden.currency = value }"
+                            :lista-precio="orden.priceId"
+                            @lista-precio="value => { orden.priceId = value }"
+                            :moneda-options="monedaOptions"
+                            :id-proceso="orden.id">
+                        </sm-form-customer>
+                       {# {% include( 'Sale/Partials/form/formDelivery.twig' ) %}#}
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <sm-table-products
+                                    :render="render"
+                                    :conceptos="orden.concepts"
+                                    :conceptos-eliminados="orden.delProducts"
+                                    :nuevos-conceptos="nuevosConceptos"
+                                    :inserta-productos="agregaConceptos"
+                                    @subtotal="value => { orden.subtotalAmount = value }"
+                                    @impuestos="value => { orden.taxes = value }"
+                                    @descuento="value => { orden.discountAmount = value }"
+                                    @total="value => { orden.totalAmount = value }"
+                                    @modal-impuestos="value => { mostrarImpuestos(value) }"
+                                    @modal-productos="mostrarBusquedaProd()"
+                                    id-cantidad="o-sm-cantidad">
+                                </sm-table-products>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-9">
+                                <sm-form-comment
+                                    :comentario="orden.comment">
+                                </sm-form-comment>
+                            </div>
+                            <div class="col-md-3">
+                                <sm-form-sumarize
+                                    :subtotal="orden.subtotalAmount"
+                                    :impuestos="orden.taxes"
+                                    :descuento="orden.discountAmount"
+                                    :total="orden.totalAmount">
+                                </sm-form-sumarize>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <sm-modal-products
+                id-modal="o-sm-busca-productos"
+                :lista-precio="orden.priceId"
+                :agregar="agregaConceptos"
+                @conceptos="value => { nuevosConceptos = value }"
+                @inserta-productos="value => { agregaConceptos = value }">
+            </sm-modal-products>
+            <sm-modal-taxes
+                id-modal="o-sm-taxes"
+                :taxes="taxes"
+                :indice="indice"
+                :render="render"
+                @renderizar="value => { render = value }">
+            </sm-modal-taxes>
+           {# {% include( 'Sale/advance.twig' ) %}#}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['filtros'] = {{ filters|json_encode|raw }};
+
+        init.length = 0;
+        init = [
+            {
+                file: 'Sale/components/c_modalProducts.js',
+            },
+            {
+                file: 'Sale/components/c_modalTaxes.js',
+            },
+            {
+                file: 'Sale/components/c_formButtons.js',
+            },
+            {
+                file: 'Sale/components/c_formSalesman.js',
+            },
+            {
+                file: 'Sale/components/c_formCustomer.js',
+            },
+            {
+                file: 'Sale/components/c_tableProducts.js',
+            },
+            {
+                file: 'Sale/components/c_formComment.js',
+            },
+            {
+                file: 'Sale/components/c_formSumarize.js',
+            },
+            {
+                title: 'Venta',
+                file: 'Sale/order.js',
+                functions: [{
+                    name: 'initModuleNewOrder',
+                    args: [ uiVars['filtros'] ]
+                }]
+            },
+        ];
+    </script>
+{% endblock %}

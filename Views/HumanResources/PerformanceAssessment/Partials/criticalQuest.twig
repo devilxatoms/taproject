@@ -1,0 +1,102 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Evaluacion de Desempeño{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table style="width:100%">
+                            <tr>
+                                <th>Aspectos excepcionalmente positivos</th>
+                            </tr>
+                        </table>
+                        <table style="width:100%">
+                            <tr>
+                                <td width="80%" >Sabe entender correctamente a las personas</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='attend'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80%">Facildad para trabajar en equipo</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='teamwork'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80%">Precenta ideas inovadoras</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='ideas'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80%">Tiene caracteristicas para el liderazgo</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='leadership'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80%">Facilidad para argumentar</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='argue'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80%">espiritu muy emprendedor</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='entrepreneur'>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table style="width:100%">
+                            <tr>
+                                <th>Aspectos excepcionalmente negativos</th>
+                            </tr>
+                        </table>
+                        <table style="width:100%">
+                            <tr>
+                                <td width="80%">Comete muchos errores</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='errors'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80%">Falta de vision amplia en los asuntos</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='vision'>
+                            </tr>
+                            <tr>
+                                <td width="80%">Tarda en tomar decisiones</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='decisions'>
+                            </tr>
+                            <tr>
+                                <td width="80%">Espiritu conservador y limitado</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='conservative'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80%">Dificultad para manejar los números</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='math'>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="80%">Comunicación deficiente</td>
+                                <td width="20%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input type="checkbox" name="rangeInput" v-model='comunication'>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{# LINK #}
+<template slot="warehouses-link" scope="row">
+    <idp-template-finder debug-info="{{ _self.templateName }}"></idp-template-finder>
+    <div v-if="row.object.quantities !== undefined && row.object.quantities.length">
+        <el-tag type="gray" :close-transition="true">En ${ row.object.quantities.length } almacenes</el-tag>
+    </div>
+</template>
+
+{# EXPANDED ROW #}
+<template slot="warehouses" scope="row">
+    <idp-title-subtitle
+        :title="'Almacenes con ' + row.object.name"
+        subtitle="Detalles por ubicación"
+    ></idp-title-subtitle>
+
+    <vue-dynamic-table-rbc
+        v-if="row.object.quantities.length"
+        box-classes="box box-lg box-centered"
+        class-name="table table-bordered"
+        sort-indicator-asc-class="fa fa-caret-down"
+        sort-indicator-desc-class="fa fa-caret-up"
+        :filter-enabled="true"
+        :expandable-row="true"
+        :source-columns="$getDefaultSettings('warehousesColumns')"
+        :data-model="row.object.quantities">
+
+        <template slot="warehouses-columns" scope="row">
+            <el-tag
+                :type="ubication.serialNumbers.length ? 'success' : 'danger'"
+                v-for="ubication in row.object.ubications"
+                :key="ubication.id"
+            >
+                ${ ubication.name }
+            </el-tag>
+        </template>
+
+    </vue-dynamic-table-rbc>
+</template>

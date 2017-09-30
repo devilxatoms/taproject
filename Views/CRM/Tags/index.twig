@@ -1,0 +1,21 @@
+{% block body %}
+    <section>
+
+        {% include( 'crm/Tags/partials/buttonAdd.twig' ) %}
+        <div class="panel-content">
+            {% include( 'crm/Tags/partials/list.twig' ) %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.lenght = 0;
+        init = [ {
+            title: 'Etiquetas',
+            file: 'CrmJs/Tags/Tags.js',
+            functions: [ {
+                name: 'initListTags'
+            } ]
+        } ];
+    </script>
+{% endblock %}

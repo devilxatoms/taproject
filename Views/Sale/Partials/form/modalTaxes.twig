@@ -1,0 +1,55 @@
+<!-- Modal taxes product -->
+<div class="modal fade" id="{{ prefix }}-modal-impuestos" 
+	tabindex="-1" role="dialog" 
+	aria-labelledby="myModalLabel" 
+	data-backdrop="false">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Detalle de Impuestos</h4>
+			</div>
+			<div class="modal-body">
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<thead>
+							<th class="col-xs"></th>
+							<th class="col-lg">Impuesto</th>
+							<th class="col-md">Valor</th>
+						</thead>
+						<tbody>
+							<tr v-for="tax in taxes">
+								<td class="col-xs acciones text-center">
+									<div class="form-group">
+										<input type="checkbox" v-model="tax.apply" @change="updateTaxes(tax)">
+									</div>
+								</td>
+								<td class="col-lg"> ${ tax.taxName } </td>
+								<td class="col-md text-center">
+									${ tax.taxFactorId == 1 ?
+										((Number(tax.taxValue) * 100).toFixed(2) + '%') :
+										tax.taxFactorId == 2 ? '$' + Number(tax.taxValue).toFixed(2) : '0' }
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button"
+					class="btn btn-default"
+					@click="aplicaTodos()"
+					data-dismiss="modal">
+					Aplicar a todos
+				</button>
+				<button type="button"
+					class="btn btn-default"
+					data-dismiss="modal">
+					Cerrar
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,59 @@
+<div id="modalFormPaymentDebtConcept" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+          <h4 class="modal-title"></h4>
+      </div>
+      <div id="formPaymentDebtConcept">
+        <div class="modal-body">
+            <input type="hidden" name="id" v-model="id">
+            <div class="form-group">
+              <label for="code">Clave:</label>
+              <input
+                  type="text"
+                  v-model="code"
+                  name="code"
+                  v-validate="'required|alpha_num|min:3'"
+                  data-vv-as="Clave"
+                  autocomplete="off"
+                  :class="{'validate': errors.has('code') }" maxlength="3"
+                  autocomplete="off">
+              <span v-show="errors.has('code')" class="cRed">${ errors.first('code') }</span>
+            </div>
+            <div class="form-group">
+              <label for="name">Nombre:</label>
+              <input
+                  type="text"
+                  v-model="name"
+                  name="name"
+                  v-validate="'required'"
+                  data-vv-as="Nombre"
+                  :class="{'validate': errors.has('name') }"
+                  autocomplete="off">
+              <span v-show="errors.has('name')" class="cRed">${ errors.first('name') }</span>
+            </div>
+            <div class="form-group">
+              <label for="category">Categoria:</label>
+              <select id="categorySelect" v-model="category">
+              </select>
+              <input
+                  type="hidden"
+                  v-model="category"
+                  name="category"
+                  v-validate="'required'"
+                  data-vv-as="Categoría"
+                  :class="{'validate': errors.has('category') }">
+              <span v-show="errors.has('category')" class="cRed">${ errors.first('category') }</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button v-on:click="onSubmit" class="btn btn-success" name="button">Guardar</button>
+          <button type="button" name="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

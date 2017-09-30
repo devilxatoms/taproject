@@ -1,0 +1,33 @@
+{% block content %}
+    <section>
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    id="btnNewBank"
+                    v-on:click="onClick"
+                    class="btn btn  btn-success ">
+                    <i class="fa fa-plus " aria-hidden="true"></i>
+                    Agregar Banco</a>
+            </div>
+        </div>
+        <div class="panel-content">
+            {% include '/system/banks/table.twig' %}
+            {% include '/system/banks/add.twig' %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        
+        init = [ {
+            title: 'Bancos',
+            file: 'System/Banks/banks.js',
+            functions: [ {
+                name: 'initIndexBanks',
+                args: [ ]
+            } ]
+        } ];
+        // initModule( init );
+    </script>
+{% endblock %}

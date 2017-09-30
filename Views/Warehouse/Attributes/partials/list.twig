@@ -1,0 +1,54 @@
+<div id="tableListAttributes">
+    <!-- Dynamic Table -->
+    <vue-dynamic-table-rbc
+        box-classes="box box-primary full-height"
+        class-name="table table-bordered table-hover"
+        :source-columns="sourceColumns"
+
+        :remote-method="remoteMethod"
+        :total-results="totalResults"
+
+        {# FAVORITOS #}
+        :favorites="dynamicTableFavorites"
+        @save-to-favorites="saveToFavorites"
+        @loaded-favorite="loadedFavorite"
+
+        :data-model="listDataAttributes"
+        :pagination-options="{pageSizes: [5, 10], pageSize: 5}">
+        <template slot="actions" scope="row">
+            <div class="ui-button bg-Light-Blue overflowInherit">
+                <div class="secondary">
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="Editar Atributo"
+                        v-on:click="onEditClick(row.object)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="Eliminar Atributo"
+                        v-on:click="onRemoveClick(row.object)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                </div>
+            </div>
+        </template>
+        <template slot="items" scope="row">
+            <div class="expand">
+                <span v-for="item in row.object.attributes_items"
+                      class="item-badge"> ${ item.name } </span>
+            </div>
+        </template>
+        <template slot="description" scope="row">
+            <div class="expand">
+                ${ row.object.attribute_description }
+            </div>
+        </template>
+        <template slot="no-rows-found">
+            <span>No se encontraron resultados</span>
+        </template>
+    </vue-dynamic-table-rbc>
+    <!-- Dynamic Table -->
+</div>

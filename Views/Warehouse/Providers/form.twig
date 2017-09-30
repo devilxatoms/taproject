@@ -1,0 +1,424 @@
+{% block content  %}
+<section>
+	{% include '/Purchases/partials/modals.twig'  with {'importModal':1,'modalProducts':1}	%}
+
+	<div class="window container-fluid" id="dataBindProvider">
+		<form id="form" action="" class="form-purchase">
+			<div class="headerWindow row ">
+				<div class="topHeader col-md-12 flex-container ">
+					<div class="titleWindow col-md-8">
+						<h3 class="col-md-12">{{title}}</h3>
+					</div>
+					<div class="col-md-4 ">
+						<div class="col-md-4">{# relleno #}</div>
+						<div class="col-md-4">
+							<a type="button" class="btn btn-primary cleanForm" href="#limpiar" id="cleanForm">Limpiar Todo</a>
+						</div>
+						<div class="col-md-4">
+							<a type="button" class="btn btn-primary importPurchase" href="#import" id="importXmlExcel" data-toggle="modal" data-target="#importModal"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Importar</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			{# fin header window #}
+			<div class="clear borderBottom1 "></div>
+			<div class="bodyWindow">
+				<div class="clear"></div>
+
+			</div>
+			<div class="row" >
+				{# datos generales #}
+				<div class="col-md-4">
+					<div class="panel-group">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href=".providerGeneralDetailsCollapse" data-toggle="collapse" >
+										<div class="providerGeneralDetailsCollapse collapse-icon  collapse in">Datos Generales <i class="fa fa-caret-down" aria-hidden="true"></i>
+										</div>
+									</a>
+								</h4>
+							</div>
+
+							<div id="providerGeneralDetails" class="providerGeneralDetails providerGeneralDetailsCollapse panel-collapse collapse in">
+								<div class="clear"></div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="legal_name">Razón Social:</label>
+											<input id="legal_name" name="legal_name" class="form-control" v-model="jsonProvider.legal_name">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="rfc">rfc:</label>
+											<input id="rfc" name="rfc" class="form-control" v-model="jsonProvider.rfc">
+										</div>
+									</div>
+									<div class="clear clearfix"></div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="bussiness_activity">Actividad del negocio:</label>
+											<input id="bussiness_activity" name="bussiness_activity" class="form-control" v-model="jsonProvider.bussiness_activity">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="bussiness_name">Nombre del Negocio:</label>
+											<input id="bussiness_name" name="bussiness_name" class="form-control" v-model="jsonProvider.bussiness_name">
+										</div>
+									</div>
+								</div>
+								{# provider table #}
+
+								<div class="fiscalAddress row">
+
+									<div class="col-md-12"><h2>Dirección Fiscal*</h2></div>
+
+									<div class="col-md-12">
+										
+										<div class="form-group">
+											<label for="street">Calle:</label>
+											<input id="street" name="street" class="form-control" v-model="jsonProvider.addresses[0].street">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label for="external_number">No Ext.*</label>
+											<input id="external_number" name="external_number" class="form-control" v-model="jsonProvider.addresses[0].external_number">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<div class="form-group">
+											<label for="internal_number">No Int.*</label>
+											<input id="internal_number" name="internal_number" class="form-control" v-model="jsonProvider.addresses[0].internal_number">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="suburb">Colonia*</label>
+											<input id="suburb" name="suburb" class="form-control" v-model="jsonProvider.addresses[0].suburb">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="reference">Referencias</label>
+											<input id="reference" name="reference" class="form-control" v-model="jsonProvider.addresses[0].reference">
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="postal_code">CP</label>
+											<input id="postal_code" name="postal_code" class="form-control" v-model="jsonProvider.addresses[0].postal_code">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="municipality">Municipio*</label>
+											<input id="municipality" name="municipality" class="form-control" v-model="jsonProvider.addresses[0].municipality">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="town">Ciudad*</label>
+											<input id="town" name="town" class="form-control" v-model="jsonProvider.addresses[0].town">
+										</div>
+									</div>
+
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="state">Estado*</label>
+											<input id="state" name="state" class="form-control" v-model="jsonProvider.addresses[0].state">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="country">País*</label>
+											<input id="country" name="country" class="form-control" v-model="jsonProvider.addresses[0].country">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="phones">Teléfono:</label>
+											<vue-selectize-js v-bind:selectize-settings="selectizeFields.selectizePhones"
+															  selectize-type="Tags"
+                                                       v-model="phones">
+											</vue-selectize-js>
+											<vue-selectize-js :selectize-settings="tSelectizeSettings"
+															  :selectize-options="tSelectizeOptions"
+															  v-model="tSelectedOption">
+											</vue-selectize-js>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="emails">Email:</label>
+											<vue-selectize-js v-bind:selectize-settings="selectizeFields.selectizePhones"
+															  selectize-type="Tags"
+															  v-model="phones">
+											</vue-selectize-js>
+											<vue-selectize-js :selectize-settings="tSelectizeSettings"
+															  :selectize-options="tSelectizeOptions"
+															  v-model="tSelectedOption">
+											</vue-selectize-js>
+										</div>
+									</div>
+								<div class="clearfix"></div>
+							</div>
+							{# fiscalAdddress #}
+						</div>
+					</div>
+				</div>
+				{# primer panel #}
+			</div>
+			{# datos sucursal #}
+				<div class="col-md-8">
+					<div class="panel-group">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<a href=".providerSubsidiaryDetailsCollapse" data-toggle="collapse" >
+										<div class="providerSubsidiaryDetailsCollapse collapse-icon  collapse in">Establecimiento (Dirección Comercial)<i class="fa fa-caret-down" aria-hidden="true"></i>
+										</div>
+									</a>
+								</h4>
+							</div>
+
+							<div id="providerSubsidiaryDetails" class="providerSubsidiaryDetails providerSubsidiaryDetailsCollapse panel-collapse collapse in">
+								<div class="clear"></div>
+								<div class="row">
+									<div class="col-md-12" v-show="formSubsidiary === false">
+										<a class="btn btn-info" v-on:click="showFormSubsidiary">Agregar sucursal</a>
+									</div>
+									<div class="col-md-6" v-show="formSubsidiary">
+										<h2>Sucursales</h2>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="s_name">Nombre:</label>
+												<input id="s_name" name="s_name" v-model="subsidiary.name" class="form-control" >
+											</div>
+										</div>
+										{# provider table #}
+										<div class="fiscalAddress">
+											<div class="col-md-12"><h2>Dirección Fiscal*</h2></div>
+
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="s_street">Calle:</label>
+													<input id="s_street" name="s_street"  v-model="subsidiary.addresses[0].street"  class="form-control">
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label for="s_external_number">No Ext.*</label>
+													<input id="s_external_number" name="s_external_number"  v-model="subsidiary.addresses[0].external_number"  class="form-control">
+												</div>
+											</div>
+											<div class="col-md-3">
+												<div class="form-group">
+													<label for="s_internal_number">No Int.*</label>
+													<input id="s_internal_number" name="s_internal_number"  v-model="subsidiary.addresses[0].internal_number" class="form-control">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="s_suburb">Colonia*</label>
+													<input id="s_suburb" name="s_suburb"  v-model="subsidiary.addresses[0].suburb"  class="form-control">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="s_reference">Referencias</label>
+													<input id="s_reference" name="s_reference"  v-model="subsidiary.addresses[0].reference"  class="form-control">
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="s_postal_code">CP</label>
+													<input id="s_postal_code" name="s_postal_code"  v-model="subsidiary.addresses[0].postal_code"  class="form-control">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="s_municipality">Municipio*</label>
+													<input id="s_municipality" name="s_municipality"  v-model="subsidiary.addresses[0].municipality"  class="form-control">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="s_town">Ciudad*</label>
+													<input id="s_town" name="s_town"  v-model="subsidiary.addresses[0].town"  class="form-control">
+												</div>
+											</div>
+
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="s_state">Estado*</label>
+													<input id="s_state" name="s_state"  v-model="subsidiary.addresses[0].state"  class="form-control">
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-group">
+													<label for="s_country">País*</label>
+													<input id="s_country" name="s_country"  v-model="subsidiary.addresses[0].country"  class="form-control">
+												</div>
+											</div>
+
+											<div class="clearfix"></div>
+
+										</div>
+										<button id="btn_save" type="button" class="btn btn-success expand" v-on:click="saveSubsidiary">Guardar</button>
+
+									</div>
+									<div class="col-md-6" v-show="formContact" >
+										<h2>Contactos</h2>
+										<div class="col-md-12">
+											<div class="form-group">
+												<label for="c_name">Nombre:</label>
+												<input id="c_name" name="c_name" v-model="contact.name" class="form-control">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="c_password">Contraseña:</label>
+												<input id="c_password" name="c_password" v-model="contact.password" class="form-control" type="password">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="c_rpassword">Repita la Contraseña:</label>
+												<input id="c_rpassword" name="c_rpassword" v-model="contact.rpassword" class="form-control" type="password">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="c_phones">Teléfono:</label>
+												<vue-selectize-js v-bind:selectize-settings="selectizeFields.selectizePhones"
+                                                       v-bind:selectize-enabled="selectizeFields.selectizeEnabled"
+                                                       v-model="contact.phonesSelectize"
+                                                       v-bind:selectize-options="selectizeFields.selectizePhonesOptions">
+
+                                                </vue-selectize-js>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="c_emails">Email:</label>
+
+											</div>
+										</div>
+										{# provider table #}
+										<button id="btn_save" type="button" class="btn btn-success expand" v-on:click="saveContact">Guardar</button>
+
+									</div>
+									<div class="col-md-12">
+										<div class="ui-data-list">
+												<vue-dynamic-list
+												class-name="nested"
+												v-bind:expandable-row="true"
+												v-bind:columns="sColumns"
+												v-bind:data-model="subsidiaries"
+												v-on:expand-row="testExpandEvent($event)">
+													<template slot="expanded-row" scope="row">
+															<vue-dynamic-list
+															class-name="inside"
+															v-bind:expandable-row="false"
+															v-bind:columns="cColumns"
+															v-bind:data-model="row.object.contacts">
+																<template slot="action-contact-render" scope="rowy">
+																	<div class="btns">
+																		<span class="btn-remove fa fa-times" v-on:click="onContatactRemoveClick(row.object)" ></span>
+																		<span class="btn-edit fa fa-pencil" v-on:click="onContactEditClick(row.object,rowy.object)" ></span>
+
+																	</div>
+
+																</template>
+																<template slot="no-rows-found">
+																	<div class="block h100">
+																		<div class="content contentMiddle text-center">
+																			<a class="btn" v-on:click="onAddContactClick(row.object)">
+																				<div class="block h50">
+																					Aun no se han agregado contactos... ¿Desea agregar alguno?
+																				</div>
+																				<i class="fa fa-user-plus" aria-hidden="true"></i>
+																			</a>
+																		</div>
+																	</div>
+																</template>
+															</vue-dynamic-list>
+													</template>
+													<template slot="buttons-render" scope="row">
+														<div class="btns">
+															<span class="btn-remove fa fa-times" v-on:click="onSubsidiaryRemoveClick(row.object)"></span>
+															<span class="btn-edit fa fa-pencil" v-on:click="onSubsidiaryEditClick(row.object)" ></span>
+															<span class="fa fa-user-plus" v-on:click="onAddContactClick(row.object)" ></span>
+
+														</div>
+													</template>
+													<template slot="no-rows-found">
+														<div class="block h100">
+															<div class="content contentMiddle text-center">
+																<a class="btn" v-on:click="onAddSubsidiaryClick()">
+																	<div class="block h50">
+																		Aun no se han agregado Sucursales ... ¿Desea agregar alguna?
+																	</div>
+																	<i aria-hidden="true" class="fa fa-user-plus s40"> </i>
+																</a>
+
+															</div>
+														</div>
+													</template>
+												</vue-dynamic-list>
+
+										</div>
+
+								<div class="block clear h20 clearfix"></div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+			</div>
+			{# primer panel #}
+		</div>
+
+
+	</div>
+
+</div>
+<div class="clear block"></div>
+
+<div class="clearfix clear block h30"></div>
+{# detalle de pago #}
+
+
+<div class="row col-md-12 ">
+	<div class="block centered h100 ">
+		<div class=" content contentMiddle text-center">
+			<a class="purchase_submit btn btn-success" href="#guardar" data-action="submit"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> Guardar</a>
+			<a class="btn btn-danger" href="#cancelar" data-action="closePane"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i> Cancelar</a>
+		</div>
+
+
+	</div>
+</div>
+<div class="clear clearfix"></div>
+
+
+</form>
+</div>
+
+</section>
+{% endblock %}
+{% block loadScripts %}
+	<script data-load="script" type="text/javascript">
+		{% if edit %}
+            /*initEditQuote();*/
+		{% else %}
+		     initAddProvider();
+		{% endif %}
+	</script>
+{% endblock %}

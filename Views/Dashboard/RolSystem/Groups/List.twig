@@ -1,0 +1,215 @@
+{% block body %}
+<section>
+  <div class="header-buttons">
+    <div class="btn-group main-buttons">
+      <a 
+        name="add" 
+        role="button" 
+        class="btn btn-success" 
+        data-action="openLateral" 
+        data-module="usuarios" 
+        data-panelsize="sm"
+        data-route="grupos/registro">
+        <i class="fa fa-plus-square" aria-hidden="true"></i>
+        Nuevo Grupo
+      </a>
+    </div>
+  </div>
+  <div class="panel-content ">
+    <div id="group-table">
+      <vue-dynamic-table
+        class-name="table table-bordered"
+        v-bind:class="{ fullHeight }"
+        v-bind:filter-enabled="true"
+        v-bind:expandable-row="true"
+        v-bind:columns="sourceColumns"
+        v-bind:data-model="listGroup"
+        v-on:go-to-page="goToPage"
+        v-bind:pagination-options="PaginationOptions">
+        <template slot="actions" scope="row">
+          <div class="ui-button">
+            <div class="secondary Bluebg">
+              <a role="button"
+                class="btn"
+                data-action="openLateral"
+                data-route="grupos/editar"
+                v-on:click="onEditClick(row.object)"
+                data-panelsize="sm">
+                <i class="fa fa-pencil"></i>
+              </a>
+              <a role="button"
+                class="btn"
+                v-on:click="onRemoveClick(row.object)">
+                <i class="fa fa-trash"></i>
+              </a>
+            </div>
+          </div>
+        </template>
+      </vue-dynamic-table>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+(function() {
+var groupsTable;
+var groupId;
+})();
+
+groupsTable = new Vue({
+  el: '#group-table',
+  data: {
+      fullHeight: true,
+      selectedColumns: [],
+      listGroup: [],
+      PaginationOptions: {
+        position: 'both',
+          classSizeOption: 'pull-left form-control page-size',
+          classPaginator: 'pagination pagination-sm no-margin pull-right',
+          classPageOption: 'btn btn-default',
+          sizeOptions: [20, 30, 50, 100],
+          size: 20,
+          paginatorClass: 'list-inline',
+          pageOptionClass: 'btn btn-primary',
+          currentPage: 1,
+          lastPage: null
+      },
+      sourceColumns: [
+        {
+            name: 'id',
+            title: 'ID',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-xs',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'name',
+            title: 'Grupo',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'description',
+            title: 'Descripción',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+              title: 'Acciones',
+              class: 'col-sm acciones',
+              customRender: {
+                  slot: 'actions'
+              },
+              visible: true
+        }
+      ],
+      currentPage: 1,
+      lastPage: 1,
+      pageSize: 100
+  },
+
+  mounted: function() {
+      this.loadGroups();
+  },
+  methods: {
+      loadGroups: function() {
+          var filters = {};
+          this.sourceColumns.map(function(column) {
+              column.filterTag = false
+          })
+          filters.size = this.PaginationOptions.size;
+          filters.page = this.PaginationOptions.currentPage;
+          //obtiene datos para la tabla
+          $.get(AJAX_PATH + 'dashboard/group/list', filters, function(response) {
+              var paginator = response.data;
+              this.PaginationOptions.lastPage = paginator.last_page;
+              this.listGroup = response.data.data;
+          }.bind(this));
+
+      },
+      goToPage: function(page) {
+          this.PaginationOptions.currentPage = page;
+          this.loadGroups();
+      },
+      onRemoveClick: function(row) {
+
+        this.$confirm('Desea eliminar el Usuario Permenantemente?', 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        $.ajax({
+            url: AJAX_PATH + 'dashboard/group/delete',
+            data:{
+              id: row.id
+            },
+            type: 'POST'
+        }).done( function( response ) {
+          switch (response.data[0].status) {
+            case 0:
+            this.$message({
+                      message: 'Este Grupo No Puede Ser Eliminado.',
+                      type: 'warning'
+                  });
+              break;
+            case 1:
+             groupsTable.loadGroups();
+             this.$message({
+                       message: 'Grupo Eliminado Correctamente.',
+                       type: 'success'
+                   });
+              break;
+            default:
+              break;
+          }
+
+        }.bind(this));
+        this.$message({
+          type: 'success',
+          message: 'Usuario Eliminado'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Operacion Cancelada'
+        });
+      });
+      },
+      onFacultiesClick(row){
+        var element = $('#rolselect-list li');
+        $.each(element, function(){
+          if ($(this).find('input[type=checkbox]').val() == row.id) {
+              $(this).trigger('click');
+              $('#faculrol-tab').trigger('click');
+          }
+        });
+      },
+      onEditClick: function(row) {
+          groupId = row.id;
+      }
+  },
+  computed: {},
+  watch: {},
+  delimiters: ['${', '}']
+});
+</script>
+{% endblock %}

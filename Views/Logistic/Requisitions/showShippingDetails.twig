@@ -1,0 +1,96 @@
+{% block content %}
+    <section id="formShippingDetails">
+        <div class="panel-content" style="top: 0;">
+            <form>
+                <div class="row">
+                    <div class="col-lg-12 col-md-5">
+                        <div class="box box-default">
+                            <div class="box-header">
+                                <h3 class="box-title">DETALLES DE REQUISICIÓN</h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="requisitionFolio">Folio</label>
+                                            <input type="text" class="form-control" v-model="requisitionFolio" name="requisitionFolio" readonly="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="requisitionDate">Fecha Requisición</label>
+                                            <input type="text" class="form-control" v-model="requisitionDate" name="requisitionDate" readonly="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="deliveryProvider">Proveedor De Envíos</label>
+                                            <input type="text" class="form-control" v-model="deliveryProvider" name="deliveryProvider" readonly="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="shipType">Tipo</label>
+                                            <input type="text" class="form-control" v-model="shipType" name="shipType" readonly="true"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-md-5">
+                        <div class="box box-default">
+                            <div class="box-header">
+                                <h3 class="box-title">CONTENIDO DEL ENVÍO</h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                                            data-toggle="tooltip"
+                                            title="Minimizar">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <vue-dynamic-table-rbc
+                                            box-classes="box box-primary"
+                                            class-name="table table-bordered table-hover"
+                                            :remote-method="remoteSearch"
+                                            :source-columns="columns"
+                                            :data-model="datasource"
+                                            hide-filters 
+                                            hide-results-info
+                                            hide-main-bar 
+                                            hide-filters-stats 
+                                            template-file-name="Detalles de Envío">
+
+                                        <template slot="no-rows-found">
+                                            <span>No hay items en la lista</span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer">
+        init.length = 0;
+        uiVars['requisitionId'] = '{{ requisitionId }}'; 
+        init = [{
+            title: 'Detalles De Requisición',
+            file: 'Logistic/DeliveryRequisitons/showShippingDetails.js',
+            functions: [{
+                name: 'initShowShippingDetails',
+                args: [ uiVars['requisitionId'] ]
+            }]
+        }];
+    </script>
+{% endblock %}

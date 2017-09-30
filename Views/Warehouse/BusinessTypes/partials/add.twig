@@ -1,0 +1,51 @@
+{% block content %}
+    <form method="post" action="" id="{{ formName }}" enctype="multipart/form-data">
+        {# <div class="col-md-12">
+            <div class="alert alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <p>
+
+                </p>
+            </div>
+        </div> #}
+        <div class="col-md-12">
+            <div class="req form-group">
+                <label for="group_name">Nombre: </label>
+                <input type="text" class="form-control"
+                       value="{{ businessType.name }}"
+                       name="business_type_name" id="business_type_name">
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="group_name">Descripción: </label>
+                <textarea type="text" class="form-control"
+                          name="business_type_description"
+                          id="business_type_description">{{ businessType.description }}</textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="ui-button bgGreen">
+                <button type="submit" class="btn">
+                    <span class="fa fa-save"></span>
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Nuevo Giro Comercial',
+            file: 'Warehouse/BusinessTypes/businessType.js',
+            functions: [ {
+                name: 'initAddValidator',
+                args: [ ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

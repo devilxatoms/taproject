@@ -1,0 +1,13 @@
+{% if sucursales %}
+            uiVars['datos'] = {{ sucursales | json_encode | raw }};
+        {% else if contactos %}
+            uiVars['datos'] = {{ contactos | json_encode | raw }};
+        {% else if consigna %}
+            uiVars['datos'] = {{ consigna | json_encode | raw }};
+        {% else if cuentas %}
+            uiVars['datos'] = {{ cuentas | json_encode | raw }};
+        {% else if relacion %}
+            uiVars['datos'] = {{ relacion | json_encode | raw }};
+        {% else if complementa %}
+            uiVars['datos'] = {{ complementa  | json_encode | raw }};
+        {%endif%}

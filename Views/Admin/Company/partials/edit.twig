@@ -1,0 +1,519 @@
+{% block content %}
+    <section>
+        <style>
+            #containerAdditionalTag {
+                height: 242px;
+                overflow: auto;
+            }
+        </style>
+        <div class="row" id="editCompanyLT">
+            <!-- %CONTENT% -->
+            <!-- basic product data -->
+            <form id="companyForm" enctype="multipart/form-data">
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos Básicos de la Empresa</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input
+                                        id="company_logo"
+                                        name="company_logo"
+                                        v-on:change="onFileSelected"
+                                        type="file"
+                                        accept="image/gif, image/jpeg, image/png"
+                                        multiple/>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                  <input type="hidden" name="company_id" id="company_id" v-model="coid">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="company_name"
+                                        id="company_name"
+                                        placeholder="Nombre Comercial"
+                                        v-model="coname"
+                                        v-validate="'required'">
+                                    <span class="cRed" v-show="errors.has('company_name')">Nombre Comercial Obligatorio</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="company_rsocial"
+                                        id="company_rsocial"
+                                        placeholder="Razon Social"
+                                        v-model="corsocial"
+                                        v-validate="'required'">
+                                    <span class="cRed" v-show="errors.has('company_rsocial')">Razon Social Obligatorio</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="company_rfc"
+                                        id="company_rfc"
+                                        placeholder="RFC"
+                                        v-model="corfc"
+                                        v-validate="'required'">
+                                    <span class="cRed" v-show="errors.has('company_rfc')">RFC Obligatorio</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="company_type"
+                                        id="company_type"
+                                        placeholder="Giro"
+                                        v-model="cgiro"
+                                        v-validate="'required'">
+                                    <span class="cRed" v-show="errors.has('company_type')">Giro Obligatorio</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <select v-on:click="onChange" id="pktid" name="pktid" v-model="copacket" v-validate="'required'">
+                                        <option value="">Seleccionar Paquete</option>
+                                        <template v-for="paquete in pktsList">
+                                            <option v-bind:value="paquete.id">${paquete.name}</option>
+                                        </template>
+                                    </select>
+                                    <span class="cRed" v-show="errors.has('pktid')">Paquete Obligatorio</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="company_address"
+                                        id="company_address"
+                                        placeholder="Direccion Fiscal"
+                                        v-model="coaddress"
+                                        v-validate="'required'">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-map-o" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <span class="cRed" v-show="errors.has('company_address')">Direccion Obligatoria</span><br>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div id="main">
+                                    <div id="map"></div>
+                                    <div style="clear:both"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                              <button
+                                  class="btn btn-primary"
+                                  type="button"
+                                  name="button"
+                                  v-on:click="editCompany">Editar Empresa</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / basic product data -->
+
+            <!-- additionalTags -->
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Informacion de Contacto</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="company_phone"
+                                    id="company_phone"
+                                    placeholder="Telefono"
+                                    v-model="cophone"
+                                    v-validate="'required'">
+                                <span class="cRed" v-show="errors.has('company_phone')">Telefono Obligatorio</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="company_mail"
+                                    id="company_mail"
+                                    placeholder="E-mail"
+                                    v-model="comail"
+                                    v-validate="'required'">
+                                <span class="cRed" v-show="errors.has('company_mail')">Email Obligatorio</span>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="company_fax"
+                                    id="company_fax"
+                                    placeholder="Fax"
+                                    v-model="cofax">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </form>
+            <!-- / additionalTags -->
+            <div class="col-md-12">
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Resumen de Registro</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <h4>Datos Basicos</h4>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="logo-image">
+                                <img src="" id="logoimg" height="118px" width="118px">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Empresa:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="coname"
+                                    placeholder="N/A"
+                                    v-bind:value="coname"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Razon Social:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corsocial"
+                                    placeholder="N/A"
+                                    v-bind:value="corsocial"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">RFC:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="corfc"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Giro:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="cgiro"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Direccion:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="coaddress"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4>Datos Contacto</h4>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Telefono:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="cophone"
+                                    placeholder="N/A"
+                                    v-bind:value="cophone"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">E-mail:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="comail"
+                                    placeholder="N/A"
+                                    v-bind:value="comail"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Fax:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="cofax"
+                                    placeholder="N/A"
+                                    v-bind:value="cofax"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4>Datos Paquete</h4>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Nombre</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_name"
+                                    placeholder="Nombre"
+                                    v-model="pktname"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Descripcion</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_description"
+                                    placeholder="descripcion"
+                                    v-model="pktdescription"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Usuarios</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_users"
+                                    placeholder="# usuarios"
+                                    v-model="pktusers"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Timbres</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_timbres"
+                                    placeholder="# timbres"
+                                    v-model="pkttimbres"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Emails</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_mail"
+                                    placeholder="# Emails"
+                                    v-model="pktmails"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /%CONTENT% -->
+{% endblock %}
+
+{% block loadScripts %}
+
+    <script id="scriptContainer" type="text/javascript">
+        function initCompanyAddressEdit() {
+            var input = document.getElementById('company_address');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+        }
+
+
+        var editCompany;
+
+        // function onFileSelected( event ) {
+        //     var selectedFile = event.target.files[0];
+        //     var reader = new FileReader( );
+        //     var imgtag = document.getElementById( "logoimg" );
+        //     imgtag.title = selectedFile.name;
+        //     reader.onload = function( event ) {
+        //         imgtag.src = event.target.result;
+        //     };
+        //     reader.readAsDataURL( selectedFile );
+        // }
+
+        editCompany = new Vue({
+            el: "#editCompanyLT",
+            data: {
+                coid: adminUserList.editData.id,
+                coname: adminUserList.editData.company,
+                corfc: adminUserList.editData.rfc,
+                corsocial: adminUserList.editData.businessName,
+                cgiro: adminUserList.editData.businessType,
+                coaddress: adminUserList.editData.address,
+                cophone: adminUserList.editData.phone,
+                comail: adminUserList.editData.mail,
+                cofax: adminUserList.editData.fax,
+                copacket: adminUserList.editData.package,
+                cologo: CDN_PATH+adminUserList.editData.logo,
+                pktname: "",
+                pktdescription: "",
+                pktusers: "",
+                pkttimbres: "",
+                pktmails: "",
+                pktsList: [ ]
+            },
+            mounted: function( ) {
+                this.getPackets();
+                initCompanyAddressEdit();
+                // console.log(adminUserList.editData);
+            },
+            created: function(){
+              $('#logoimg').prop('src', this.cologo);
+
+            },
+            watch:{
+              pktsList: function(e){
+                this.getPkgData(this.copacket);
+              }
+            },
+            methods: {
+                getPackets: function( ) {
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/list',
+                        type: 'POST'
+                    }).done( function( response ) {
+                        this.pktsList = response.data;
+                    }.bind( this ));
+                },
+                onChange: function( e ) {
+                  console.log('access');
+                  console.log($('#pktid').val( ));
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/byid',
+                        data: {
+                            id: $( '#pktid' ).val( )
+                        },
+                        type: 'POST'
+                    }).done( function( response ) {
+                        this.pktname = response.data.name;
+                        this.pktdescription = response.data.description;
+                        this.pktusers = response.data.users;
+                        this.pkttimbres = response.data.stamps;
+                        this.pktmails = response.data.mails;
+                    }.bind( this ));
+                },
+                getPkgData: function(idp) {
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/byid',
+                        data: {
+                            id: idp
+                        },
+                        type: 'POST'
+                    }).done( function( response ) {
+                        this.pktname = response.data.name;
+                        this.pktdescription = response.data.description;
+                        this.pktusers = response.data.users;
+                        this.pkttimbres = response.data.stamps;
+                        this.pktmails = response.data.mails;
+
+                    }.bind( this ));
+                },
+                editCompany: function( ) {
+                    console.log('editar');
+                    this.$validator.validateAll( ).then(( ) => {
+                    var form = $('#companyForm')[0];
+                    var formData = new FormData(form);
+                      $.ajax({
+                          url: AJAX_PATH + 'admin/company/editCompany',
+                          data: formData,
+                          cache:false,
+                          contentType: false,
+                          processData: false,
+                          type: 'POST'
+                      }).done( function( response ) {
+                        console.log(response);
+                         if (response == 1) {
+                            //usersTable.loadUsers();
+                            this.$message({
+                                message: 'Registro exitoso.',
+                       type: 'success'
+                   });
+                            adminUserList.loadCompanyList();
+                          }else{
+                            this.$message({
+                        message: 'Empresa No Puede Ser Editada.',
+                        type: 'warning'
+                    });
+                          }
+                      }.bind( this ));
+                    }).catch(( ) => {
+                     this.$message({
+                        message: 'Llena el Formulario Como se Te Indica.',
+                        type: 'warning'
+                    });
+                    });
+                },
+
+                onFileSelected: function(event){
+                  var selectedFile = event.target.files[0];
+                  var reader = new FileReader( );
+                  var imgtag = document.getElementById( "logoimg" );
+                  imgtag.title = selectedFile.name;
+                  reader.onload = function( event ) {
+                      imgtag.src = event.target.result;
+                  };
+                  reader.readAsDataURL( selectedFile );
+                }
+            },
+            delimiters: [ '${', '}' ]
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,118 @@
+<vue-dynamic-table-rbc
+	box-classes="box box-primary full-height"
+	class-name="table table-bordered table-hover"
+	:source-columns="columns"
+	:select-options="paginationOptions"
+	:data-model="datasource"
+	{# @export="exportTable" #}
+	:remote-method="remoteSearch"
+	template-file-name="Polizas"
+	:total-results="totalResults">
+	<template slot="actions" scope="row">
+		<div class="ui-button bg-Light-Blue overflowInherit">
+		    <div class="secondary">
+
+		        <a  v-if="row.object.status === 1" class="has-tooltip btn align-right" data-tooltip="Editar" @click="onEditClick(row)" role="button">
+		            <i class="fa fa-pencil-square fa-lg" aria-hidden="true"></i>
+		        </a>
+		        <a v-if="row.object.status === 2"  class="has-tooltip btn align-right bgGreen" data-tooltip="Restaurar"  @click="onStatusClick(row, 1, 'restaurar', 'restaurada')" role="button">
+		            <i class="fa fa-arrow-up fa-lg" aria-hidden="true"></i>
+		        </a>
+		        <a  v-if="row.object.status === 1" class="has-tooltip btn align-right bgOrange" data-tooltip="Cancelar" @click="onStatusClick(row, 2, 'cancelar', 'cancelada')" role="button">
+		            <i class="fa fa-window-close fa-lg" aria-hidden="true"></i>
+		        </a>
+		        <a  v-if="row.object.status === 2" class="has-tooltip btn align-right bgRed" data-tooltip="Eliminar" @click="onStatusClick(row, 3, 'eliminar', 'eliminada')" role="button">
+		            <i class="fa fa-trash fa-lg" aria-hidden="true"></i>
+		        </a>
+		        {# <a role="button" v-on:click="showFiles(row.object.id)" class="has-tooltip btn align-right" data-tooltip="Ver">
+		            <i class="fa fa-lg fa-folder-open" aria-hidden="true"></i>
+		        </a>
+		        <a role="button" class="has-tooltip btn align-right" data-tooltip="Imprimir" @click="printRequisition(row.object)">
+		            <i class="fa fa-lg fa-print" aria-hidden="true"></i>
+		        </a> #}
+		    </div>
+		</div>
+	</template>
+	<template slot="account-viewer" scope="row">
+	    <a class="has-tooltip" data-tooltip="Detalles de Cuentas" role="button" @click="showAccountDetails(row.object)">
+	        <span class="glyphicon glyphicon-eye-open"></span>
+	    </a>
+	</template>
+	<template slot="debit" scope="row">
+		<p>
+			<span class="" :class="['', { 'cRed text-bold' : parseFloat(row.object.debit).toFixed(2) - parseFloat(row.object.credit).toFixed(2) != 0 }]">
+				$${  parseFloat(row.object.debit).toFixed(2) }
+			</span>
+		</p>
+	</template>
+	<template slot="credit" scope="row">
+		<p>
+			<span class="" :class="['', { 'cRed text-bold' : parseFloat(row.object.debit).toFixed(2) - parseFloat(row.object.credit).toFixed(2) != 0 }]">
+				$${  parseFloat(row.object.credit).toFixed(2) }
+			</span>
+		</p>
+	</template>
+	<template slot="no-rows-found">
+	    <span>No se encontrarón resultados</span>
+	</template>
+	<template slot="status" scope="row">
+		<a v-on:click="onEditStatus(row)"
+			role="btn btn-primary"
+			data-toggle="modal"
+			style="cursor:hand"
+			data-target="#permissionModalChanges">
+			<div v-if="row.object.status==='Aprobada'">
+				<el-tag type="success">${ row.object.status }</el-tag>
+			</div>
+			<div v-if="row.object.status==='Pendiente'">
+				<el-tag type="warning">${ row.object.status }</el-tag>
+			</div>
+			<div v-if="row.object.status==='Rechazada'">
+				<el-tag type="danger">${ row.object.status }</el-tag>
+			</div>
+			<div v-if="row.object.status==='Finalizada'">
+				<el-tag type="primary">${ row.object.status }</el-tag>
+			</div>
+	    </a>
+
+	</template>
+</vue-dynamic-table-rbc>
+<div
+    class="modal fade"
+    id="permissionModalChanges"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">Status de permiso </h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="">Cambiar de Estatus</label>
+                    	<el-select v-model="status.id" placeholder="Select">
+                    		<el-option
+						      v-for="item in permission.statusList"
+						      :key="item.id"
+						      :label="item.status"
+						      :value="item.id">
+						      <span style="float: left">${ item.status }</span>
+						      <span style="float: right; color: #8492a6; font-size: 13px">${ item.id }</span>
+						    </el-option>
+						</el-select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="changeStatusPermission()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

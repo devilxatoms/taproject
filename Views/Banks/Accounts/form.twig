@@ -1,0 +1,74 @@
+<div id="modalFormBankAccount" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Agregar Cuenta Bancaria</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">Banco</label>
+                            <el-select filterable v-model="bank" placeholder="">
+                                <el-option
+                                v-for="item in banks"
+                                :key="item.id"
+                                :label="item.shortname"
+                                :value="item.id">
+                                <span style="float: left">${ item.shortname }</span>
+                                <span style="float: right; color: #8492a6; font-size: 13px">${ item.code }</span>
+                                </el-option> 
+                            </el-select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">No. de Cuenta</label>
+                            <el-input placeholder="" v-model="account"></el-input>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="">CLABE</label>
+                            <el-input placeholder="" v-model="clabe"></el-input>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">Descripción</label>
+                            <el-input placeholder="" v-model="description"></el-input>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">Cuenta Contable</label>
+                            <el-select v-model="accounting" filterable placeholder="">
+                                <el-option
+                                v-for="item in accountingAccounts"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                                <span style="float: left">${ item.name }</span>
+                                <span style="float: right; color: #8492a6; font-size: 13px">${ item.account }</span>
+                                </el-option> 
+                            </el-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button v-on:click="onSubmit" class="btn btn-success" name="button">Guardar</button>
+                <button type="button" name="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

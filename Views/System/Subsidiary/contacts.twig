@@ -1,0 +1,47 @@
+{% block body %}
+    <section>
+        <div class="header-buttons">
+            <div class="btn-group main-buttons" id="contact-buttons">
+                <a
+                    role="button"
+                    class="btn btn-success pull-left"
+                    @click="createContact">
+                    Nuevo Contacto</a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div id="tableContacts">
+                <!-- Dynamic Table -->
+                <vue-dynamic-table
+                    class-name="table table-bordered"
+                    v-bind:filter-enabled="true"
+                    v-bind:expandable-row="true"
+                    v-bind:columns="columns"
+                    v-bind:pagination="true"
+                    v-bind:pagination-options="paginationOptions"
+                    v-on:go-to-page="goToPage"
+                    v-bind:data-model="contactos">
+                    <template slot="actions" scope="row">
+                        <a role="button" @click="editContact(row.index)">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                        <a role="button" @click="deleteContact(row.index)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </template>
+                    <template slot="no-rows-found">
+                        <span>No se encontrarón resultados</span>
+                    </template>
+                </vue-dynamic-table>
+                <!-- Dynamic Table -->
+            </div>
+            {% include ('System/Subsidiary/createContact.twig') %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        var id = {{ id | raw}}
+        initTableContacts(id);
+    </script>
+{% endblock %}

@@ -1,0 +1,90 @@
+<div class="row">
+    <div class="col-md-5">
+        <div class="form-group req">
+            <label for="">Fecha de Pago: </label>
+            <el-date-picker
+            v-model="paymentDate"
+            type="date"
+            format="dd-MM-yyyy"
+            placeholder="Seleccionar fecha">
+            </el-date-picker>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group req">
+            <label>Factura:</label>
+            <input type="text" v-model="folio" placeholder="Ingrese el código de la factura">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group req">
+            <label>Referencia:</label>
+            <input type="text" v-model="reference" placeholder="Ingrese una referencia">
+        </div>
+    </div>
+</div>
+ <div class="row">
+    <div class="col-md-5">
+        <div class="form-group req">
+            <label for="">Método de pago: </label>
+            <el-select filterable v-model="paymentMethod" placeholder="Seleccionar">
+                <el-option
+                v-for="item in paymentMethods"
+                :key="item.id"
+                :label="item.CFDIcode"
+                :value="item.id">
+                <span style="float: left">${ item.CFDIcode }</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">${ item.name }</span>
+                </el-option>
+            </el-select>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="form-group req">
+            <label for="account">Moneda: </label>
+            <el-select v-model="currency" filterable placeholder="Selecciona Cuenta">
+                <el-option
+                v-for="item in currencyArray"
+                :key="item.id"
+                :label="item.CFDIcode"
+                :value="item.id">
+                </el-option>
+            </el-select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-5">
+        <div class="form-group">
+            <label for="">Condiciones de pago: </label>
+            <input type="text" v-model="paymentCondition" placeholder="Ingrese condición de pago">
+        </div>
+    </div>
+</div>
+<fieldset>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group req">
+                <label>Monto Total: <i class="fa fa-usd" aria-hidden="true"></i></label>
+                <el-input :readonly="(amountReadOnly) ? true : false" @blur="onChangeAmount" placeholder="Ingresa Monto" v-model="paymentValue"></el-input>
+            </div>
+        </div>
+        <div class="col-md-4" v-if="paymentMethod >= 2">
+            <div class="form-group">
+                <label for="">Abonos: </label>  <el-input-number v-model="paymentQuantity" :min="1"></el-input-number>
+            </div>
+        </div>
+        <div class="col-md-4" v-if="paymentMethod === 2">
+            <div class="form-group">
+                <label for="">Pago Inicial: </label>
+                <el-date-picker
+                v-model="initialPaymentDate"
+                type="date"
+                placeholder="Seleccionar fecha">
+                </el-date-picker>
+            </div>
+        </div>
+    </div>
+</fieldset>

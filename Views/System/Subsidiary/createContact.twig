@@ -1,0 +1,66 @@
+<div class="row" id="create-contact-module">
+	<div v-show="!panelCreateContact"></div>
+	<div v-show="panelCreateContact">
+		<div class="col-md-12 modalRemoveIds">
+			<h1 id="contact_title">Nuevo Contacto</h1>
+			<hr/>
+		</div>
+		<div class="col-md-12">
+			<label style="color: #002a80" for="">Datos generales</label>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="name">Nombre: </label>
+					<input type="text" 
+						class="form-control" 
+						name="name" 
+						id="name" 
+						v-model="contact.name">
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-group">
+					<label for="work_area">Area de trabajo: </label>
+					<input type="text"
+						class="form-control" 
+						name="work_area" 
+						id="work_area"
+						v-model="contact.work_area">
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="phone">Teléfono: </label>
+					<vue-selectize-js
+						selectize-type="Tags"
+						:selectize-settings="selectizePhoneSettings"
+						v-model="contact.phones">
+					</vue-selectize-js>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="email">E-mail: </label>
+					<vue-selectize-js
+						selectize-type="Tags"
+						:selectize-settings="selectizeEmailSettings"
+						v-model="contact.emails">
+					</vue-selectize-js>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<a style="margin-top: 10px; margin-bottom: 10px;" 
+				type="button" 
+				class="btn btn-success block"
+				data-action="submit"
+				@click="submitHandler">Guardar</a>
+		</div>
+		<div class="col-md-6">
+			<a style="margin-top: 10px; margin-bottom: 10px;" 
+				type="button" 
+				class="btn btn-danger block"
+				@click="closePanel">Cancelar</a>
+		</div>
+	</div>
+</div>
+

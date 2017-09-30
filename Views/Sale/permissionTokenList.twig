@@ -1,0 +1,194 @@
+{#
+Created by: Carlos Sifuentes
+#}
+{% block content %}
+<section>
+    <div id="permission-token-container">
+        <div class="header-buttons">
+        </div>
+        <div class="panel-content">
+            <div class="row">{#empieza caja de formulario de token nuevo#}
+                <div class="col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title">Generar token</h3>
+                            <div class="box-tools pull-right">
+                                <div data-toggle="btn-toggle" class="btn-group">
+                                    <button type="button" data-widget="collapse" class="btn btn-box-tool">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Inicia: </label>
+                                        <el-date-picker
+                                            v-model="token.valid_from"
+                                            type="datetime"
+                                            :clearable="false"
+                                            :picker-options="{disabledDate: fromDateDisabled}">
+                                        </el-date-picker>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Expira: </label>
+                                        <el-date-picker
+                                            v-model="token.valid_until"
+                                            type="datetime"
+                                            :clearable="false"
+                                            :picker-options="{disabledDate: untilDateDisabled}"
+                                            :disabled="!token.valid_from">
+                                        </el-date-picker>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label>Usos: </label>
+                                        <el-input-number
+                                            size="small"
+                                            v-model="token.num_uses"
+                                            :min="1">
+                                        </el-input-number>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <el-select v-model="token.type_id" placeholder="Tipo">
+                                        <el-option
+                                            v-for="type in tokenTypes"
+                                            :label="type.name"
+                                            :value="type.id"
+                                            :key="type.id">
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                                <div class="col-md-2" v-if="token.type_id==1">
+                                    <div class="input-group">
+                                        <div class="input-group-btn">
+                                            <button
+                                                type="button" 
+                                                class="btn btn-default dropdown-toggle" 
+                                                data-toggle="dropdown" 
+                                                aria-haspopup="true" 
+                                                aria-expanded="false">
+                                                ${ token.max_amount_type === 1 ? '%' : '$' }
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a @click="token.max_amount_type = 1">%</a></li>
+                                                <li><a @click="token.max_amount_type = 2">$</a></li>
+                                            </ul>
+                                        </div>
+                                        <el-input-number
+                                            size="small"
+                                            v-model="token.max_amount"
+                                            :min="0">
+                                        </el-input-number>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-success pull-right" @click="saveTokenClick">
+                                        <i class="fa fa-floppy-o"></i> Guardar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>{#termina caja de formulario de token nuevo#}
+            <div class="row">
+                <div class="col-md-12">
+                    <vue-dynamic-table-rbc
+                        box-classes="box box-primary full-height"
+                        class-name="table table-bordered table-hover"
+                        :remote-method="remoteSearch"
+                        :source-columns="columns"
+                        :select-options="selectOptions"
+                        :data-model="tokensDatasource"
+                        :total-results="totalResults"
+                        :pagination-options="{pageSizes:[10, 20, 30], pageSize: 10}"
+                        hide-export
+                        hide-import
+                        hide-favorites>
+                        <template slot="token" scope="row">
+                            <span v-if="isTokenUsable(row.object)">${row.object.token}</span>
+                            <span v-else style="text-decoration: line-through;">${row.object.token}</span>
+                        </template>
+                        <template slot="usedFor" scope="row">
+                            <div v-if="row.object.sales.length == 0">
+                                <em>Sin usar</em>
+                            </div>
+                            <div v-else-if="row.object.sales.length == 1">
+                                Usado para la venta: ${row.object.sales[0].folio}
+                            </div>
+                            <div v-else>
+                                <el-popover ref="popover-used-for" placement="left" max-height="500" width="200" trigger="click">
+                                    <h4>Usado para las ventas:</h4>
+                                    <ul>
+                                        <li v-for="sale in row.object.sales">${sale.folio}</li>
+                                    </ul>
+                                </el-popover>
+                                <el-button class="block" size="mini" v-popover:popover-used-for>Ver</el-button>
+                            </div>
+                        </template>
+                        <template slot="active" scope="row">
+                            <div class="form-group">
+                                <input type="checkbox" v-model="row.object.active" @click="activeClicked(row.object)">
+                            </div>
+                        </template>
+                    </vue-dynamic-table-rbc>
+                </div>
+            </div>
+        </div>
+        {#Modal para cuando guarda un token#}
+        <div class="modal fade"
+            id="modal-token-saved"
+            tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel"
+            data-backdrop="false">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Token guardado</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>El token generado es: <strong id="modalToken">${modalToken}</strong></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                    <a class="btn btn-default" role="button" @click="copyTextToClipboard">Copiar</a>
+                                    <a class="btn btn-success" role="button" data-dismiss="modal">Aceptar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+init=[{
+    title: 'Lista de tokens',
+    file: 'Sale/permissionTokenList.js',
+    functions: [{
+      name: 'initTokenList',
+      args: []
+    }]
+}];
+</script>
+{% endblock %}

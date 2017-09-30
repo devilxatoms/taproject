@@ -1,0 +1,216 @@
+{% block main_customer %}
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+               
+ 
+                <div class="col-md-12">
+
+                    <!-- <div class="row">
+
+                  <div class="col-md-3">
+                    <h4><i class="fa fa-filter" aria-hidden="true"></i> Filtros</h4>
+                    <div class="form-group">
+                    <label for="rol">Roles</label>
+                    <select name="rol" id="userRol">
+                      <option v-for="item in rolItems" v-bind:value="item.id">
+                         ${item.name}
+                       </option>
+                    </select>
+                  </div>
+                  </div>
+              </div> -->
+
+                    <div id="example-2">
+                        <simple-counter></simple-counter>
+                        <simple-counter></simple-counter>
+                        <simple-counter></simple-counter>
+                    </div>
+
+                    <div id="log-module">
+                        <h4>
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                            Bitacora de Actividades</h4>
+                        <!-- Dynamic Table -->
+                        <vue-dynamic-table
+                            class-name="table table-bordered table-hover"
+                            v-bind:filter-enabled="true"
+                            v-bind:expandable-row="true"
+                            v-bind:columns="sourceColumns"
+                            v-bind:data-model="listLogs"
+                            v-on:go-to-page="goToPage"
+                            v-bind:pagination-options="PaginationOptions">
+                            <template slot="userId" scope="row">
+                              <button type="button" v-on:click="userData($event)" class="el-tag el-tag--lblue has-tooltip" data-tooltip="Mostrar Detalles"><i class="fa fa-user" aria-hidden="true" ></i> ${row.object.username}</button>
+                              <div class="list-dt">
+                                <ul>
+                                  <li>Id: <span>${row.object.userId}</span></li>
+                                    <li>Rol: <span>${row.object.name}</span></li>
+                                  <li>Email: <span>${row.object.email}</span></li>
+                                </ul>
+                              </div></template>
+                        </vue-dynamic-table>
+                        <!-- Dynamic Table -->
+
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+
+
+    </section>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+var logsTable = new Vue({
+  el: '#log-module',
+  data: {
+      fullHeight: true,
+      selectedColumns: [],
+      listLogs: [],
+      PaginationOptions: {
+        position: 'both',
+          classSizeOption: 'pull-left form-control page-size',
+          classPaginator: 'pagination pagination-sm no-margin pull-right',
+          classPageOption: 'btn btn-default',
+          sizeOptions: [20, 30, 50, 100],
+          size: 20,
+          paginatorClass: 'list-inline',
+          pageOptionClass: 'btn btn-primary',
+          currentPage: 1,
+          lastPage: null
+      },
+      sourceColumns: [
+        {
+            name: 'id',
+            title: 'ID',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-xs',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'operation',
+            title: 'Operacion',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'tables',
+            title: 'Tabla',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        
+        {
+            name: 'rowId',
+            title: 'Renglon',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'date',
+            title: 'Fecha',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'userId',
+            title: 'Usuario',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            },
+            customRender: {
+                        slot: 'userId'
+                    }
+        },
+        {
+            name: 'ip',
+            title: 'IP',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        }
+        
+      ],
+      currentPage: 1,
+      lastPage: 1,
+      pageSize: 100
+  },
+
+  mounted: function() {
+      this.loadLogs();
+      console.log(this.listLogs);
+  },
+  methods: {
+      loadLogs: function() {
+          var filters = {};
+          this.sourceColumns.map(function(column) {
+              column.filterTag = false
+          })
+          filters.size = this.PaginationOptions.size;
+          filters.page = this.PaginationOptions.currentPage;
+          //obtiene datos para la tabla
+          $.get(AJAX_PATH + 'admin/getLog', filters, function(response) {
+              var paginator = response.data;
+              this.PaginationOptions.lastPage = paginator.last_page;
+              this.listLogs = response.data.data;
+
+          }.bind(this));
+
+      },
+      userData: function(event){
+                var element = $(event.currentTarget);
+                element.closest('td').find('.list-dt').slideToggle();
+              },
+      goToPage: function(page) {
+          this.PaginationOptions.currentPage = page;
+          this.loadLogs();
+      },
+  },
+  computed: {},
+  watch: {},
+  delimiters: ['${', '}']
+});
+</script>
+{% endblock %}

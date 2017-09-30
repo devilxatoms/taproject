@@ -1,0 +1,74 @@
+{% block body %}
+<section>
+    <div id="department-module">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a id="btnNewDepartment"
+                    role="button"
+                    class="btn btn-success"
+                    data-action="openLateral"
+                    data-panelsize="xs"
+                    data-route="recursosHumanos/departamentos/nuevo">
+                    <i class="fa fa-plus " aria-hidden="true"></i> Agregar Departamento
+                </a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <vue-dynamic-table-rbc
+                        box-classes="box box-primary full-height"
+                        class-name="table table-bordered table-hover"
+                        :remote-method="ajaxDepartmentSearch"
+                        :source-columns="departmentSourceColumns"
+                        :select-options="catalogs"
+                        :data-model="departmentList"
+                        :total-results="departmentResults"
+                    >
+                        <template slot="name" scope="row">
+                            ${row.object.name}
+                        </template>
+                        <template slot="description" scope="row">
+                            ${row.object.description}
+                        </template>
+                        <template slot="actions" scope="row">
+                            <div class="ui-button bg-Light-Blue overflowInherit">
+                                <div class="secondary">
+                                    <a
+                                        role="button"
+                                        class="has-tooltip btn align-right"
+                                        data-tooltip="Editar"
+                                        v-on:click="onEditClick(row.object.id)">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                    </a>
+                                    <a
+                                        class="has-tooltip btn align-right"
+                                        data-tooltip="Eliminar"
+                                        role="button"
+                                        v-on:click="onRemoveClick(row)">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </template>
+                    </vue-dynamic-table-rbc>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        var catalogs = {{ catalogs|json_encode|raw }};
+        init.length = 0;
+        init = [ {
+            title: 'Listado Departamentos',
+            file:  'HumanResources/Departments/list.js',
+            functions: [ {
+                name: 'initDepartmentListModule',
+                args: [catalogs]
+            } ]
+        } ];
+    </script>
+{% endblock %}

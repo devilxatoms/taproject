@@ -1,0 +1,88 @@
+{% block main_customer %}
+    <section>
+
+        <div id="admin-container">
+            {% include('/Admin/Company/partials/buttons.twig' ) %}
+
+            <div class="panel-content">
+
+
+                <div class="col-md-12">
+                    <div id="admin-companylist">
+                        <h4>Tabla Empresas</h4>
+
+                        <vue-dynamic-table
+                            class-name="table table-bordered"
+                            v-bind:filter-enabled="true"
+                            v-bind:expandable-row="true"
+                            v-bind:columns="sourceColumns"
+                            v-bind:data-model="listCompanies"
+                            v-on:go-to-page="goToPage"
+                            v-bind:pagination-options="PaginationOptions">
+                            <template slot="logo" scope="row">
+                              <img v-bind:src="CDN_PATH+row.object.logo" width="32px" height="32px" alt="">
+                            </template>
+                            <template slot="package" scope="row">
+                              <button type="button" v-on:click="packageData($event)" class="el-tag el-tag--lblue has-tooltip" data-tooltip="Mostrar Detalles"><i class="fa fa-cube" aria-hidden="true" ></i> ${row.object.package}</button>
+                              <div class="list-dt">
+                                <ul>
+                                  <li>Usuarios: <span>${row.object.nusers}</span></li>
+                                  <li>Timbres: <span>${row.object.nstamps}</span></li>
+                                  <li>Emails: <span>${row.object.nmails}</span></li>
+                                  <li>Costo: <span>$ ${row.object.nprice}</span></li>
+                                </ul>
+                              </div>
+                            </template>
+                            <template slot="enabledusers" scope="row">
+                              <button type="button" class="el-tag el-tag--lblue"><i class="fa fa-user" aria-hidden="true"></i> ${row.object.nusers}</button>
+                            </template>
+                            <template slot="activeusers" scope="row">
+                              <button type="button" class="el-tag el-tag--lblue"><i class="fa fa-user" aria-hidden="true"></i> ${row.object.active_users}</button>
+                            </template>
+                            <template slot="actions" scope="row">
+
+                          <div class="ui-button">
+                              <div class="secondary">
+                                 <a role="button"
+                                 class="btn bgBlue"
+                                 data-action="openLateral"
+                                 data-route="admin/company/metricsCompany"
+                                 v-on:click="onMetricsClick(row.object)"
+                                 data-panelsize="lg">
+
+                                   <i class="fa fa-bar-chart"></i>
+                                 </a>
+                                 <a role="button"
+                                 class="btn bgGreen"
+                                 data-action="openLateral"
+                                 data-route="admin/company/edit"
+                                 data-panelsize="lg"
+                                 v-on:click="onEditClick(row.object)">
+                                   <i class="fa fa-pencil"  aria-hidden="true"></i>
+                                 </a>
+                                 <a role="button"
+                                 class="btn bgRed"
+                                 v-on:click="onRemoveClick(row.object)">
+                                   <i class="glyphicon glyphicon-trash"></i>
+                                 </a>
+
+                              </div>
+                          </div>
+                            </template>
+                        </vue-dynamic-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+{% endblock %}
+
+{% block loadScripts %}
+
+    <script id="scriptContainer" type="text/javascript">
+      iniciarModuloAdminCompany()
+    </script>
+
+{% endblock %}

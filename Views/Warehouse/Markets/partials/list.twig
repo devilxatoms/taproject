@@ -1,0 +1,170 @@
+{% block body %}
+<section>
+    <div id="catalog-markets">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover "
+
+                :source-columns="sourceColumns"
+                :data-model="listMarkets"
+
+                :select-options="selectOptions"
+
+                :remote-method="remoteMethod"
+                :total-results="totalResults"
+                >
+                <template slot="no-rows-found">
+                    <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> No se encontraron resultados</h4>
+                </template>
+                <template slot="actions" scope="row">
+                    <div class="ui-button bg-Light-Blue overflowInherit">
+                        <div class="secondary">
+                        <!-- Detalles -->
+                            <a
+                                data-route="javascript:void(0);"
+                                class="has-tooltip btn align-right"
+                                data-tooltip="Editar"
+                                role="button"
+                                v-on:click="editMarket(row.index, row.object)">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <a
+                                class="has-tooltip btn align-right"
+                                data-tooltip="Eliminar"
+                                role="button"
+                                data-route="javascript:void(0);"
+                                v-on:click="openModalToDelete(row.object)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </vue-dynamic-table-rbc>
+
+        <!-- Modal -->
+        <div
+            id="createMarketModal"
+            ref="createMarketModal"
+            class="modal fade"
+            tabindex="-1"
+            role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                            v-on:click="resetForm">
+                                <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 v-if="marketObj.marketId == 0">Añadir Mercado</h3>
+                        <h3 v-if="marketObj.marketId != 0">Edición de Mercado: ${ marketObj.marketNameOrginal }</h3>
+                    </div>
+                    <div class="modal-body">
+						<div class="form-group">
+                            <label>Código:</label>
+                            <input
+                                type="text"
+                                maxlength="100"
+                                v-model="marketObj.marketCode"
+                                name="marketCode"
+                                data-vv-as="Código"
+                                :class="{'validate': errors.has('marketCode') }">
+                            <span v-show="errors.has('marketCode')" class="cRed">${ errors.first('marketCode') }</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Mercado:</label>
+                            <input
+                                type="text"
+                                maxlength="100"
+                                v-model="marketObj.marketName"
+                                name="marketName"
+                                v-validate="'required'"
+                                data-vv-as="Nombre"
+                                :class="{'validate': errors.has('marketName') }">
+                            <span v-show="errors.has('marketName')" class="cRed">${ errors.first('marketName') }</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripcion:</label>
+                            <textarea
+                                class="form-control"
+                                rows="3"
+                                maxlength="255"
+                                style="resize: none;"
+                                v-model="marketObj.marketDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            v-on:click="resetForm">Cancelar</button>
+                        <button
+                            ref="catalogMarketSubmit"
+                            class="btn btn-success"
+                            v-on:click="createOrUpdate">GUARDAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+
+        <!-- Modal Pregunta-->
+        <div
+            id="questionModal"
+            ref="questionModal"
+            class="modal fade"
+            tabindex="-1"
+            role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3>¿Estás seguro que deseas eliminar?</h3>
+                    </div>
+                    <div class="modal-body">
+						<div class="form-group">
+                            <label>Código:</label>
+                            <h4>${marketToDelete.code}</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <h4>${marketToDelete.name}</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripcion:</label>
+                            <h4>${marketToDelete.description}</h4>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button
+                            class="btn btn-danger"
+                            v-on:click="deleteMarket">ELIMINAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Pregunta -->
+
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Mercados',
+            file: 'Warehouse/Markets/MarketsCatalog.js',
+            functions: [ {
+                name: 'iniciarModuloMarketsCatalog',
+                args: []
+            } ]
+        } ];
+    </script>
+{% endblock %}

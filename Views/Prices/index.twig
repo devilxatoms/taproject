@@ -1,0 +1,413 @@
+{% block body %}
+    <section>
+        <div id="list-price-list">
+            <div class="header-buttons">
+                <div class="btn-group main-buttons">
+                    <a
+                        role="button"
+                        @click="newPriceList"
+                        class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus-sign"></span>
+                        Nueva Lista de Precios
+                    </a>
+                    <a
+                        role="button"
+                        @click="launchModalFields"
+                        class="btn btn-success">
+                        <span class="glyphicon glyphicon-edit"></span>
+                        Campos
+                    </a>
+                </div>
+            </div>
+            <div class="panel-content">
+                <vue-dynamic-table
+                    class-name="table table-bordered"
+                    v-bind:class="{ fullHeight }"
+                    :columns="sourceColumns"
+                    :data-model="listPriceLists"
+                    :filter-enabled="filterEnabled"
+                    :pagination-options="paginationOptions"
+                    @go-to-page="goToPage"
+                    >
+                    <template slot="actions" scope="row">
+                        <div class="ui-button bg-Light-Blue overflowInherit">
+                            <div class="secondary">
+                                <a 
+                                    data-route="javascript:void(0);" 
+                                    class="has-tooltip btn align-right" 
+                                    data-tooltip="Ver" 
+                                    role="button"
+                                    v-on:click="priceListView(row.index,row.object)">
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                </a>
+                                <a 
+                                    data-route="javascript:void(0);" 
+                                    class="has-tooltip btn align-right" 
+                                    data-tooltip="Editar" 
+                                    role="button"
+                                    v-on:click="priceListEdit(row.index,row.object)">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                                <a 
+                                    class="has-tooltip btn align-right" 
+                                    data-tooltip="Eliminar" 
+                                    role="button"
+                                    data-route="javascript:void(0);" 
+                                    v-on:click="priceListDelete(row.index, row.object)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </template>
+                    <template slot="no-rows-found">
+                        <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> No se encontraron resultados</h4>
+                    </template>
+                    <template slot="expProducts" scope="row">
+                        <a class="has-tooltip" 
+                            data-tooltip="Ver excepciones" 
+                            @click="showProductExceptions(row.object.id)" 
+                            style="cursor: pointer">
+                            <span class="glyphicon glyphicon-eye-open"></span> ${row.object.product_exceptions}
+                        </a>
+                    </template>
+                    <template slot="expLines" scope="row">
+                        <a class="has-tooltip" data-tooltip="Ver excepciones" @click="showLineExceptions(row.object.id)" style="cursor: pointer">
+                            <span class="glyphicon glyphicon-eye-open"></span> ${row.object.line_exceptions}
+                        </a>
+                    </template>
+                    <template slot="expBrands" scope="row">
+                        <a class="has-tooltip" data-tooltip="Ver excepciones" @click="showBrandExceptions(row.object.id)" style="cursor: pointer"><span class="glyphicon glyphicon-eye-open"></span> ${row.object.brand_exceptions}</a>
+                    </template>
+                    <template slot="expMarkets" scope="row">
+                        <a class="has-tooltip" data-tooltip="Ver excepciones" @click="showMarketExceptions(row.object.id)" style="cursor: pointer"><span class="glyphicon glyphicon-eye-open"></span> ${row.object.market_exceptions}</a>
+                    </template>
+                    <template slot="expGroups" scope="row">
+                        <a class="has-tooltip" data-tooltip="Ver excepciones" @click="showGroupExceptions(row.object.id)" style="cursor: pointer"><span class="glyphicon glyphicon-eye-open"></span> ${row.object.group_exceptions}</a>
+                    </template>
+                    <template slot="expCategories" scope="row">
+                        <a class="has-tooltip" data-tooltip="Ver excepciones" @click="showCategoryExceptions(row.object.id)" style="cursor: pointer"><span class="glyphicon glyphicon-eye-open"></span> ${row.object.category_exceptions}</a>
+                    </template>
+                    <template slot="subsidiaries" scope="row">
+                        <a class="has-tooltip" data-tooltip="Ver excepciones" @click="showSubsidiaries(row.object.id)" style="cursor: pointer"><span class="glyphicon glyphicon-eye-open"></span> ${ row.object.subsidiaries }</a>
+                    </template>
+                    <template slot="customers" scope="row">
+                        <a class="has-tooltip" data-tooltip="Ver excepciones" @click="showCustomers(row.object.id)" style="cursor: pointer"><span class="glyphicon glyphicon-eye-open"></span> ${ row.object.customers }</a>
+                    </template>
+                </vue-dynamic-table>
+            </div>
+
+            <!-- -->
+            <div class="modal fade" id="modal-product-exceptions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Excepciones de producto</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de Valor</th>
+                                        <th>Valor</th>
+                                        <th>Codigo de producto</th>
+                                        <th>Producto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="productException in productExceptions">
+                                        <td>${ productException.value_type }</td>     
+                                        <td>${ productException.value }</td>                                   
+                                        <td>${ productException.code }</td>
+                                        <td>${ productException.name }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+
+            <!-- -->
+            <div class="modal fade" id="modal-line-exceptions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Excepciones de producto</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de Valor</th>
+                                        <th>Valor</th>
+                                        <th>Codigo de linea</th>
+                                        <th>Linea</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="lineException in lineExceptions">
+                                        <td>${ lineException.value_type }</td>     
+                                        <td>${ lineException.value }</td>                                   
+                                        <td>${ lineException.code }</td>
+                                        <td>${ lineException.name }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+
+            <!-- -->
+            <div class="modal fade" id="modal-category-exceptions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Excepciones de categorias</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de Valor</th>
+                                        <th>Valor</th>
+                                        <th>Codigo de categoria</th>
+                                        <th>Categoria</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="categoryException in categoryExceptions">
+                                        <td>${ categoryException.value_type }</td>     
+                                        <td>${ categoryException.value }</td>                                   
+                                        <td>${ categoryException.code }</td>
+                                        <td>${ categoryException.name }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+
+            <!-- -->
+            <div class="modal fade" id="modal-group-exceptions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Excepciones de grupos</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de Valor</th>
+                                        <th>Valor</th>
+                                        <th>Codigo de grupo</th>
+                                        <th>Grupo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="groupException in groupExceptions">
+                                        <td>${ groupException.value_type }</td>     
+                                        <td>${ groupException.value }</td>                                   
+                                        <td>${ groupException.code }</td>
+                                        <td>${ groupException.name }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+
+            <!-- -->
+            <div class="modal fade" id="modal-brand-exceptions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Excepciones de marcas</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de Valor</th>
+                                        <th>Valor</th>
+                                        <th>Codigo de marca</th>
+                                        <th>Marca</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="brandException in brandExceptions">
+                                        <td>${ brandException.value_type }</td>     
+                                        <td>${ brandException.value }</td>                                   
+                                        <td>${ brandException.code }</td>
+                                        <td>${ brandException.name }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+
+            <!-- -->
+            <div class="modal fade" id="modal-market-exceptions" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Excepciones de mercados</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo de Valor</th>
+                                        <th>Valor</th>
+                                        <th>Codigo de mercado</th>
+                                        <th>Mercado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="marketException in marketExceptions">
+                                        <td>${ marketException.value_type }</td>     
+                                        <td>${ marketException.value }</td>                                   
+                                        <td>${ marketException.code }</td>
+                                        <td>${ marketException.name }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+
+
+            <!-- -->
+            <div class="modal fade" id="modal-subsidiary-assignment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Excepciones de sucursales</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo de sucursal</th>
+                                        <th>Sucursal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="assignedSubsidiary in assignedSubsidiaries">                                  
+                                        <td>${ assignedSubsidiary.code }</td>
+                                        <td>${ assignedSubsidiary.name }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+
+
+            <!-- -->
+            <div class="modal fade" id="modal-customer-assignment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">Excepciones de clientes</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo de cliente</th>
+                                        <th>Cliente</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="assignedCustomer in assignedCustomers">                                  
+                                        <td>${ assignedCustomer.code }</td>
+                                        <td>${ assignedCustomer.business_name }</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- -->
+        </div>
+    </section>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['auxListCoins'] = {{ auxListCoins|json_encode|raw }};
+        init.length = 0;
+        init = [ {
+            title: "Listado de Listas de Precios",
+            file: 'Prices/listPriceLists.js',
+            functions: [ {
+                name: 'iniciarModuloListPriceList',
+                args: [ uiVars['auxListCoins'] ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

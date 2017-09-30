@@ -1,0 +1,198 @@
+{% block content %}
+<section>
+	<div id="commission-list-container">
+		<div class="header-buttons">
+	        <div class="btn-group main-buttons">
+	            <a role="button" class="btn btn-default" @click="addCommOpen">
+	                <span class="fa fa-plus"></span> Nueva Comisión
+	            </a>
+	            {#<a role="button"
+	                class="btn btn-primary"
+	                data-toggle="collapse"
+	                href="#collapseMovements">
+	                Consulta
+	            </a>#}
+	        </div>
+	    </div>
+	    <div class="panel-content">
+	    	<vue-dynamic-table-rbc
+			    box-classes="box box-primary full-height"
+			    class-name="table table-bordered table-hover"
+			    :remote-method="remoteSearch"
+			    :source-columns="columns"
+			    {# :select-options="selectOptions" #}
+			    :data-model="datasource"
+			    :total-results="totalResults"
+			    :pagination-options="{pageSizes:[10, 20, 30], pageSize: 10}"
+			    hide-export
+			    hide-import
+			    hide-favorites>
+                <template slot="pay" scope="row">
+					<button class="btn btn-primary" :disabled="row.object.active == 0 || row.object.balance <= 0" @click="payCommission(row.object)">
+						Efectuar
+					</button>
+                </template>
+                <template slot="activate" scope="row">
+					<button class="btn btn-primary" @click="activate(row.object)">
+						${row.object.active ? 'Desactivar' : 'Activar'}
+					</button>
+                </template>
+                <template slot="payments" scope="row">
+                	<el-popover
+						ref="popover-payments"
+						placement="right"
+						width="300"
+						trigger="click">
+                		<h4>Listado de abonos realizados</h4>
+                		<div v-if="row.object.commissionPayments.length > 0">
+                    		<table class="table table-bordered table-stripped">
+	                        	<thead>
+	                        		<th>#</th>
+	                        		<th>Fecha</th>
+	                        		<th>Monto</th>
+	                        	</thead>
+	                        	<tbody>
+	                        		<tr v-for="payment in row.object.commissionPayments">
+	                        			<td>${payment.id}</td>
+	                        			<td>${payment.createdAt}</td>
+	                        			<td>$${payment.amount}</td>
+	                        		</tr>
+	                        	</tbody>
+	                        </table>
+                    	</div>
+                    	<div v-else>
+                    		<em>No se han realizado abonos a esta comisión.</em>
+                    	</div>
+                	</el-popover>
+                	{#<el-button v-popover:popover-payments>Ver abonos <i class="glyphicon glyphicon-eye-open"></i></el-button>#}
+                	<a
+                		{#class="has-tooltip"#}
+                		role="button"
+                		{#data-tooltip="Abonos realizados a esta comisión"#}
+                		{#@click="showPayments(row.object)"#}
+                		v-popover:popover-payments>
+                		Ver abonos <i class="glyphicon glyphicon-eye-open"></i>
+                	</a>
+                </template>
+			</vue-dynamic-table-rbc>
+	    </div>
+	    <div class="modal fade"
+            ref="modalAddPayment"
+            tabindex="-1" role="dialog"
+            aria-labelledby="myModalLabel"
+            data-backdrop="false">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Abonar a comisión</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                        	<div class="col-md-4">
+                        		<div class="form-group">
+                        			<label>Folio: </label>
+                        			<input type="text" v-model="addPayFolio" disabled>
+                        		</div>
+                        	</div>
+                        	<div class="col-md-4">
+                        		<div class="form-group">
+                        			<label>Cliente: </label>
+	                        		<input type="text" v-model="addPayClient" disabled>
+                        		</div>
+                        	</div>
+                        	<div class="col-md-4">
+                        		<div class="form-group">
+                        			<label>Vendedor: </label>
+                        			<input type="text" v-model="addPaySaleRep" disabled>
+                        		</div>
+                        	</div>
+                        </div>
+                        <div class="row">
+                        	<div class="col-md-4">
+                        		<div class="form-group">
+                        			<label>Monto: <i class="fa fa-usd" aria-hidden="true"></i></label>
+                        			<input type="text" v-model="addPayAmount">
+                        		</div>
+                        	</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="pull-right">
+                                	<a class="btn btn-default" role="button" data-dismiss="modal">Cancelar</a>
+                                    <a class="btn btn-success" role="button" @click="addPaySave">Guardar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade"
+			role="dialog"
+			ref="modalAddCommission">
+			<div class="modal-dialog modal-md">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">${addCommTitle}</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Vendedor: </label>
+									<el-select v-model="addCommSaleRep" filterable placeholder="Seleccione">
+										<el-option
+											v-for="rep in saleReps"
+											:key="rep.id"
+											:value="rep.id"
+											:label="rep.name">
+										</el-option>
+									</el-select>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label>Monto: </label>
+									<input type="text" v-model="addCommAmount">
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label for="add-comm-active">Activo</label>
+									<input id="add-comm-active" type="checkbox" v-model="addCommActive">
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<button class="btn btn-success pull-right" @click="addCommSave">Guardar</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+init = [
+	{
+        title: 'Lista de comisiones',
+        file: 'Sale/commissionList.js',
+        functions: [{
+            name: 'initCommissionList',
+            args: [
+            	{{ saleReps | json_encode | raw }},
+            ]
+        }]
+    },
+];
+</script>
+{% endblock %}

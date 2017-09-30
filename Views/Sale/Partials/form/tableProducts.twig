@@ -1,0 +1,155 @@
+<div class="panel panel-default" >
+    <div class="panel-heading">
+        <div class="row" id="{{ prefix }}-forma-productos">
+            <div class="col-md-4 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label>Producto:</label>
+                    <el-select
+                        v-model="producto"
+                        filterable
+                        remote
+                        placeholder=""
+                        :remote-method="searchProduct"
+                        :loading="isLoading"
+                        @change="seleccionaProducto($event)">
+                        <el-option
+                            v-for="productoOption in productoOptions"
+                            :key="productoOption"
+                            :label="productoOption.name"
+                            :value="productoOption">
+                            <div>
+                                <span class="pull-left">${ productoOption.name }</span>
+                                <span class="pull-right" style="font-size: 12px; color: light-gray;">
+                                    ${ productoOption.code }
+                                </span>
+                            </div>
+                        </el-option>
+                    </el-select>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-4 col-xs-12">
+                <div class="form-group">
+                    <label>Cantidad:</label>
+                    <input v-model="cantidad" id="q_product"
+                        @keyup.enter="agregaProducto(producto)">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-5 col-xs-7">
+                <div class="ui-button">
+                    <div class="secondary">
+                        <a role="button" class="btn bgGreen"
+                            @click="agregaProducto(producto)">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                        <a role="button" class="btn bgLightBlue"
+                            @click="buscarProductos()">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </a>
+                        <a role="button" class="btn bgRed"
+                            @click="eliminar()">
+                            <span class="ui ui-delete"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-5">
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" v-model="aplicaDescuento" @click="checkDescuento()">
+                        Descuento
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div id="{{ prefix }}-tabla-productos">
+                <div class="table-responsive" style="max-height:1000px;">
+                    <!-- Dynamic Table -->
+                    <vue-dynamic-table
+                        :class-name="className"
+                        :columns="columns"
+                        :default-model="defaultModel"
+                        :data-model="productos">
+                        <template slot="slotCheck" scope="row">
+                            <div class="form-group">
+                                <input type="checkbox" v-model="row.object.checked">
+                            </div>
+                        </template>
+                        <template slot="options" scope="row">
+                            <div class="ui-button">
+                                <div class="secondary">
+                                {#    <a role="button" class="btn bgLightBlue"
+                                        @click="">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                    </a>#}
+                                    <a role="button" class="btn bgRed"
+                                        @click="onRemove($event, row)">
+                                        <span class="ui ui-delete"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </template>
+                        <template slot="slotTax" scope="row">
+                            <a role="button" v-on:click="showTaxes(row.object.taxes, row.index)">
+                                $${ (parseFloat(row.object.taxAmount)
+                                    - parseFloat(row.object.taxWithholdingAmount)).toFixed(2) }
+                            </a>
+                        </template>
+                        <template slot="slotQuantity" scope="row">
+                            <div class="input-group">
+                                <input type="number"
+                                    v-model="row.object.quantity"
+                                    class="form-control text-right"
+                                {#    :class="['', { 'cRed' : row.object.quantity > row.object.stock }]"#}
+                                    min="0" />
+                              {#  <span class="input-group-addon">${ row.object.unit }</span>#}
+                            </div>
+                        </div>
+                    </template>
+                    <template slot="slotTax" scope="row">
+                        <a role="button" v-on:click="showTaxes(row.object.taxes, row.index)">
+                            $${ (parseFloat(row.object.taxAmount)
+                                - parseFloat(row.object.taxWithholdingAmount)).toFixed(2) }
+                        </a>
+                    </template>
+                    <template slot="slotQuantity" scope="row">
+                        <div class="input-group">
+                            <input type="number"
+                                v-model="row.object.quantity"
+                                class="form-control text-right"
+                            {#    :class="['', { 'cRed' : row.object.quantity > row.object.stock }]"#}
+                                min="0" />
+                          {#  <span class="input-group-addon">${ row.object.unit }</span>#}
+                        </div>
+                    </template>
+                    <template slot="slotDiscount" scope="row">
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button 
+                                    type="button"
+                                    class="btn btn-default dropdown-toggle"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false">
+                                    ${ row.object.discountType == 0 ? '%' : '$' }
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a @click="tipoDescuento(row.object, 0)">%</a></li>
+                                    <li><a @click="tipoDescuento(row.object, 1)">$</a></li>
+                                </ul>
+                            </div>
+                            <el-input-number
+                                size="small"
+                                v-model="row.object.discountValue"
+                                :min="0"
+                                :max="row.object.maxDiscount">
+                            </el-input-number>
+                        </div>
+                    </template>
+                </vue-dynamic-table>
+                <!-- Dynamic Table -->
+            </div>
+        </div>
+    </div>
+</div>

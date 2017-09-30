@@ -1,0 +1,86 @@
+<script type="text/x-template" id="customer-subsidiaries">
+<div>
+	<div v-show="!editingSubsidiary">
+	    <div class="row">
+	        <div class="col-md-12">
+	            <button type="button" class="btn btn-success" @click="addNewSubsidiary()">
+	                <span class="fa fa-plus"></span> Nueva Sucursal
+	            </button>
+	        </div>
+	    </div>
+	    <vue-dynamic-table
+	            class-name="table table-striped"
+
+	            :pagination-options="paginationOptions"
+	            @go-to-page="gotoPage"
+
+	            :data-model="getSubList()"
+	            :columns="columnsModel">
+	        <template slot="no-rows-found">
+	            Sin sucursales
+	        </template>
+	        <template slot="actions" scope="row">
+	            <div class="text-right">
+	                <a role="button" @click="editSubsidiary(row.index)">
+	                    <span class="fa fa-pencil"></span>
+	                </a>
+	                <a role="button" @click="askForDeleteSubsidiary(row.index)">
+	                    <span class="fa fa-remove"></span>
+	                </a>
+	            </div>
+	        </template>
+	    </vue-dynamic-table>
+	</div>
+	<div v-show="editingSubsidiary">
+	    <h3>Nueva Sucursal</h3>
+	    <div class="form-group">
+	        <label for="street">Nombre:</label>
+	        <input id="name" name="name" v-model="subsidiary.name" @keypress="clearSubsidiaryError('name')">
+
+	    </div>
+	    <!-- Nav tabs -->
+	    <ul class="nav nav-tabs" role="tablist">
+	        <li role="presentation" class="active">
+	        	<a href="#address" aria-controls="address" role="tab" data-toggle="tab">Direccion</a>
+	        </li>
+	        <li role="presentation">
+	        	<a href="#contacts" aria-controls="contacts" role="tab" data-toggle="tab">Contactos</a>
+	        </li>
+	        <li role="presentation">
+	        	<a href="#consignees" aria-controls="consignees" role="tab" data-toggle="tab">Consignatarios</a>
+	        </li>
+	    </ul>
+
+	    <!-- Tab panes -->
+	    <div class="tab-content">
+	        <div role="tabpanel" class="tab-pane active" id="address">
+	        	<address-form
+	        		id="subsidiary-address"
+	           		v-model="subsidiary.address">
+	           </address-form>
+	        </div>
+	        <div role="tabpanel" class="tab-pane" id="contacts">
+	        	<contacts-form
+	        		v-model="subsidiary.contacts">
+	        	</contacts-form>
+	        </div>
+	        <div role="tabpanel" class="tab-pane" id="consignees">
+	        	<consignees-form
+	        		v-model="subsidiary.consignees">
+	        	</consignees-form>
+	        </div>
+	    </div>
+	    
+	    <div class="row">
+	        <div class="col-md-12">
+	            <button type="button" class="btn btn-primary" @click="save()">
+	                <span class="fa fa-floppy-o"></span> Guardar
+	            </button>
+	            <button type="button" class="btn btn-warning" @click="cancel()">
+	                <span class="fa fa-ban"></span> Cancelar
+	            </button>	
+	        </div>
+	    </div>
+	</div>
+</div>
+</script>

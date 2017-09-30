@@ -1,0 +1,39 @@
+<section>
+    <div class="col-md-12"  id="modmodal-opt">
+        <label style="color: #002a80" for="">Datos generales</label>
+        <div class="form-group">
+            <label for="page-name">Nombre de Pagina: </label>
+            <input type="text" class="form-control"  name="name" v-validate data-vv-rules="required" id="page-name">
+            <span class="cRed" v-show="errors.has('name')" >Campo pagina es Obligatorio</span>
+            <input type="hidden" class="form-control"  name="id"  id="page-id">
+        </div>
+        <div class="form-group">
+            <label for="page-path">Path de Pagina: </label>
+            <input type="text" class="form-control" v-validate data-vv-rules="required" name="path"  id="page-path">
+                    <span class="cRed" v-show="errors.has('path')" >Campo path es Obligatorio</span>
+        </div>
+        <select name="modulos" v-validate data-vv-rules="required">
+          <option value="">Seleccionar Modulo</option>
+          <template v-for="modulo in moduList">
+              <option v-bind:value="modulo.id">${modulo.name}</option>
+          </template>
+        </select>
+        <span class="cRed" v-show="errors.has('modulos')" >Campo modulo es Obligatorio</span>
+        <div class="form-group">
+            <label for="page-description">Descripcion: </label>
+            <textarea name="description" id="page-description"rows="8" cols="80"></textarea>
+        </div>
+        <br>
+        <br>
+        <button type="button" class="btn btn-primary" id="btnEditPage">Editar</button>
+        <button type="button" class="btn btn-danger" id="cancelEditPage">Cancelar</button>
+    </div>
+</section>
+{% block loadScripts %}
+
+<script  type="text/javascript">
+alert('ejecuta scripts');
+
+</script>
+
+{% endblock %}

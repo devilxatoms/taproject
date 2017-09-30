@@ -1,0 +1,77 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Redes Sociales{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-md-4">
+        <div class="box-form">
+            <div class="form-group">
+                <label for="nickname">Red Social:</label>
+                <vue-selectize-js
+                    selectize-type="select"
+                    v-bind:selectize-settings="socialNetworkSelectize.settings"
+                    v-bind:selectize-options="data.socialNetworks"
+                    v-bind:selectize-enabled="socialNetworkSelectize.enabled"
+                    v-model="socialId"
+                    v-on:select-option="onSelectSocialNetwork($event)"
+                    @change="clearSocialNetworkError('Red Social')">
+                </vue-selectize-js>
+                <span  v-if="userSocialNetworkValidatorErrors" class="error-validate" :class="socialsErrorsClass" >
+                    ${ userSocialNetworkValidatorErrors.first('Red Social') }
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="nickname">Usuario:</label>
+                <input id="nickname" nickname="nickname" v-model="socialNetwork.user" @keypress="clearSocialNetworkError('Usuario')">
+                <span v-if="userSocialNetworkValidatorErrors != null"  class="error-validate" :class="socialsErrorsClass">
+                    ${ userSocialNetworkValidatorErrors.first('Usuario') }
+                </span>
+            </div>
+        </div>
+        <div class="box-btn">
+            <div class="row noMargin">
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 noPadding" id="" name="" data-id="" data-name="">
+                    <button type="button" class="btn btn-primary block" @click="userSocialNetworkValidate()">
+                        <span class="fa fa-floppy-o"></span>Agregar
+                    </button>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 noPadding">
+                    <button type="button" class="btn btn-warning block" @click="cancelSocialNetwork()">
+                        <span class="fa fa-ban"></span>Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <div class="box-table">
+            <vue-dynamic-table
+                class-name="table table-striped"
+                :pagination-options="socialNetworkTablePageOptions"
+                @go-to-page="goToPageSocialNetworkTable"
+                :columns="socialNetworkTableColumnsModel"
+                :data-model="chunksListSocialNetwork()[socialNetworkTablePageOptions.currentPage -1]">
+                <template slot="no-rows-found">
+                    Sin Información
+                </template>
+                <template slot="icon" scope="row">
+                    <i class="fa s15" :class="row.object.icon"></i>
+                </template>
+                <template slot="link" scope="row">
+                    <a :href="row.object.link" target="_BLANK">${row.object.link}</a>
+                </template>
+                <template slot="actions" scope="row">
+                    <div class="text-right">
+                        <a role="button" @click="editSocialNetwork(row.index)">
+                            <span class="fa fa-pencil"></span>
+                        </a>
+                        <a role="button" @click="askForDeleteSocialNetwork(row.index)">
+                            <span class="fa fa-remove"></span>
+                        </a>
+                    </div>
+                </template>
+            </vue-dynamic-table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+<div id="tableCurrency">
+    <!-- Dynamic Table -->
+    <vue-dynamic-table-rbc
+        box-classes="box box-primary full-height"
+        class-name="table table-bordered table-hover"
+        :total-results="datasource.total"
+        :source-columns="columns"
+        :remote-method="loadData"
+        :data-model="datasource.data">
+        <template slot="test-custom-render" scope="row">
+            <div class="ui-button bg-Light-Blue overflowInherit">
+                <div class="secondary">
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="Editar"
+                        v-on:click="onEditClick(row.object)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="Eliminar"
+                        v-on:click="onRemoveClick(row.object)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                </div>
+            </div>
+        </template>
+        <template slot="no-rows-found">
+            <span>No se encontrarón resultados</span>
+        </template>
+    </vue-dynamic-table-rbc>
+    <!-- Dynamic Table -->
+</div>

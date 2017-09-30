@@ -1,0 +1,27 @@
+    <div id="tableAccountingCenter">
+    <vue-dynamic-table-rbc
+        box-classes="box box-primary full-height"
+        class-name="table table-bordered table-hover"
+        :source-columns="sourceColumns"
+        :select-options="pageOptions"
+        :data-model="listAccountingCenter"
+        {# @export="exportTable" #}
+        {# :remote-method="remoteSearch" #}
+        template-file-name="Centros Contables"
+        :total-results="totalResults">
+        <template slot="actions" scope="row">
+            <div class="ui-button bg-Light-Blue overflowInherit">
+                <div class="secondary">
+                    <a class="btn btn-info has-tooltip align-right" data-tooltip="Editar"  v-on:click="onEditClick(row.object)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+
+                    <a class="btn has-tooltip align-right"  data-tooltip="Eliminar" v-on:click="onRemoveClick(row.object)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                    <a type="button" class="btn btn-warning" v-on:click="addChild(row.object)"> Añadir </a>
+                </div>
+            </div>
+        </template>
+    </vue-dynamic-table-rbc>
+</div>

@@ -1,0 +1,25 @@
+{% block body %}
+    <section>
+
+        {% include( 'crm/FollowUpStatus/partials/buttonAddStatus.twig' ) %}
+        <div class="panel-content">
+            {% include( 'crm/FollowUpStatus/partials/list.twig' ) %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.lenght = 0;
+        init = [ {
+            title: 'Estatus',
+            file: 'CrmJs/FollowUp/Status.js',
+            functions: [ {
+                name: 'initListStatus'
+            } ]
+        } ];
+
+        $("#btn_estatus").click(function() {
+            $('#TitleModal').text('Nuevo estatus');
+        });
+    </script>
+{% endblock %}

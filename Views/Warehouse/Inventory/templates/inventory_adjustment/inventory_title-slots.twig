@@ -1,0 +1,11 @@
+<template slot="inventory-title-cell" scope="row">
+    <idp-template-finder debug-info="{{ _self.templateName }}"></idp-template-finder>
+    (${ row.object.inventory_id }) ${ row.object.inventory_title }
+    <div v-if="row.object.comments" class="pull-right">
+
+        {# COMPONENTE #}
+        <idp-comments-popover
+            :comments="row.object.comments"
+        ></idp-comments-popover>
+    </div>
+</template>

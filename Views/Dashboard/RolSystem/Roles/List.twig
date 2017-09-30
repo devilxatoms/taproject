@@ -1,0 +1,156 @@
+{% block body %}
+<section>
+  <div class="header-buttons">
+    <div class="btn-group main-buttons">
+      <a 
+        name="add" 
+        role="button" 
+        class="btn btn-success" 
+        data-action="openLateral" 
+        data-module="usuarios"
+        data-panelsize="sm" 
+        data-route="roles/registro">
+        <i class="fa fa-plus-square" aria-hidden="true"></i>
+          Nuevo Rol
+      </a>
+    </div>
+  </div>
+  <div class="panel-content">
+    <div id="rol-table">
+      <vue-dynamic-table-rbc
+        box-classes="box box-primary full-height"
+        class-name="table table-bordered table-hover"
+        :remote-method="loadRoles"
+        :source-columns="columns"
+        :data-model="datasource"
+        :total-results="totalResults"
+        :pagination-options="{pageSizes: [20, 50, 100], pageSize: 100}"
+        hide-export 
+        hide-import 
+        template-file-name="Acciones">
+        {% include '/Dashboard/RolSystem/Roles/slots.twig' %}                
+      </vue-dynamic-table-rbc>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+(function() {
+var rolesTable;
+var rolDataId;
+var rolDataName;
+var rolDataDesc;
+})();
+rolesTable = new Vue({
+  el: '#rol-table',
+  data: {
+      id: '',
+            name: '',
+            description: '',
+            datasource: [],
+            dataProvider: '',
+            totalResults: null,
+      
+      columns: [
+        {
+            name: 'name',
+            title: 'Rol',
+            visible: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'description',
+            title: 'Descripción',
+            visible: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+              title: 'Acciones',
+              class: 'col-sm acciones',
+              customRender: {
+                  slot: 'actions'
+              },
+              visible: true
+        }
+      ],
+  },
+  methods: {
+      loadRoles: function(filters) {
+          //obtiene datos para la tabla
+          $.get(AJAX_PATH + 'dashboard/rol/list', filters, function(response) {
+                    this.datasource = response.data.data;
+                    this.totalResults = response.data.total;
+          }.bind(this));
+
+      },
+      goToPage: function(page) {
+          this.loadRoles();
+      },
+      onRemoveClick: function(row) {
+        this.$confirm('Desea eliminar el Rol Permenantemente?', 'Warning', {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        $.ajax({
+            url: AJAX_PATH + 'dashboard/rol/delete',
+            data:{
+              id: row.id
+            },
+            type: 'POST'
+        }).done( function( response ) {
+          switch (response.data[0].status) {
+            case 0:
+            this.$message({
+                      message: 'Este Rol No Puede Ser Eliminado.',
+                      type: 'warning'
+                  });
+              break;
+            case 1:
+             rolesTable.loadRoles();
+             this.$message({
+                       message: 'Rol Eliminado Correctamente.',
+                       type: 'success'
+                   });
+              break;
+            default:
+              break;
+          }
+        }.bind( this ));
+        this.$message({
+          type: 'success',
+          message: 'Rol Eliminado'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Operacion Cancelada'
+        });
+      });
+
+      },
+      onEditClick: function(row) {
+        rolDataId = row.id;
+        rolDataName = row.name;
+        rolDataDesc = row.description;
+        console.log(rolDataId);
+      }
+  },
+  computed: {},
+  watch: {},
+  delimiters: ['${', '}']
+});
+</script>
+{% endblock %}

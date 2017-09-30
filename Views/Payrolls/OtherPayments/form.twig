@@ -1,0 +1,60 @@
+<section>
+    <div id="formOtherPayment">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="otherPaymentValidate">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Guardar
+                </button>
+                <button
+                    class="btn btn-danger"
+                    data-action="closeTab">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Otro Tipo de Pago</h3>
+                </div>
+                <form v-on:submit.prevent="otherPaymentValidate('formOtherPayment')" id="">
+                    <div class="panel-body">
+                        <input type="hidden" name="id" v-model="otherPayment.id">
+                        <div class="form-group">
+                            <label class="" for="contractType"> Otro Tipo de Pago:</label>
+                            <input v-model="otherPayment.c_TipoOtroPago" class="form-control" type="text" name="" @keypress="clearOtherPaymentValidatorError('c_TipoOtroPago')">
+                            <span v-if="otherPaymentValidatorErrors != null" class="cRed">
+                                ${ otherPaymentValidatorErrors.first('c_TipoOtroPago') }
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label class="" for="contract_description">Descripción:</label>
+                            <input v-model="otherPayment.description" class="form-control" type="text" name="" @keypress="clearOtherPaymentValidatorError('Descripción')">
+                            <span v-if="otherPaymentValidatorErrors != null" class="cRed">
+                                ${ otherPaymentValidatorErrors.first('Descripción') }
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+    uiVars['title'] = '{{title}}';
+    uiVars['view'] = {{view}};
+    uiVars['data']   = {{data|json_encode|raw}};
+    init.lenght = 0;
+    init = [ {
+        title: uiVars['title'],
+        file: 'Payroll/OtherPayments/form.js',
+        functions: [ {
+            name: 'initFormOtherPayments',
+            args: [ uiVars['data'], uiVars['view']]
+        } ]
+    } ];
+</script>

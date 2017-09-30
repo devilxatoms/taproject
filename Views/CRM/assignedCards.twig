@@ -1,0 +1,213 @@
+<div id="asignedssCards">     
+    <div class="col-sm-12">
+    {#*** Select de usuarios y empleados #}
+    <template>
+        <el-select 
+            v-model="selectAsignedss"
+            multiple
+            filterable
+            remote
+            placeholder="Nombre del empleado, usario o equipo"
+            :remote-method="allUsersAndEmployess"
+            :loading="loading">
+            <el-option-group 
+                v-for="group in searchAsignedss"
+                :key="group.value"
+                :label="group.options ? group.label : '' "
+                :value="group.value">
+                <el-option
+                    v-for="item in group.options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="group.value +', '+ item.value"
+                    :disabled="contentAsigned(group.value, item.value, row.object)">
+                    <div>${ item.label }</div>
+                    <div style=" color: #8492a6; font-size: 10px">
+                        ${item.optional}
+                    </div>
+                </el-option>
+            </el-option-group>
+        </el-select>
+    </template>
+    {# fin Select de usuarios, empleados y equipos ***#}
+    {#*** Botones para guardar y añadir asignados #}
+    <div v-if="saveControlersAssigned" style="display: inline-block;">
+        <el-tooltip 
+            class="item" 
+            effect="dark" 
+            content="Guardar seleccionados" 
+            placement="bottom-start">
+            <span 
+                role="button" 
+                class="btnIconBLue glyphicon glyphicon-floppy-disk" 
+                v-on:click="onAddAsigned(row.object)">
+            </span>
+        </el-tooltip>
+        <el-tooltip 
+            class="item" 
+            effect="dark" 
+            content="Registrar y asigna un nuevo Empleado" 
+            placement="bottom-start">
+            <span 
+                v-on:click="opTab('crm/seguimiento/asignaciones/nuevo/0/'+row.object.id,'lg')"
+                role="button" 
+                class="btnIconBLue fa fa-plus">
+            </span>
+        </el-tooltip>
+    </div>
+    {# fin Botones para guardar y añadir asignados ***#}
+    </div>
+    {#*** empleado, usuario y equipos asignados #}
+    <div class="col-sm-4" v-if="row.object.assigned_employees.length > 0">
+    <h4>Empleados</h4>
+    <ul id="example-1" class="mh300 overflowAuto">
+        <li v-for="employee in row.object.assigned_employees">
+            <a href="#" class="list-group-item padd5">
+                <div v-if ="(employee.picture !== '[none]')" class="pull-left contentMiddle">
+                    <img 
+                        v-bind:src="'https://cdn.tuadmin.com/' + employee.picture"
+                        class="img-circle h35 mw35"
+                        style="margin-right: 10px;">
+                </div>
+                <div class="mih40 mh55">
+                    <el-tooltip 
+                            class="item" 
+                            effect="dark" 
+                            :content="employee ? 
+                            (employee.name + ' ' + 
+                            (employee.father_surname ? employee.father_surname : '') + ' ' + 
+                            (employee.mother_surname ? employee.mother_surname : '')) : 'S/A'" 
+                            placement="bottom-start">
+                        <div class="card-title">
+                            ${ employee ? 
+                            (employee.name + ' ' + 
+                            (employee.father_surname ? employee.father_surname : '') + ' ' + 
+                            (employee.mother_surname ? employee.mother_surname : '')) : 'S/A' }
+                        </div>
+                    </el-tooltip>
+                    <div class="card-content" v-if="employee.user">
+                        <el-tooltip 
+                            class="item" 
+                            effect="dark" 
+                            content="Usuario asignado a este empleado" 
+                            placement="bottom-start">
+                            <i class="fa fa-user"></i>
+                        </el-tooltip>
+                        ${ employee.user ?
+                        employee.user.nickname : ''}
+                        <div class="card-date">
+                            ${formatDate(employee.pivot.created_at, 'DD/MM/YYYY')}
+                        </div> 
+                    </div>
+                </div>
+                <el-tooltip 
+                    class="item" 
+                    effect="dark" 
+                    content="Quitar este empleado" 
+                    placement="bottom-start">
+                    <span 
+                        role="button" 
+                        class="closeTab delMiddle20 fa fa-times" 
+                        v-on:click="onDelAsigned(row.object, employee, 'employee')">
+                    </span>
+                </el-tooltip>
+            </a>
+        </li>    
+    </ul>
+    </div>
+    <div class="col-sm-4" v-if="row.object.assigned_users.length > 0">
+    <h4>Usuarios</h4>
+    <ul id="example-2" class="mh300 overflowAuto">
+        <li v-for="user in row.object.assigned_users">
+            <a href="#" class="list-group-item padd5">
+                <div v-if="(user.picture !== '[none]')" class="pull-left contentMiddle">
+                    <img 
+                        v-bind:src="'https://cdn.tuadmin.com/' + user.picture" 
+                        alt="User Image" 
+                        class="img-circle h35 mw35" 
+                        style="margin-right: 10px;">
+                </div>
+                <div class="mih40 mh55">
+                    <strong class="card-title">                                             
+                        ${user.nickname}
+                    </strong>
+                    <div class="card-content">
+                        <el-tooltip 
+                            class="item" 
+                            effect="dark" 
+                            content="Nombre" 
+                            placement="bottom-start">
+                            <i class="fa fa-address-card"></i>
+                        </el-tooltip>
+                        ${ user ?
+                        (user.name + ' '+
+                        (user.lastname ? user.lastname : '') + ' ' +
+                        (user.surname ? user.surname : '')) : 'S/A' }
+                        <div class="card-date">
+                            ${formatDate(user.pivot.created_at, 'DD/MM/YYYY')}
+                        </div>
+                    </div>
+                </div>
+                <el-tooltip 
+                    class="item" 
+                    effect="dark" 
+                    content="Quitar este usuario" 
+                    placement="bottom-start">
+                    <span 
+                        role="button" 
+                        class="closeTab delMiddle20 fa fa-times"
+                        v-on:click="onDelAsigned(row.object, user, 'user')">
+                    </span>
+                </el-tooltip>
+            </a>
+        </li>
+    </ul>
+    </div>
+    <div class="col-sm-4" v-if="row.object.assigned_teams.length > 0">
+    <h4>Equipos</h4>
+    <ul id="example-3" class="mh300 overflowAuto">
+        <li v-for="team in row.object.assigned_teams">
+            <a href="#" class="list-group-item padd5">
+                <div v-if="(team.picture !== '[none]')" class="pull-left contentMiddle">
+                    <img 
+                        v-bind:src="'https://cdn.tuadmin.com/' + team.picture" 
+                        alt="Team Image" 
+                        class="img-circle h35 mw35" 
+                        style="margin-right: 10px;">
+                </div>
+                <div class="mih40 mh55">
+                    <strong class="card-title">                                             
+                        ${team.name}
+                    </strong>
+                    <div class="card-content">
+                        <el-tooltip 
+                            class="item" 
+                            effect="dark" 
+                            content="Numero de integrantes que pertenecen a este equipo" 
+                            placement="bottom-start">
+                            <i class="fa fa-users"></i>
+                        </el-tooltip>
+                        ${'Equipo con ' + team.employee.length + ' integrante(s).'}
+                        <div class="card-date">
+                            ${formatDate(team.pivot.created_at, 'DD/MM/YYYY')}
+                        </div>
+                    </div>
+                    
+                </div>
+                <el-tooltip 
+                    class="item" 
+                    effect="dark" 
+                    content="Quitar este equipo" 
+                    placement="bottom-start">
+                    <span 
+                        role="button" 
+                        class="closeTab delMiddle20 fa fa-times"
+                        v-on:click="onDelAsigned(row.object, team, 'team')">
+                    </span>
+                </el-tooltip>
+            </a>
+        </li>
+    </ul>
+    </div>
+    {# fin empleado, usuario y equipos asignados ***#}
+</div>

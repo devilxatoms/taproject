@@ -1,0 +1,23 @@
+{# extendemos de main.twig para traernos todo el header y footer #}
+{% extends 'main.twig' %}
+{# con este bloque cargamos el css en main.twig #}
+{% block css_by_module  %}
+    {# traemos los css que tenga main.twig #}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+{% endblock %}
+
+{# con este bloque cargamos el body en main.twig #}
+{% block body %}
+    {# con este bloque cargamos el content en main.twig #}
+    {% block content %}
+        {# este bloque nos sirve para los que extiendan de main_taxes.twig #}
+       {% block main_taxes %} {% endblock %}
+    {% endblock %}
+{% endblock %}
+{# con este bloque cargamos el js en main.twig #}
+{% block js_by_module  %}
+    {# traemos los js que tenga main.twig #}
+    {{ parent() }}
+{% endblock %}

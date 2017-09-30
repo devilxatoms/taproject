@@ -1,0 +1,61 @@
+{% block content %}
+    <div class="box">
+       <div class="box-header">
+           <h3 class="box-title">{{ pageData.module }}</h3>
+         <div class="box-tools pull-right">
+           <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+           </button>
+       </div>
+       </div>
+        <div class="box-body table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>RFC</th>
+                <th>Nombre Contacto</th>
+                <th>Telefono</th>
+                <th>Email</th>
+                <th>Dirección</th>
+                <th>Ciudad</th>
+                <th>País</th>
+                {# <th>Estatus</th> #}
+                <th>Banco</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+                <th>Notas</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.id }}</td>
+                    <td>{{ customer.bussiness_name }}</td>
+                    <td>{{ customer.rfc }}</td>
+                    <td>{{ customer.subsidiaries[0].contacts[0].name }}</td>
+                    <td>{{ customer.subsidiaries[0].phones[0].phone }}</td>
+                    <td>{{ customer.subsidiaries[0].emails[0].email }}</td>
+                    <td>{{ customer.subsidiaries[0].addresses[0].street }}</td>
+                    <td>{{ customer.subsidiaries[0].addresses[0].town }}</td>
+                    <td>{{ customer.subsidiaries[0].addresses[0].country }}</td>
+                    {# <td>{{ customer.subsidiaries[0].name }}</td> #}
+                    <td>Banco</td>
+                    <td>
+                        <a role="button" class="list-group-item noBorder" data-action="openTab" data-module="customer" data-route="customer/editar/{{ customer.id }}" >Editar</a>
+                    </td>
+                    <td>-</td>
+                    <td>Notas</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    </div>
+
+    {% block loadScripts %}
+		<script data-load="script" type="text/javascript">
+			initializeCustomerTable();
+		</script>
+	{% endblock %}
+{% endblock %}

@@ -1,0 +1,155 @@
+{% block body %}
+<section>
+    <div id="inventories-module">
+        <div class="row">
+            <div class="col-xs-12">
+                {% include 'warehouse/Inventory/inventories_topButtons.twig' with {actual: 'pendientes'} %}
+            </div>
+        </div>
+    	<div class="row">
+            <h3>Inventarios Pendientes</h3>
+    	    <div class="col-md-9">
+
+                <div class="form-group">
+                    <label for="inventory">Usuarios</label>
+                    {# SELECTIZE Usuarios #}
+                    <vue-selectize-js
+                        ref="users"
+                        v-bind:selectize-type="userSelectize.type"
+                        v-bind:selectize-settings="userSelectize.settings"
+                        v-bind:selectize-options="usersOptions"
+                        v-bind:selectize-enabled="userSelectize.enabled"
+                        v-model="users">
+                    </vue-selectize-js>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="inventory">Almacenes</label>
+                    {# SELECTIZE ALMACENES #}
+                    <vue-selectize-js
+                        ref="warehouses"
+                        v-bind:selectize-type="warehouseSelectize.type"
+                        v-bind:selectize-settings="warehouseSelectize.settings"
+                        v-bind:selectize-options="warehousesOptions"
+                        v-bind:selectize-enabled="warehouseSelectize.enabled"
+                        v-model="warehouses">
+                    </vue-selectize-js>
+
+                </div>
+
+    	        <div class="col-xs-12">
+    	            <label>Estatus</label>
+    	            {% for status in inventoryStatus %}
+	                    | <input name="backorder-status" type="checkbox" v-model="inventoryStatus" value="{{ status.id }}" id="backorder-status-{{ status.id }}">
+	                    <label class="filter-option" for="backorder-status-{{ status.id }}">{{ status.name }}</label>
+	                {% endfor %}
+    	        </div>
+    	    </div>
+
+    	    <div class="col-md-3">
+    	        <label>Periodo</label>
+    	        <div class="form-group">
+    	            <label for="from-date">Desde:</label>
+    	            <div class="input-group">
+    	                <input id="from-date" type="text" class="datepicker form-control" v-on:change="changeDate($event)">
+    	                <div class="input-group-addon">
+    	                    <span class="glyphicon glyphicon-calendar"></span>
+    	                </div>
+    	            </div>
+    	        </div>
+    	        <div class="form-group">
+    	            <label for="to-date">Hasta:</label>
+    	            <div class="input-group">
+    	                <input id="to-date" type="text" class="datepicker form-control" v-on:change="changeDate($event)">
+    	                <div class="input-group-addon">
+    	                    <span class="glyphicon glyphicon-calendar"></span>
+    	                </div>
+    	            </div>
+    	        </div>
+    	    </div>
+
+
+    	</div>
+
+    	<vue-dynamic-table
+    		class-name="table table-bordered table-hover"
+            v-bind:pagination-options="inventoryTablePageOptions"
+            sort-indicator-asc-class="fa fa-caret-down"
+            sort-indicator-desc-class="fa fa-caret-up"
+    		v-bind:filter-enabled="true"
+    		v-bind:expandable-row="true"
+    	    v-bind:columns="sourceColumns"
+    	    v-bind:data-model="listBackorders"
+    	    v-on:expand-row="testExpandEvent($event)">
+
+    	    <template slot="no-rows-found">
+    	    	<span>No se encontraron resultados</span>
+    	    </template>
+
+    	    <template slot="expanded-row" scope="row">
+    	    	<div style="padding:16px">
+    	    		<table :id="'invForm_' + row.object.id" class="tg" style="margin: auto">
+    	    			<thead>
+                            <td>Código de barras</td>
+    	    				<td>SKU</td>
+    	    				<td>Producto</td>
+    	    				<td>Cantidad</td>
+    	    				<td>Observaciones (opcional)</td>
+    	    			</thead>
+
+    	    			<tr class="invProd" v-for="prod in row.object.detalles" :id="row.object.id + '_' + prod.product_id">
+                            <td>${ prod.barcode }</td>
+    	    				<td>${ prod.sku }</td>
+    	    				<td>${ prod.name }</td>
+    	    				<td>
+    	    					<span v-if="prod.count">${ prod.count }</span>
+    	    					<input v-else class="invProdQty" :value="prod.count" type="text">
+    	    				</td>
+    	    				<td>
+    	    					<textarea class="invProdComment" name="" id="" cols="30" rows="2">${ prod.comments }</textarea>
+    	    				</td>
+    	    			</tr>
+    	    		</table>
+	    	    	<button class="btn btn-success" @click="editInventory(row.object.id, $event)">Editar</button>
+    	    	</div>
+    	    </template>
+
+    	    <template slot="formated-date" scope="row">
+    	    	${ formatedDate(row.object.created_at) }
+    	    </template>
+
+            <template slot="formated-countDate" scope="row">
+                ${ formatedDate(row.object.count_date) }
+            </template>
+
+    	    <template slot="status-tag" scope="row">
+    	    	${ row.object.inventory_status.name }
+    	    </template>
+
+    	    <template slot="warehouse" scope="row">
+    	    	<span>${ row.object.warehouse.name }</span>
+    	    </template>
+    	</vue-dynamic-table>
+
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['listInventoryModuleData'] = {
+            users: {{ users|json_encode|raw }},
+            warehouses: {{ warehouses|json_encode|raw }}
+        }
+    	moment().locale('es');
+        init.length = 0;
+        init = [ {
+            title: '',
+            file: 'warehouse/inventories/listInventories.js',
+            functions: [ {
+                name: 'iniciarModuloInventarios',
+                args: [ uiVars['listInventoryModuleData'] ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

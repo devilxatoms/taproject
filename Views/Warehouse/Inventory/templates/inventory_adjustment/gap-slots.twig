@@ -1,0 +1,11 @@
+<template slot="gap-slot" scope="row">
+    <idp-template-finder debug-info="{{ _self.templateName }}"></idp-template-finder>
+    <template v-if="row.object.count_quantity">
+        <el-tag v-if="row.object.gap > 0" type="warning">sobrante (<strong>${ row.object.gap }</strong>)</el-tag>
+        <el-tag v-else-if="row.object.gap < 0" type="danger">faltante (<strong>${ row.object.gap }</strong>)</el-tag>
+        <el-tag v-else-if="row.object.gap === 0" type="success">Sin diferencia <span class="glyphicon glyphicon-ok-circle"></el-tag>
+    </template>
+    <template v-else>
+        <span class="noDataCell">sin contar</span>
+    </template>
+</template>

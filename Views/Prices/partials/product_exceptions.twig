@@ -1,0 +1,95 @@
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="">Producto:</label>
+            <el-select
+                v-model="productException.product"
+                filterable
+                remote
+                placeholder="Please enter a keyword"
+                :remote-method="searchProduct"
+                :loading="isLoading">
+                <el-option
+                    v-for="product in listProducts"
+                    :key="product.id"
+                    :label="product.name"
+                    :value="product">
+                </el-option>
+            </el-select>
+            <p class="text-danger" v-show="hasProductExceptionError('product')">
+                ${ productExceptionErrors.product }
+            </p>
+        </div>
+        <div class="form-group">
+            <label>Tipo</label>
+            <el-select
+                v-model="productException.valueType"
+                @change="onSelectProductExceptionValueType($event)">
+                <el-option
+                    v-for="valueType in listValueTypes"
+                    :key="valueType.id"
+                    :label="valueType.name"
+                    :value="valueType">
+                </el-option>
+            </el-select>
+            <p class="text-danger" v-show="hasProductExceptionError('valueType')">
+                ${ productExceptionErrors.valueType }
+            </p>
+        </div>
+        <div class="form-group">
+            <label>Valor</label>
+            <input type="text" v-model="productException.value" @change="removeProductExceptionError('value')">
+            <p class="text-danger" v-show="hasProductExceptionError('value')">
+                ${ productExceptionErrors.value }
+            </p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <button class="btn btn-primary block"
+                @click="onSaveProductExceptionButtonClick">Guardar</button>
+            </div>
+            <div class="col-md-6">
+                <button class="btn btn-default block"
+                @click="onCancelProductExceptionButtonClick">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <el-table
+            height="350"
+            :data="productExceptions"
+            style="width: 100%">
+            <el-table-column
+                prop="product.barcode"
+                label="Codigo"
+                width="140">
+            </el-table-column>
+            <el-table-column
+                prop="product.name"
+                label="Producto"
+                min-width="250">
+            </el-table-column>
+            <el-table-column
+                prop="valueType.name"
+                label="Tipo de valor"
+                width="150">
+            </el-table-column>
+            <el-table-column
+                prop="value"
+                label="Valor"
+                width="100">
+            </el-table-column>
+            <el-table-column
+                width="120">
+                <template scope="scope">
+                    <el-button type="button" size="small" @click="editProductException(scope)">
+                        <span class="fa fa-pencil-square-o"></span>
+                    </el-button>
+                    <el-button type="button" size="small" @click="askForDeleteProductException(scope)">
+                        <span class="fa fa-trash"></span>
+                    </el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </div>
+</div>

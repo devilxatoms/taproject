@@ -1,0 +1,25 @@
+{% block content %}
+<section>
+    <div class="header-buttons">
+        <div class="btn-group main-buttons">
+            {% include( 'Warehouse/Groups/buttons.twig' ) %}
+        </div>
+    </div>
+    <div class="panel-content">
+        {% include( 'Warehouse/Groups/partials/list.twig' ) %}
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Grupos',
+            file: 'Warehouse/Groups/groups.js',
+            functions: [ {
+                name: 'initListVue',
+                args: [ ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

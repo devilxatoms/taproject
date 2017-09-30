@@ -1,0 +1,93 @@
+<template slot="expanded-row" scope="row">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Creada Por</th>
+                        <th>Fecha Creación</th>
+                        <th>Actualizado Por</th>
+                        <th>Fecha Actualización</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in row.object.subcategories">
+                        <td class="col-lg">${ item.name }</td>
+                        <td class="col-lg">${ item.description }</td>
+                        <td class="col-sm">${ item.created_by.name }</td>
+                        <td class="col-sm">${ item.created_at }</td>
+                        <td class="col-sm">${ item.updated_by.name }</td>
+                        <td class="col-sm">${ item.updated_at }</td>
+                        <td class="acciones col-sm">
+                            <div class="ui-button bg-Light-Blue overflowInherit">
+                                <div class="secondary">
+                                    <a 
+                                        class="has-tooltip btn align-right" 
+                                        @click="onEditSubCatClick( item )" 
+                                        data-tooltip="Editar">
+                                        <span class="glyphicon glyphicon-edit"></span>
+                                    </a>
+                                    <a 
+                                        class="has-tooltip btn align-right" 
+                                        @click="onRemoveSubCatClick( item )" 
+                                        data-tooltip="Eliminar">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+
+<template slot="categoryActions" scope="row">
+    <div class="ui-button bg-Light-Blue overflowInherit">
+        <div class="secondary">
+            <a 
+                class="has-tooltip btn align-right"  
+                role="button"
+                data-tooltip="Editar categoría" 
+                v-on:click="onEditClick(row.object)">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a  
+                class="has-tooltip btn align-right"  
+                role="button"
+                data-tooltip="Agregar Subcategoría" 
+                data-toggle="modal"
+                v-on:click="addSubcategory(row.object)">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+            </a>
+            <a  
+                class="has-tooltip btn align-right"  
+                role="button"
+                data-tooltip="Eliminar categoría" 
+                v-on:click="onRemoveClick(row.object)">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </div>
+    </div>
+</template>
+
+<template slot="show-subcategories" scope="row">
+    <el-button class="block" size="mini" type="default">
+        <a v-if="row.object.subcategories.length > 0" style="color: #359bdc;">
+            <i class="fa fa-eye" aria-hidden="true"></i> 
+            Subcategorías (${ row.object.subcategories.length })
+        </a>
+        <a v-else style="color: #dd4b39;">
+            <i class="fa fa-eye" aria-hidden="true"></i> 
+            Subcategorías (${ row.object.subcategories.length })
+        </a> 
+    </el-button>
+</template>
+
+<template slot="no-rows-found">
+    <span>No se encontraron resultados</span>
+</template>

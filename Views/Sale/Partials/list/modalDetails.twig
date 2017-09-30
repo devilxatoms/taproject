@@ -1,0 +1,82 @@
+<div class="modal fade"
+    id="{{ prefix }}-modal-conceptos"
+    tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel"
+    data-backdrop="false">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" 
+                    class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Detalle de Productos
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Precio Unitario</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                                <th>Descuento</th>
+                                <th>Impuestos</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="product in listSaleProducts">
+                                <td> ${ product.productCode } </td>
+                                <td> ${ product.productName } </td>
+                                <td> $${ product.unitPrice } </td>
+                                <td> ${ product.quantity } ${ product.unit } </td>
+                                <td> $${ Number(product.subtotal).toFixed(2) } </td>
+                                <td> $${ product.discountAmount } </td>
+                                <td> $${ Number(product.taxAmount).toFixed(2) } </td>
+                                <td> $${ Number(product.total).toFixed(2) } </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div v-if="typeof cancelationMotive != 'undefined' && cancelationMotive.id > 0">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Motivo de cancelación: </label>
+                                <textarea disabled v-model="cancelationMotive.motive"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Cancelado por: </label>
+                                <input type="text" disabled v-model="cancelationMotive.createdUser.nickname">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                    class="btn btn-default"
+                    data-dismiss="modal"
+                    v-on:click="closeModalSaleProducts">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-list-alt"></span> Ir a Venta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

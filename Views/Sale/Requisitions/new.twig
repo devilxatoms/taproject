@@ -1,0 +1,109 @@
+{% block content %}
+    <section>
+        <div id="forma-pedido">
+            <sm-form-buttons
+                modulo="pedidos"
+                :data="pedido"
+                :id-proceso="0"
+                @cargar="value => { cargar(value) }"
+                @limpiar="limpiar()">
+            </sm-form-buttons>
+            <div class="panel-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <sm-form-salesman
+                            :muestra-sucursal="true"
+                            :muestra-almacen="true"
+                            :folio="pedido.folio"
+                            @folio="value => { pedido.folio = value }"
+                            :vendedor="pedido.responsibleId"
+                            @vendedor="value => { pedido.responsibleId = value }"
+                            :sucursal="pedido.subsidiaryId"
+                            @sucursal="value => { pedido.subsidiaryId = value }"
+                            :almacen="pedido.warehouseId"
+                            @almacen="value => { pedido.warehouseId = value }"
+                            :creacion="pedido.createdAt"
+                            @creacion="value => { pedido.createdAt = value }"
+                            :vendedor-options="vendedorOptions"
+                            :sucursal-options="sucursalOptions">
+                        </sm-form-salesman>
+                        <sm-form-customer
+                            :id-cliente="pedido.customerId"
+                            @id-cliente="value => { pedido.customerId = value }"
+                            :nombre="pedido.businessName"
+                            @nombre="value => { pedido.businessName = value }"
+                            :nombre-legal="pedido.legalName"
+                            @nombre-legal="value => { pedido.legalName = value }"
+                            :rfc="pedido.rfc"
+                            @rfc="value => { pedido.rfc = value }"
+                            :id-proceso="pedido.id">
+                        </sm-form-customer>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <sm-table-products
+                                    :conceptos="pedido.concepts"
+                                    :conceptos-eliminados="pedido.delProducts"
+                                    :nuevos-conceptos="nuevosConceptos"
+                                    :inserta-productos="agregaConceptos"
+                                    @modal-productos="mostrarBusquedaProd()"
+                                    id-cantidad="p-sm-cantidad">
+                                </sm-table-products>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <sm-form-comment
+                                    :comentario="pedido.comment">
+                                </sm-form-comment>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <sm-modal-products
+                id-modal="p-sm-busca-productos"
+                :agregar="agregaConceptos"
+                @conceptos="value => { nuevosConceptos = value }"
+                @inserta-productos="value => { agregaConceptos = value }">
+            </sm-modal-products>
+        </div>
+    </section>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['filtros'] = {{ filters|json_encode|raw }};
+
+        init.length = 0;
+        init = [
+            {
+                file: 'Sale/components/c_modalProducts.js',
+            },
+            {
+                file: 'Sale/components/c_formButtons.js',
+            },
+            {
+                file: 'Sale/components/c_formSalesman.js',
+            },
+            {
+                file: 'Sale/components/c_formCustomer.js',
+            },
+            {
+                file: 'Sale/components/c_tableProducts.js',
+            },
+            {
+                file: 'Sale/components/c_formComment.js',
+            },
+            {
+                title: 'Pedido',
+                file: 'Sale/requisition.js',
+                functions: [{
+                    name: 'initModuleNewRequisition',
+                    args: [ uiVars['filtros'] ]
+                }]
+            }
+        ];
+    </script>
+{% endblock %}

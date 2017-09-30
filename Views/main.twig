@@ -1,0 +1,356 @@
+<section id="main">
+    <div v-cloak>
+        {#<div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a
+                    @click="close('main')"
+                    role="button" class="btn btn-default">
+                    funcion close
+                </a>
+                <a
+                    @click="refreshPanel('main')"
+                    role="button" class="btn btn-default">
+                    funcion refreshPanel
+                </a>
+                <!-- <a
+                    @click="thisIsDirty"
+                    role="button"
+                    class="btn btn-default">
+                    Make dirty
+                </a>
+                <a
+                    @click="clean()"
+                    role="button"
+                    class="btn btn-default">
+                    Clean
+                </a> -->
+                <a
+                    href="?tabs=ejemplos"
+                    data-action="openLateral"
+                    class="btn btn-default">
+                    Abrir Ejemplos en lateral
+                </a>
+                <a
+                    data-action="openLateral"
+                    data-route="main"
+                    data-size="md"
+                    role="button"
+                    class="btn btn-default">
+                    Abrir main en lateral
+                </a>
+                <a
+                    href="?tabs=ejemplos"
+                    data-action="openTab"
+                    class="btn btn-default">
+                    Abrir ejemplo en tab
+                </a>
+                <a
+                    @click="switchtab('ejemplos', 'main', '')"
+                    role="button"
+                    class="btn btn-default">
+                    Switch a Ejemplos
+                </a>
+            </div>
+            <div class="btn-group secondary-buttons pull-right">
+                <a
+                    role="button"
+                    class="btn btn-default cRed has-tooltip align-right tourTrigger"
+                    data-tooltip="Ayuda de la sección">Ayuda</a>
+            </div>
+        </div>#}
+
+        <div class="">
+            <ui-favorites :ui-links="sidebarData" :max-favs=6></ui-favorites>
+            <!-- <div class="row hidden">
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                    <a
+                        data-action="openTab"
+                        data-module="warehouse"
+                        href="?tabs=ejemplos"
+                        class="info-box">
+                        <div class="info-box-icon bg-base block">
+                            <div class="content contentMiddle">
+                                <i class="icon fa fa-fire"></i>
+                            </div>
+                        </div>
+                        <div class="info-box-content">
+                            <div class="info-box-text text-bold">Ejemplos</div>
+                            <hr class="noMargin clear">
+                            <div class="description-text">Ejemplos y pruebas</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                    <a
+                        data-action="openTab"
+                        data-module="warehouse"
+                        href="?tabs=warehouse/products"
+                        class="info-box">
+                        <div class="info-box-icon bg-base block">
+                            <div class="content contentMiddle">
+                                <i class="icon ta-icon almacenes"></i>
+                            </div>
+                        </div>
+                        <div class="info-box-content">
+                            <div class="info-box-text text-bold">Productos</div>
+                            <hr class="noMargin clear">
+                            <div class="description-text">Catalogo de Productos</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                    <a
+                        data-action="openTab"
+                        data-module="sistema"
+                        href="?tabs=sistema/bancos"
+                        class="info-box">
+                        <div class="info-box-icon bg-base block">
+                            <div class="content contentMiddle">
+                                <i class="fa fa-university"></i>
+                            </div>
+                        </div>
+                        <div class="info-box-content">
+                            <div class="info-box-text text-bold">Bancos</div>
+                            <hr class="noMargin clear">
+                            <div class="description-text">Catalogo de Bancos</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6">
+                    <a
+                        data-action="openTab"
+                        data-module="warehouse"
+                        href="/"
+                        class="info-box default">
+                        <div class="info-box-icon bg-base cWhite block">
+                            <div class="content contentMiddle">
+                                <i class="fa fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="info-box-content">
+                            <div class="info-box-text text-bold">Agregar favorito</div>
+                            <hr class="noMargin clear">
+                            <div class="description-text">Configura tus favoritos</div>
+                        </div>
+                    </a>
+                </div>
+            </div> -->
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Funnel Chart</h3>
+                            <div class="box-tools pull-right">
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-am-chart
+                                :chart-data-model="funnelChart">
+                            </vue-am-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Gauge Chart</h3>
+                            <div class="box-tools pull-right">
+                                <div class="btn-group" data-toggle="btn-toggle">
+                                    <button type="button" class="btn btn-box-tool" @click="startGaugeUpdate()">
+                                        <i class="fa fa-play"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" @click="stopGaugeUpdate()">
+                                        <i class="fa fa-stop"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" @click="updateGaugeArrowValue()">
+                                        <i class="fa fa-refresh"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-am-chart
+                                :chart-data-model="gaugeChart"
+                                :chart-data-arrow-value="gaugeChartValue"
+                                :chart-update-arrow-random="toggleGaugeAutoUpdate">
+                            </vue-am-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Line Chart AutoUpdate</h3>
+                            <div class="box-tools pull-right">
+                                <div class="btn-group" data-toggle="btn-toggle">
+                                    <button type="button" class="btn btn-box-tool" @click="startUpdate()">
+                                        <i class="fa fa-play"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool" @click="stopUpdate()">
+                                        <i class="fa fa-stop"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="lineAutoUpdateChart"
+                                :chart-update-random="toggleAutoUpdate">
+                            </vue-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Line Chart</h3>
+                            <div class="box-tools pull-right">
+                                <div class="btn-group" data-toggle="btn-toggle">
+                                    <button type="button" class="btn btn-box-tool" @click="newDataLineChart()">
+                                        <i class="fa fa-refresh"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="lineChart">
+                            </vue-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Bar Chart</h3>
+                            <div class="box-tools pull-right">
+                                <div class="btn-group" data-toggle="btn-toggle">
+                                    <button type="button" class="btn btn-box-tool" @click="newDataBarChart()">
+                                        <i class="fa fa-refresh"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="barChart">
+                            </vue-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Pie Chart</h3>
+                            <div class="box-tools pull-right">
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="pieChart">
+                            </vue-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Doughnut Chart</h3>
+                            <div class="box-tools pull-right">
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="doughnutChart">
+                            </vue-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Radar Chart</h3>
+                            <div class="box-tools pull-right">
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="radarChart">
+                            </vue-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">Polar Chart</h3>
+                            <div class="box-tools pull-right">
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="polarChart">
+                            </vue-chart>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="tour-section">
+            <ul class="cd-tour-wrapper">
+        		<li class="cd-single-step">
+        			<span>Step 1</span>
+
+        			<div class="cd-more-info bottom">
+        				<h2>Step Number 1</h2>
+        				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi alias animi molestias in, aperiam.</p>
+        				{#<img src="img/step-1.png" alt="step 1">"#}
+        			</div>
+        		</li>
+        		<li class="cd-single-step">
+        			<span>Step 2</span>
+
+        			<div class="cd-more-info top">
+        				<h2>Step Number 2</h2>
+        				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia quasi in quisquam.</p>
+        				{#<img src="img/step-2.png" alt="step 2">#}
+        			</div>
+        		</li>
+        		<li class="cd-single-step">
+        			<span>Step 3</span>
+
+        			<div class="cd-more-info right">
+        				<h2>Step Number 3</h2>
+        				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio illo non enim ut necessitatibus perspiciatis, dignissimos.</p>
+        				{#<img src="img/step-3.png" alt="step 3">#}
+        			</div>
+        		</li>
+            </ul>
+        </div> -->
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+    init.lenght = 0;
+    init = [
+        {
+            title: 'Dashboard',
+            file: 'main.js',
+            functions: [
+                {
+                    name: 'initMain',
+                    args: [ ]
+                }
+            ]
+        },
+    ];
+</script>

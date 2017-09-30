@@ -1,0 +1,41 @@
+{# {% extends pageMain ~ 'warehouse/attributes/main_attributes.twig' %} #}
+
+{% block main_customer %}
+    <!-- %CONTENT% -->
+    <section>
+        <!-- attributes / list -->
+        <div class="col-md-12">
+            <!-- add -->
+            <div class="col-md-6">
+                <strong></strong>
+                <p>
+                   Instrucciones: Freegan forage shabby chic cardigan poutine tumeric waistcoat migas, 90's next level
+                   salvia cold-pressed occupy tofu bitters.
+                </p>
+                {% include ('warehouse/Attributes/add.twig') %}
+            </div>
+            <!-- / add -->
+
+            <!-- list -->
+            <div class="col-md-6">
+                {% include ('warehouse/Attributes/list.twig') %}
+            </div>
+            <!-- / list -->
+        </div>
+        <!-- /attributes / list -->}
+    </section>
+    <!-- /%CONTENT% -->
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: '',
+            file: 'Warehouse/Attributes/attributes.js',
+            functions: [ {
+                name: 'SPAttributesList',
+                args: [ ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

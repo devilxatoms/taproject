@@ -1,0 +1,251 @@
+<template slot="linkId" scope="row">
+    <a
+        v-if="row.object.movement_id"
+        role="button"
+        data-action="openLateral"
+        data-module="warehouse"
+        data-tooltip="Haz clic para ver detalles del movimiento"
+        data-panelsize="lg"
+        :data-route="'almacenes/movimientos/' + row.object.movement_id + '/ver'"
+        class="has-tooltip btn btn-success linkId">
+        ${ row.object.movement_id }
+    </a>
+    <a
+        v-else
+        role="button"
+        data-action="openLateral"
+        :href="'?tabs=logistica/requisiciones/verDetallesDeEnvio/' + row.object.requisition_id"
+        data-panelsize="sm"
+        data-tooltip="Haz clic para ver detalles del contenido del envío"
+        class="has-tooltip btn btn-info linkId">
+        <i class="fa fa-list-alt" aria-hidden="true" style="margin: 3px; color: #fff;"></i>
+    </a>
+</template>
+
+<template slot="movementType" scope="row">
+    <span v-if="row.object.movement_type_id ? (row.object.movement_type_id == 1) : false"
+        class="glyphicon glyphicon-usd" style="color: #f39c12"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 2) : false"
+        class="glyphicon glyphicon-retweet" style="color: #f39c12"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 3) : false"
+        class="fa fa-exchange" style="color: #f39c12"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 4) : false"
+        class="fa fa-gears" style="color: #f39c12"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 5) : false"
+        class="glyphicon glyphicon-usd" style="color: #037db6"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 6) : false"
+        class="glyphicon glyphicon-retweet" style="color: #037db6"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 7) : false"
+        class="fa fa-exchange" style="color: #037db6"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 8) : false"
+        class="fa fa-gears" style="color: #037db6"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 9) : false"
+        class="fa fa-arrow-right" style="color: #00a65a"></span>
+
+    <span v-else-if="row.object.movement_type_id ? (row.object.movement_type_id == 10) : false"
+        class="fa fa-arrow-left" style="color: #00a65a"></span>
+     ${ row.object.description }
+</template>
+
+<template slot="movementTypeAction" scope="row">
+    <p v-if="row.object.movement_type ? (row.object.movement_type == 'Entrada') : false">
+        <i class="fa fa-archive" aria-hidden="true" style="color: #f39c12"></i>
+        Recolectar
+    </p>
+    <p v-else-if="row.object.movement_type ? (row.object.movement_type == 'Salida') : false">
+        <i class="fa fa-truck fa-flip-horizontal" aria-hidden="true" style="color: #037db6"></i>
+        Enviar
+    </p>
+    <p v-else-if="row.object.movement_type ? (row.object.movement_type == 'Entrada (Manual)') : false">
+        <i class="fa fa-archive" aria-hidden="true" style="color: #00a65a"></i>
+        Recolectar (Manual)
+    </p>
+    <p v-else-if="row.object.movement_type ? (row.object.movement_type == 'Salida (Manual)') : false">
+        <i class="fa fa-truck fa-flip-horizontal" aria-hidden="true" style="color: #00a65a"></i>
+        Enviar (Manual)
+    </p>
+</template>
+
+<template slot="pickupAddressInfo" scope="row">
+    <el-popover
+        ref="address"
+        placement="right"
+        width="200"
+        trigger="click">
+        <div>
+            <div class="borderBottom">
+                <h3 class="panel-title">Direccion Remitente</h3>
+            </div>
+            <div>
+                ${row.object.pickup_address_street+' #'+row.object.pickup_address_num_ext + 
+                (row.object.pickup_address_num_int != 'Sin definir' ? '-'+row.object.pickup_address_num_int : '') + ' Col. '+
+                row.object.pickup_address_suburb + ', ' + row.object.pickup_address_municipality + ''}
+            </div>
+            <div>
+                ${row.object.pickup_address_state + ' ' + row.object.pickup_address_country + ' (' +
+                ((row.object.pickup_address_zip_code && row.object.pickup_address_zip_code != 0) 
+                ? row.object.pickup_address_zip_code : 'Sin Definir') + ')'}
+            </div>
+            <div class="card-content" style="height: auto;">
+                ${ row.object.reference ? 'Referencia: ' + row.object.reference : ''}
+            </div>
+        </div>
+    </el-popover>
+    <el-tooltip 
+        class="item" 
+        effect="dark" 
+        content="Haz clic para ver detalles" 
+        placement="bottom-start">
+        <a
+            role="button"
+            v-popover:address 
+            class=" btn btn-info linkId">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>
+            ${  row.object.pickup_address_municipality + ', ' + 
+                row.object.pickup_address_state + ', ' + 
+                row.object.pickup_address_country + ' (' +
+                ((row.object.pickup_address_zip_code && row.object.pickup_address_zip_code != 0) 
+                ? row.object.pickup_address_zip_code : 'Sin Definir') + ')'
+            }
+        </a>
+    </el-tooltip>
+</template>
+
+<template slot="deliveryAddressInfo" scope="row">
+    <el-popover
+        ref="address"
+        placement="right"
+        width="200"
+        trigger="click">
+        <div>
+            <div class="borderBottom">
+                <h3 class="panel-title">Direccion Destinatario</h3>
+            </div>
+            <div>
+                ${row.object.delivery_address_street+' #'+row.object.delivery_address_num_ext + 
+                (row.object.delivery_address_num_int != 'Sin definir' ? '-'+row.object.delivery_address_num_int : '') + ' Col. '+
+                row.object.delivery_address_suburb + ', ' + row.object.delivery_address_municipality + ''}
+            </div>
+            <div>
+                ${row.object.delivery_address_state + ' ' + row.object.delivery_address_country + ' (' +
+                ((row.object.delivery_address_zip_code && row.object.delivery_address_zip_code != 0) 
+                ? row.object.delivery_address_zip_code : 'Sin Definir') + ')'}
+            </div>
+            <div class="card-content" style="height: auto;">
+                ${ row.object.reference ? 'Referencia: ' + row.object.reference : ''}
+            </div>
+        </div>
+    </el-popover>
+    <el-tooltip 
+        class="item" 
+        effect="dark" 
+        content="Haz clic para ver detalles" 
+        placement="bottom-start">
+        <a
+            role="button"
+            v-popover:address 
+            class=" btn btn-info linkId">
+            <i class="fa fa-map-marker" aria-hidden="true"></i> 
+            ${  row.object.delivery_address_municipality + ', ' + 
+                row.object.delivery_address_state + ', ' + 
+                row.object.delivery_address_country + ' (' +
+                ((row.object.delivery_address_zip_code && row.object.delivery_address_zip_code != 0) 
+                ? row.object.delivery_address_zip_code : 'Sin Definir') + ')'
+            }
+        </a>
+    </el-tooltip>
+</template>
+
+<template slot="requisitionsActions" scope="row">
+    <div class="ui-button bg-Light-Blue overflowInherit">
+        <div class="secondary">
+            <a
+                data-tooltip="Editar"
+                role="button"
+                class="btn btn-info"
+                v-on:click="onEditClick(row.object)"
+                style="color:  #fff;">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a
+                data-tooltip="Eliminar"
+                role="button"
+                class="has-tooltip btn align-right"
+                v-on:click="onRemoveClick(row.object)">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </div>
+    </div>
+</template>
+
+<template slot="status" scope="row">
+    <el-popover
+        ref="popover-status"
+        placement="right"
+        width="200"
+        trigger="click">
+        <el-select v-model="selectedStatus" placeholder="Selecciona Estatus">
+            <el-option
+                v-for="item in statusToSelectOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+            </el-option>
+        </el-select>
+        <div class="form-group">
+            <label>Nota</label>
+            <textarea v-model="statusNote" placeholder="Ingrese una nota" style="width: 100%"> </textarea>
+        </div>
+        <el-button style="margin-top: 5px" size="small" class="btn-block" type="primary" @click="changeStatus(row.object)">Guardar</el-button>
+    </el-popover>
+    <el-button class="block" @click="showStatus(row.object)" size="mini" v-popover:popover-status>
+        <span v-if="row.object.shipping_status_id == 1"
+            class="glyphicon glyphicon-time" style="color: #037db6"></span>
+        <i v-else-if="row.object.shipping_status_id == 2"
+            class="fa fa-archive" style="color: #f39c12" aria-hidden="true"></i>
+        <i v-else-if="row.object.shipping_status_id == 3"
+            class="fa fa-truck fa-flip-horizontal" style="color: #660099" aria-hidden="true"></i>
+        <i v-else-if="row.object.shipping_status_id == 4"
+            class="fa fa-check-circle-o" style="color: #00a65a" aria-hidden="true"></i>
+        <i v-else-if="row.object.shipping_status_id == 5"
+            class="fa fa-times-circle-o" style="color: #dd4b39" aria-hidden="true"></i>
+        <i v-else-if="row.object.shipping_status_id == 6"
+            class="fa fa-question-circle-o" style="color: #ff6600" aria-hidden="true"></i>
+        ${ row.object.delivery_status }
+    </el-button>
+</template>
+
+<template slot="signatureSlot" scope="row">
+    <idp-signature-button
+        :ref="'deliveryRequisitions_' + row.object.id"
+        :key="row.object.id"
+        :signed="checkUserSigned(row.object.signed_users, userId)"
+        :signature-count="row.object.signature_count"
+        @confirm-signature="saveSignature($event, 'deliveryRequisitions', row.object.id, userId)"
+    >
+    </idp-signature-button>
+</template>
+
+<template slot="letterCarrier" scope="row">
+    <el-button class="block" @click="showLetterCarrier(row.object.id)" size="mini" type="default">
+        <i class="fa fa-eye" style="color: #037db6" aria-hidden="true"></i>&nbsp; Ver carta
+    </el-button>
+</template>
+
+<template slot="guide" scope="row">
+    <el-button class="block" @click="showFiles(row.object.id)" size="mini" type="default">
+        <i class="fa fa-upload" style="color: #00a65a;" aria-hidden="true"></i>&nbsp; Subir/Descargar guia
+    </el-button>
+</template>
+
+<template slot="no-rows-found">
+    <span>No se encontrarón resultados</span>
+</template>

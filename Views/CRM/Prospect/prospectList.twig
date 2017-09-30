@@ -1,0 +1,67 @@
+{#
+Created-by: Carlos Sifuentes
+Created-at: 2017-08-03
+#}
+{% block content %}
+<section>
+    <div id="prospectListContainer">
+        <div class="header-buttons">
+           <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    class="btn btn  btn-success "
+                    data-action="openLateral"
+                    href="?tabs=crm/prospectos/crear"
+                    data-panelsize="sm">
+                    <i class="fa fa-plus " aria-hidden="true"></i>  Nuevo Prospecto
+                </a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :remote-method="remoteSearch"
+                :source-columns="columns"
+                :select-options="selectOptions"
+                :data-model="prospectsDatasource"
+                :total-results="totalResults"
+                :pagination-options="{pageSizes: [10, 20, 30], pageSize: 10}"
+                hide-export
+                hide-import
+                hide-favorites>
+                <template slot="no-rows-found">
+                    Sin Prospectos
+                </template>
+                <template slot="actions" scope="row">
+                    <div class="ui-button bg-Light-Blue overflowInherit">
+                        <div class="secondary">
+                            <a
+                                data-tooltip="Editar"
+                                role="button"
+                                class="btn btn-info has-tooltip align-right"
+                                v-on:click="editProspect(row.object)"
+                                style="color:  #fff;">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+init=[{
+    title: 'Listado de prospectos',
+    file: 'CrmJs/Prospect/prospectList.js',
+    functions: [{
+      name: 'initProspectList',
+      args: []
+    }]
+}];
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+<section>
+	<div id="indexNationality">
+		<div class="header-buttons">
+			<div class="btn-group main-buttons">
+				<a id="btnNationality"
+					role="button"
+					class="btn btn-success"
+					data-action="openLateral"
+					data-route="sistema/nacionalidades/nueva"
+					@click="addNationality">
+					<i class="fa fa-plus " aria-hidden="true"></i> Agregar Nacionalidad
+				</a>
+			</div>
+		</div>
+		<div class="panel-content">
+			<div class="row">
+				<div class="col-md-12 ">
+					<div class="table-responsive">
+						{% include '/System/Nationalities/table.twig' %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+	uiVars['title'] = "Lista de Nacionalidades";
+	init.lenght = 0;
+    init = [ {
+        title: uiVars['title'],
+		file: 'System/Nationalities/list.js',
+		functions: [ {
+			name: 'initNationalityList',
+			args: []
+		} ]
+	} ];
+</script>

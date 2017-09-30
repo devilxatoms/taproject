@@ -1,0 +1,115 @@
+{% block body %}
+<section>
+    <div id="inventoriesFree-module">
+        <div class="header-buttons">
+            {# SELECCIONAR ALMACEN ####################################################################}
+                <el-col :span="4">
+                    <div class="form-group">
+                        <strong id="labelWarehouse" :class="['inputLabel', selectedWarehouse ? 'completed' : 'required', 'inactive']">Almacén</strong>
+                        <span v-if="selectedWarehouse" class="glyphicon glyphicon-ok-circle" style="color:#BBB;font-size:0.8em;"></span><br>
+
+                        <el-select
+                            ref="warehousesEl"
+                            v-model="selectedWarehouse"
+                            filterable
+                            clearable
+                            placeholder="Selecciona un almacén">
+                            {# @change="focusNext('warehousesEl')" #}
+                            {# @visible-change="visibleChange($event, 'labelWarehouse')"> #}
+                            <el-option
+                                v-for="item in $store.getters.dataForSelect('warehouses').options"
+                                :label="item.name"
+                                :key="item.id"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </el-col>
+            {##########################################################################################}
+        </div>
+        <div class="panel-content" style="top: 60px;">
+            <vue-dynamic-table-rbc
+                ref="tablaProductos"
+                hide-main-bar
+                box-classes="box box-primary fullHeight"
+                class-name="table table-bordered"
+                hide-filters-stats
+                :source-columns="$getDefaultSettings('inventoryFreeColumns')"
+                :data-model="inventoryProducts"
+                :total-results="inventoryProducts.length"
+            >
+                <template slot="productNameSlot" scope="row">
+
+                    <el-select
+                        v-if="!row.object.id || row.object.editing"
+                        :key="row.object.key"
+                        class="full-width"
+                        v-model="inventoryProducts[row.object.key].name"
+                        filterable
+                        clearable
+                        remote
+                        :disabled="row.object.disabled"
+                        :remote-method="filterResults"
+                        placeholder=""
+                        @change="selectedProduct($event, row.object.key)"
+                        @clear="clearedProduct(row.object.key)"
+                    >
+                        <el-option
+                            v-for="item in queryProductsData(row.object.key)"
+                            :label="item.name"
+                            :key="item.id"
+                            :value="item.id">
+                            <div>${item.name}</div>
+                            <div style="font-size:0.8em; color: #888;">${item.code}</div>
+                            <div style="font-size:0.8em; color: #888;">${item.barcode}</div>
+                        </el-option>
+                    </el-select>
+                    <template v-else>
+                        <span>
+                            ${row.object.name}
+                        </span>
+
+                        <el-button
+                            class="pull-right"
+                            size="mini"
+                            type="text"
+                            icon="edit"
+                            @click="editProductName(row.object.key)"
+                        >
+
+                        </el-button>
+                    </template>
+                </template>
+                <template slot="removeProductSlot" scope="row">
+                    <el-button
+                        size="mini"
+                        @click="clearedProduct(row.object.key)"
+                    >
+                        D
+                    </el-button>
+                </template>
+                <template slot="productQuantitySlot" scope="row">
+                    <el-input v-model="inventoryProducts[row.object.key].quantity"></el-input>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+
+
+
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        moment().locale('es');
+        init.length = 0;
+        init = [ {
+            title: 'Conteo Físico Libre',
+            file: 'warehouse/inventories/inventories_free.js',
+            functions: [ {
+                name: 'inventoriesFreeInit',
+                args: []
+            } ]
+        } ];
+    </script>
+{% endblock %}

@@ -1,0 +1,75 @@
+<section>
+    <div  id="FormContract">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="contractValidate">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Guardar
+                </button>
+                <button
+                    class="btn btn-danger"
+                    data-action="closeTab">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>     
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Datos del contrato</h3>
+                </div>
+                <form v-on:submit.prevent="contractValidate('FormContract')" id="">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" v-model="contract.id">
+                        <div>
+                            
+                            <div class="form-group">
+                                <label for="contractType">Tipo Contrato:</label>
+                                <input
+                                    v-model="contract.c_TipoContrato"
+                                    class="form-control"
+                                    type="text"
+                                    @keypress="clearContractValidatorError('c_TipoContrato')"
+                                    name="contract_c_tipoContrato">
+                                <span v-if="contractValidatorErrors != null" class="cRed">
+                                    ${ contractValidatorErrors.first('c_TipoContrato') }
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                            <label for="contract_description">Descripción:</label>
+                                <input
+                                    v-model="contract.description"
+                                    class="form-control"
+                                    type="text"
+                                    @keypress="clearContractValidatorError('Descripción')"
+                                    name="contract_description">
+                                <span v-if="contractValidatorErrors != null" class="cRed">
+                                    ${ contractValidatorErrors.first('Descripción') }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+    uiVars['title'] = '{{title}}';
+    uiVars['view'] = {{view}};
+    uiVars['data']   = {{data|json_encode|raw}};
+    init.lenght = 0;
+    init = [ {
+        title: uiVars['title'],
+        file: 'Payroll/Contracts/form.js',
+        functions: [ {
+            name: 'initPayrollFormContracts',
+            args: [ uiVars['data'], uiVars['view']]
+        } ]
+    } ];
+</script>

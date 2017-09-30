@@ -1,0 +1,228 @@
+{% block content %}
+    <section id="formNewWay">
+        <div class="header-buttons">
+           <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    class="btn btn  btn-success "
+                    v-on:click="onSaveWay">
+                    <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i>
+                    Guardar Trayecto</a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box box-default">
+                        <div class="box-header">
+                            <h3 class="box-title">DATOS DEL TRAYECTO</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-4">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group req">
+                                                <label for="name">Título Del Trayecto</label>
+                                                <input type="text" class="form-control" v-model="way.title" name="name">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group req">
+                                                <label for="recipientId">Origen (Almacén)</label>
+                                                <el-select v-model="way.origin" v-on:change="onChangeOriginId" placeholder="Selecciona un origen">
+                                                    <el-option
+                                                        v-for="item in origins"
+                                                        :key="item.id"
+                                                        :label="item.name ? item.name : (item.business_name ? item.business_name : item.legal_name)"
+                                                        :value="item.id">
+                                                    </el-option>
+                                                </el-select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Origen (Dirección)</label>
+                                                <input type="text" class="form-control" v-model="originAddrs" readonly="true">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group req">
+                                                <label>Tipo De Destino</label>
+                                                <el-select v-model="way.recipient_type" v-on:change="onChangeRecipientType" placeholder="Selecciona un tipo de destinatario">
+                                                    <el-option
+                                                        v-for="item in recipientTypes"
+                                                        :key="item.id"
+                                                        :label="item.name"
+                                                        :value="item.id">
+                                                    </el-option>
+                                                </el-select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group req">
+                                                <label for="recipientId">Destino</label>
+                                                <el-select v-model="way.recipient" :disabled="!way.recipient_type" v-on:change="onChangeRecipientId" placeholder="Selecciona un destinatario">
+                                                    <el-option
+                                                        v-for="item in recipients"
+                                                        :key="item.id"
+                                                        :label="item.name ? item.name : (item.business_name ? item.business_name : item.legal_name)"
+                                                        :value="item.id">
+                                                    </el-option>
+                                                </el-select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="(way.recipient_type == 2) && way.recipient" class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <a
+                                                    role="button"
+                                                    class="btn btn  btn-success mRight10"
+                                                    v-on:click="showAddSubsid">
+                                                    <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
+                                                    Agregar Sucursal</a>
+
+                                                <a
+                                                    role="button"
+                                                    class="btn btn  btn-success "
+                                                    v-on:click="showAddConsig">
+                                                    <i class="glyphicon glyphicon-user" aria-hidden="true"></i>
+                                                    Agregar Consignatario</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div v-if="(way.recipient_type == 3) && way.recipient" class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <a
+                                                    role="button"
+                                                    class="btn btn  btn-success"
+                                                    v-on:click="showAddSubsidProv">
+                                                    <i class="glyphicon glyphicon-home" aria-hidden="true"></i>
+                                                    Agregar Sucursal</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mTop20">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="box box-default">
+                                                        <div class="box-header">
+                                                            <h3 class="box-title">DIRECCIONES DISPONIBLES *</h3>
+                                                            <div class="box-tools pull-right">
+                                                                <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                                                                        data-toggle="tooltip"
+                                                                        title="Minimizar">
+                                                                    <i class="fa fa-minus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="box-body">
+                                                            <el-select 
+                                                                v-model="way.recipientsSelect" 
+                                                                v-on:change="onRecipientsSelect" 
+                                                                :disabled="(!(way.origin) || !(way.recipient))" 
+                                                                multiple 
+                                                                placeholder="Selecciona direcciones" 
+                                                                style="width:100%;">
+                                                                <el-option
+                                                                    v-for="item in recipientAddresses"
+                                                                    :key="item.id"
+                                                                    :label="((item.type) ? ('(' + item.type + ') ') : '') + item.street + ' #' + item.external_number + ', ' + item.suburb + ', ' + item.town"
+                                                                    :value="way.id ? item.id : item.index">
+                                                                </el-option>
+                                                            </el-select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="box box-default">
+                                                        <div class="box-header">
+                                                            <h3 class="box-title">INFORMACIÓN ESTIMADA DEL TRAYECTO (IDA Y VUELTA)</h3>
+                                                            <div class="box-tools pull-right">
+                                                                <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                                                                        data-toggle="tooltip"
+                                                                        title="Minimizar">
+                                                                    <i class="fa fa-minus"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="box-body">
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="stops">Número De Paradas</label>
+                                                                        <input type="text" class="form-control" v-model="way.stops" name="stops" readonly="true"/>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label>Distancia Estimado</label>
+                                                                        <input type="text" class="form-control" v-model="way.estimated_distance"readonly="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="form-group">
+                                                                        <label>Tiempo Estimado</label>
+                                                                        <input type="text" class="form-control" v-model="way.estimated_time" readonly="true"/>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group" id="panel_map">
+                                        <div id="map"  style="width: 100%; height: 500px; border: 1px solid black; float:right; "></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script id="scriptContainer">
+        init.length = 0;
+        uiVars['wayId'] = '{{ wayId }}';
+        init = [{
+            title: 'Nuevo Trayecto',
+            file: 'Logistic/Ways/newWay.js',
+            functions: [{
+                name: 'initNewWay',
+                args: [ uiVars['wayId'] ]
+            }]
+        }];
+    </script>
+{% endblock %}

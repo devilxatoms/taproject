@@ -1,0 +1,416 @@
+{% block content %}
+    <section>
+        <style>
+            #containerAdditionalTag {
+                height: 242px;
+                overflow: auto;
+            }
+
+        </style>
+        <div class="row" id="addPacketSide">
+            <!-- %CONTENT% -->
+            <!-- basic product data -->
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos Paquete</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="row">
+                            <form id="PacketForm">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Paquete:</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            v-validate="'required'"
+                                            name="nombre"
+                                            placeholder="Paquete">
+                                        <span class="cRed" v-show="errors.has('nombre')">Campo Nombre Es Obligatorio</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Usuarios:</label>
+                                        <input
+                                            type="number"
+                                            v-validate="'required'"
+                                            class="form-control"
+                                            min="0"
+                                            v-model="users"
+                                            name="cusuarios"
+                                            placeholder="Cantidad de Usuarios">
+                                            <input type="checkbox" :checked="users == 0" v-model="unlimitedUsers">
+                                            <template>
+                                                <span v-if="users == 0" class="cGreen">Ilimitados</span>
+                                                <span v-else class="cBlue">Llimitados</span>
+                                            </template>
+                                        <span class="cRed" v-show="errors.has('cusuarios')">Ingresa una cantidad de usuarios</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Timbres:</label>
+                                        <input
+                                            type="number"
+                                            v-validate="'required'"
+                                            class="form-control"
+                                            min="-1"
+                                            v-model="stamps"
+                                            name="ctimbres"
+                                            placeholder="Cantidad de Timbres">
+                                            <input type="checkbox" :checked="stamps == -1" v-model="unlimitedStamps">
+                                            <template>
+                                                <span v-if="stamps == -1" class="cGreen">Ilimitados</span>
+                                                <span v-else class="cBlue">Llimitados</span>
+                                            </template>
+                                        <span class="cRed" v-show="errors.has('ctimbres')">Ingresa una cantidad de timbres</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Descripcion:</label>
+                                        <textarea name="descripcion"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">E-mails:</label>
+                                        <input
+                                            type="number"
+                                            v-validate="'required'"
+                                            class="form-control"
+                                            min="-1"
+                                            v-model="emails"
+                                            name="cemails"
+                                            placeholder="Cantidad de E-mails">
+                                            <input type="checkbox" :checked="emails == -1" v-model="unlimitedEmails">
+                                            <template>
+                                                <span v-if="emails == -1" class="cGreen">Ilimitados</span>
+                                                <span v-else class="cBlue">Llimitados</span>
+                                            </template>
+                                        <span class="cRed" v-show="errors.has('cemails')">Ingresa una cantidad de e-mails</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">Costo:</label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            class="form-control"
+                                            name="costs"
+                                            v-model="price"
+                                            placeholder="Costo del Paquete">
+                                            <template v-if="price == 0">
+                                                <span class="cGreen">Gratuito</span>
+                                            </template>
+                                        <span class="cRed" v-show="errors.has('costs')">Ingresa el costo del paquete</span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / basic product data -->
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Modulos y Secciones por Paquete</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="packetModList" class="col-md-3">
+                            <h4>
+                                <i class="fa fa-cubes" aria-hidden="true"></i>
+                                Modulos</h4>
+                            <form>
+                                <ul>
+                                    <template v-for="module in moduleList">
+                                        <li v-on:click="checkedBoxes">
+                                            <span>
+                                                <i class="fa fa-circle" aria-hidden="true"></i>
+                                            </span><input type="radio" name="module" v-bind:value="module.id">
+                                            ${module.module}</li>
+                                    </template>
+                                </ul>
+                            </form>
+
+                        </div>
+                        <div id="packetPageList" class="col-md-9">
+                            <h4>Paginas</h4>
+                            <template v-for="page in pageList">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="">${page.nombre}</label>
+                                        <input type="checkbox" name="" v-bind:value="page.id" v-on:click="addPage">
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    name="button"
+                    v-on:click="registerPacket">Registrar Paquete</button>
+                <button class="btn btn-primary" type="button" name="button">Ver Resumen</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <form class="" id="regMod">
+                    <div class="form-group">
+                        <label for="">Modulo:</label>
+
+                        <input
+                            type="text"
+                            name="modulename"
+                            v-validate="'required'"
+                            value=""
+                            v-model="module">
+                        <span class="cRed" v-show="errors.has('modulename')">Ingresa el Nombre del Modulo</span>
+
+                    </div>
+                    <button
+                        class="btn btn-success"
+                        type="button"
+                        name="button"
+                        v-on:click="registerModule">Registrar Modulo</button>
+                </form>
+            </div>
+            <div class="col-md-9">
+                <form class="" id="regPage">
+                    <div class="form-group">
+                        <label for="">Pagina:
+                        </label>
+                        <input type="text"   v-validate="'required'" name="pagename" value="">
+                        <span class="cRed" v-show="errors.has('pagename')">Ingresa el nombre de la pagina</span>
+
+                        <label for="">
+                            Path:</label>
+                        <input type="text"   v-validate="'required'" name="pagepath" value="">
+                        <span class="cRed" v-show="errors.has('pagename')">Ingresa el path de la pagina</span>
+
+                        <label for="">
+                            Descripcion:</label>
+                        <input type="text" name="pagedesc" value="">
+                    </div>
+
+                    <button
+                        class="btn btn-success"
+                        type="button"
+                        name="button"
+                        v-on:click="regPageForm">Registrar Pagina</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- /%CONTENT% -->
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        var curMod = "";
+        var packetEl;
+        var regPage;
+
+        $( document ).on( 'click', '#packetModList li', function( ) {
+            $( this ).closest( 'ul' ).find( 'li' ).each( function( i, l ) {
+                $( this ).removeClass( 'activeModule' );
+                $( this ).find( 'span' ).empty( );
+                $( this ).find( 'span' ).append( '<i class="fa fa-circle" aria-hidden="true"></i>' );
+            });
+
+            $( this ).toggleClass( 'activeModule' );
+            $( this ).find( 'input[type=radio]' ).prop( 'checked', true );
+            if ($( this ).find( 'input[type=radio]' ).is( ':checked' )) {
+                $( this ).find( 'span' ).empty( );
+                $( this ).find( 'span' ).append( '<i class="fa fa-check-circle" aria-hidden="true"></i>' );
+                curMod = $( this ).find( 'input[type=radio]' ).val( );
+            }
+        });
+
+        var regModulx = new Vue({
+            el: "#regMod",
+            data: {
+                module: ""
+            },
+            methods: {
+                registerModule: function( ) {
+                    this.$validator.validateAll( ).then(( ) => {
+                        $.ajax({
+                            url: AJAX_PATH + 'admin/packet/modules/add',
+                            data: {
+                                modulo: this.module
+                            },
+                            type: 'POST'
+                        }).done( function( response ) {
+                            console.log( response );
+                            packetEl.getModuleList( );
+                        }.bind( this ));
+                    }).catch(( ) => {
+                        new PNotify({ title: 'Error', text: 'Completa el formulario como se indica', type: 'warning', icon: 'ui-icon ui-icon-flag' });
+                    });
+                }
+            }
+        });
+
+        regPage = new Vue({
+            el: "#regPage",
+            methods: {
+                regPageForm: function( ) {
+                    this.$validator.validateAll( ).then(( ) => {
+                    var pageData = $( '#regPage' ).serializeArray( );
+                    var jsonPageData = {};
+                    $.each( pageData, function( i, item ) {
+                        jsonPageData[item.name] = item.value;
+                    });
+                    console.log( jsonPageData );
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/addpage',
+                        data: jsonPageData,
+                        type: 'POST'
+                    }).done( function( response ) {
+                        packetEl.getPageList( );
+                        console.log( response );
+                    }.bind( this ));
+                  }).catch(( ) => {
+                      new PNotify({ title: 'Error', text: 'Completa el formulario como se indica', type: 'warning', icon: 'ui-icon ui-icon-flag' });
+                  });
+
+                }
+            }
+        });
+
+        packetEl = new Vue({
+            el: "#addPacketSide",
+            data: {
+                emails:"",
+                users:"",
+                stamps:"",
+                price:"",
+                unlimitedUsers: false,
+                unlimitedStamps: false,
+                unlimitedEmails: false,
+                moduleList: [],
+                pageList: [],
+                buildList: [ ]
+            },
+            mounted: function( ) {
+                this.getModuleList( );
+                this.getPageList( );
+            },
+            watch:{
+                unlimitedUsers: function(checked){
+                    this.users = (checked == true)? 0 : 1;
+                },
+                unlimitedStamps: function(checked){
+                    this.stamps = (checked == true)? -1 : 1;
+                },
+                unlimitedEmails: function(checked){
+                    this.emails = (checked == true)? -1 : 1;
+                },
+                users: function(data){
+                    this.unlimitedUsers = (data == 0)? true : false;
+                },
+                stamps: function(data){
+                    this.unlimitedStamps = (data == -1)? true : false;
+                },
+                emails: function(data){
+                    this.unlimitedEmails = (data == -1)? true : false;
+                }
+            },
+            methods: {
+                getModuleList: function( ) {
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/modules',
+                        type: 'POST'
+                    }).done( function( response ) {
+                        var buildJSON = [ ];
+                        console.log( buildJSON );
+                        this.moduleList = response.data;
+                        $.each( this.moduleList, function( k, i ) {
+                            buildJSON[i.id] = {
+                                'modulo': i.module,
+                                'paginas': [ ]
+                            };
+                        })
+                        this.buildList = buildJSON;
+                    }.bind( this ));
+                    console.log( this.buildList );
+                },
+                getPageList: function( ) {
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/pages',
+                        type: 'POST'
+                    }).done( function( response ) {
+                        this.pageList = response.data;
+                    }.bind( this ));
+                },
+                registerPacket: function( e ) {
+                    this.$validator.validateAll( ).then( function( ) {
+                        var packetData = $( '#PacketForm' ).serializeArray( );
+                        var jsonPacketData = {};
+                        $.each( packetData, function( i, item ) {
+                            jsonPacketData[item.name] = item.value;
+                        });
+                        jsonPacketData['build'] = packetEl.buildList;
+                        console.log( jsonPacketData );
+                        $.ajax({
+                            url: AJAX_PATH + 'admin/packet/add',
+                            data: jsonPacketData,
+                            type: 'POST'
+                        }).done( function( response ) {
+                            console.log(response);
+                            if (response == 1) {
+                            //usersTable.loadUsers();
+                            packetEl.$message({
+                       message: 'Registro exitoso.',
+                       type: 'success'
+                   });
+                            adminPacketList.loadPackets( );
+                          }else{
+                            packetEl.$message({
+                        message: 'El Paquete No Puede Ser Registrado.',
+                        type: 'warning'
+                    });
+                          }
+                      }.bind( this ));
+                    }).catch(( ) => {
+                     packetEl.$message({
+                        message: 'El Paquete No Puede Ser Registrado.',
+                        type: 'warning'
+                    });
+                    });
+                },
+
+                checkedBoxes: function( e ) {
+                    $( '#packetPageList input[type=checkbox]' ).prop( 'checked', false );
+                    var valMod = $( e.target ).find( 'input[type=radio]' ).val( );
+                    $( '#packetPageList input[type=checkbox]' ).each( function( key, val ) {
+                        if ( packetEl.buildList[valMod]['paginas' ][$( val ).val( )] != undefined)
+                            $( val ).prop( 'checked', true );
+                        }
+                    );
+
+                },
+                addPage: function( e ) {
+                    if ($( e.target ).is( ':checked' )) {
+                        this.buildList[curMod]['paginas' ][$( e.target ).val( )] = {
+                            'status': '1'
+                        };
+                    } else {
+                        this.buildList[curMod]['paginas' ].splice( $( e.target ).val( ), 1 );
+                    }
+                }
+            },
+            delimiters: [ '${', '}' ]
+        });
+    </script>
+{% endblock %}

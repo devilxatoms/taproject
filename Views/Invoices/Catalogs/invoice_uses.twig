@@ -1,0 +1,35 @@
+{% block content %}
+<section>
+    <div id="invoiceUse">
+        <div class="header-buttons">
+
+        </div>
+        <div class="panel-content">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :total-results="datasource.total"
+                :source-columns="columns"
+                :remote-method="loadData"
+                :data-model="datasource.data">
+                <template slot="no-rows-found">
+                    <span>No se encontrarón resultados</span>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script type="text/javascript" id="scriptContainer">
+    init.length = 0;
+    init = [{
+        title: 'Uso de comprobantes',
+        file: 'Invoices/Catalogs/invoiceUse.js',
+        functions: [{
+            name: 'initInvoiceUseModule',
+            args: []
+        }]
+    }];
+</script>
+{% endblock %}

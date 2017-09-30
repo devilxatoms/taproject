@@ -1,0 +1,107 @@
+{% block content %}
+    <section id="add-product-type-vue">
+        <div class="box box-default">
+            <div class="box-header">
+                <h3 class="box-title">Tipos de productos</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                            data-toggle="tooltip" title="Minimizar">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="req form-group col-md-12">
+                    <label for="">Nombre: </label>
+                    <input type="text" class="form-control"
+                           v-model="name" placeholder="Nombre">
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label for="">Código: </label>
+                    <input type="text" class="form-control"
+                           v-model="code" placeholder="Código">
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label for="">Descripción: </label>
+                    <textarea type="text" class="form-control"
+                              v-model="description"
+                              placeholder="Descripción"></textarea>
+                </div>
+            </div>
+        </div>
+        {% if(existAA == 0) %}
+        <div class="box box-default">
+            <div class="box-header">
+                <h3 class="box-title">Contabilidad</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                            data-toggle="tooltip" title="Minimizar">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="alert alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <p>
+                        Añada la cuenta contable del tipo de producto en caso de ser necesario.
+                        Seleccione primero cuál sería su cuenta padre para saber específicamente en
+                        dónde aparecerá, luego se le sugerirá una cuenta al tipo de producto.
+                    </p>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="phones">Cuenta Padre:</label>
+                        <vue-selectize-js
+                                v-on:select-option="onSelectAccount($event)"
+                                :selectize-settings="selectizeAccountingAccountsSettings"
+                                :selectize-options="selectizeAccountingAccountsOptions"
+                                v-model="accountingAccount">
+                        </vue-selectize-js>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="text" class="form-control" v-model="accountConcatName"
+                               name=""
+                               id=""
+                               placeholder="000-000-000-000" disabled="disabled">
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="gruop_id">Cuenta Contable Sugerida: </label>
+                    <input type="text" class="form-control" v-model="accountConcatNextName"
+                           name="" id="" placeholder="000-000-000-000" disabled="disabled">
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <a href="javascript:void(0);"
+           class="btn btn-primary block" @click="saveProductType()">
+            Guardar Tipo de Producto</a>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['productType_name'] = '{{ productType.name }}';
+        uiVars['productType_code'] = '{{ productType.code }}';
+        uiVars['productType_id'] = '{{ productType.id }}';
+        uiVars['productType_desc'] = '{{ productType.description }}';
+        init.length = 0;
+        init = [{
+            title: 'Añadir Tipo de Producto',
+            file: 'Warehouse/ProductTypes/productTypeCreate.js',
+            functions: [{
+                name: 'initProductTypeCreate',
+                args: [
+                    {{ productTypeId }},
+                    {{ existAA }}
+                ]
+            }]
+        }];
+    </script>
+{% endblock %}

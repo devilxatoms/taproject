@@ -1,0 +1,25 @@
+<div id="tableMethods">
+    <!-- Dynamic Table -->
+    <vue-dynamic-table-rbc
+        box-classes="box box-primary full-height"
+        class-name="table table-bordered table-hover"
+        :total-results="datasource.total"
+        :source-columns="columns"
+        :remote-method="loadData"
+        :data-model="datasource.data">
+        <template slot="no-rows-found">
+            <span>No se encontrarón resultados</span>
+        </template>
+        <template slot="customActivation" scope="row">
+            <button v-if="row.object.deleted_at !== null" type="button" class="btn btn-success btn-block"
+             @click="activePaymentMethod(row.object)">
+                Activar
+            </button>
+            <button v-else type="button" name="button" class="btn btn-warning btn-block"
+             @click="deactivePaymentMethod(row.object)">
+                Desactivar
+            </button>
+        </template>
+    </vue-dynamic-table-rbc>
+    <!-- Dynamic Table -->
+</div>

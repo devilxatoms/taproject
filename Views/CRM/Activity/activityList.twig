@@ -1,0 +1,249 @@
+{#
+Created by: Carlos Sifuentes
+#}
+{% block content %}
+<section>
+    <div id="activity-list-container">
+        <div class="header-buttons">
+           <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    class="btn btn  btn-success "
+                    data-action="openLateral"
+                    href="?tabs=crm/actividades/crear"
+                    data-panelsize="sm">
+                    <i class="fa fa-plus " aria-hidden="true"></i>  Nueva Actividad
+                </a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :remote-method="remoteSearch"
+                :source-columns="columns"
+                :select-options="selectOptions"
+                :data-model="activitiesDatasource"
+                :total-results="totalResults"
+                :pagination-options="{pageSizes: [10, 20, 30], pageSize: 10}"
+                hide-export
+                hide-import
+                hide-favorites>
+
+                <template slot="no-rows-found">
+                    Sin Prospectos
+                </template>
+                <template slot="related" scope="row">
+                    <el-popover
+                        ref="popover-related"
+                        placement="left"
+                        max-height="500"
+                        width="200"
+                        trigger="hover">
+                        <div v-if="row.object.follow_up">{#Si esta relacionado a un seguimiento#}
+                            <h4>${row.object.follow_up.title}</h4>
+                            <p>${row.object.follow_up.description}</p>
+                        </div>
+                        <div v-else-if="row.object.customer_contact">{#Si esta relacionado a un contacto (cliente)#}
+                            <a class="list-group-item">
+                                <div v-if="row.object.customer_contact.customer.logo" class="pull-left contentMiddle">
+                                    <img
+                                        v-bind:src="'https://cdn.tuadmin.com/' + row.object.customer_contact.customer.logo"
+                                        class="img-circle h35"
+                                        style="margin-right: 10px;"
+                                        alt="logotipo">
+                                </div>
+                                <div class="h40">
+                                    <strong class="card-title">${row.object.customer_contact.customer.business_name}</strong>
+                                    <div class="card-content">${row.object.customer_contact.name}</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div v-else-if="row.object.customer">{#Si esta relacionado a un cliente#}
+                            <a class="list-group-item">
+                                <div v-if="row.object.customer.logo" class="pull-left contentMiddle">
+                                    <img
+                                        v-bind:src="'https://cdn.tuadmin.com/' + row.object.customer.logo"
+                                        class="img-circle h35"
+                                        style="margin-right: 10px;"
+                                        alt="logotipo">
+                                </div>
+                                <div class="h40">
+                                    <strong class="card-title">${row.object.customer.business_name}</strong>
+                                </div>
+                            </a>
+                        </div>
+                        <div v-else-if="row.object.prospect_contact">{#Si esta relacionado a un contacto (prospecto)#}
+                            <a class="list-group-item">
+                                <div v-if="row.object.prospect_contact.subsidiary.prospect.logo" class="pull-left contentMiddle">
+                                    <img
+                                        v-bind:src="'https://cdn.tuadmin.com/' + row.object.prospect_contact.subsidiary.prospect.logo"
+                                        class="img-circle h35"
+                                        style="margin-right: 10px;"
+                                        alt="logotipo">
+                                </div>
+                                <div class="h40">
+                                    <strong class="card-title">${row.object.prospect_contact.subsidiary.prospect.business_name}</strong>
+                                    <div class="card-content">${row.object.prospect_contact.name}</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div v-else-if="row.object.prospect">{#Si esta relacionado a un prospecto#}
+                            <a class="list-group-item">
+                                <div v-if="row.object.prospect.logo" class="pull-left contentMiddle">
+                                    <img
+                                        v-bind:src="'https://cdn.tuadmin.com/' + row.object.prospect.logo"
+                                        class="img-circle h35"
+                                        style="margin-right: 10px;"
+                                        alt="logotipo">
+                                </div>
+                                <div class="h40">
+                                    <strong class="card-title">${row.object.prospect.business_name}</strong>
+                                </div>
+                            </a>
+                        </div>
+                        <div v-else>
+                            <em>Esta actividad no ha sido relacionada.</em>
+                        </div>
+                    </el-popover>
+                    <el-button class="block" size="mini" v-popover:popover-related>
+                        <span v-if="row.object.follow_up">Seguimiento</span>
+                        <span v-else-if="row.object.customer_contact">Contacto</span>
+                        <span v-else-if="row.object.customer">Cliente</span>
+                        <span v-else-if="row.object.prospect_contact">Contacto (prospecto)</span>
+                        <span v-else-if="row.object.prospect">Prospecto</span>
+                        <span v-else>Sin relación</span>
+                    </el-button>
+                </template>
+
+                <template slot="assignedTo" scope="row">
+                    <el-popover
+                        ref="popover-assigned-to"
+                        placement="right-start"
+                        width="800"
+                        popper-class="h-select-pop"
+                        trigger="click">
+                        {% include 'crm/assignedCards.twig'%}
+                    </el-popover>
+                    <el-button class="block" size="mini" v-popover:popover-assigned-to>Ver</el-button>
+                </template>
+
+                <template slot="assigned" scope="row">
+                    <el-popover
+                        ref="popover-assigned"
+                        placement="right"
+                        max-height="500"
+                        trigger="hover">
+                        <div v-if="row.object.assigned_users.length > 0">
+                            <h4>Usuarios</h4>
+                            <ul>
+                                <div class="list-group">
+                                    <li v-for="user in row.object.assigned_users">
+                                        <a class="list-group-item">
+                                            <div v-if="user.picture" class="pull-left contentMiddle">
+                                                <img
+                                                    v-bind:src="'https://cdn.tuadmin.com/' + user.picture"
+                                                    class="img-circle h35"
+                                                    style="margin-right: 10px;"
+                                                    alt="logotipo">
+                                            </div>
+                                            <div class="h40">
+                                                <strong class="card-title">${user.nickname}</strong>
+                                                <div class="card-content">
+                                                    ${ user ?
+                                                    (user.name + ' '+
+                                                    (user.lastname ? user.lastname : '') + ' ' +
+                                                    (user.surname ? user.surname : '')) : 'S/A' }
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </div>
+                        <div v-if="row.object.assigned_employees.length > 0">
+                            <h4>Empleados</h4>
+                            <ul>
+                                <div class="list-group">
+                                    <li v-for="employee in row.object.assigned_employees">
+                                        <a class="list-group-item">
+                                            <div v-if="employee.picture" class="pull-left contentMiddle">
+                                                <img
+                                                    v-bind:src="'https://cdn.tuadmin.com/' + employee.picture"
+                                                    class="img-circle h35"
+                                                    style="margin-right: 10px;"
+                                                    alt="Imagen empleado">
+                                            </div>
+                                            <div class="h40">
+                                                <strong class="card-title">
+                                                    ${ employee ?
+                                                        (employee.name + ' ' +
+                                                        (employee.father_surname ? employee.father_surname : '') + ' ' +
+                                                        (employee.mother_surname ? employee.mother_surname : '')) : 'S/A' }
+                                                </strong>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </div>
+                        <div v-if="row.object.assigned_teams.length > 0">
+                            <h4>Equipos</h4>
+                            <ul>
+                                <div class="list-group">
+                                    <li v-for="team in row.object.assigned_teams">
+                                        <a class="list-group-item">
+                                            <div v-if="team.picture" class="pull-left contentMiddle">
+                                                <img
+                                                    v-bind:src="'https://cdn.tuadmin.com/' + team.picture"
+                                                    class="img-circle h35"
+                                                    style="margin-right: 10px;"
+                                                    alt="Imagen equipo">
+                                            </div>
+                                            <div class="h40">
+                                                <strong class="card-title">${team.name}</strong>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </div>
+                        <div v-if="(!row.object.assigned_users || row.object.assigned_users.length < 1) && (!row.object.assigned_employees || row.object.assigned_employees.length < 1) && (!row.object.assigned_teams || row.object.assigned_teams.length < 1)">
+                            <em>Sin asignar</em>
+                        </div>
+                    </el-popover>
+                    <el-button class="block" size="mini" v-popover:popover-assigned>Ver</el-button>
+                </template>
+
+                <template slot="actions" scope="row">
+                    <div class="ui-button bg-Light-Blue overflowInherit">
+                        <div class="secondary">
+                            <a
+                                data-tooltip="Editar"
+                                role="button"
+                                class="btn btn-info"
+                                v-on:click="editActivity(row.object)"
+                                style="color:  #fff;">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+init=[{
+    title: 'Listado de actividades',
+    file: 'CrmJs/Activity/activityList.js',
+    functions: [{
+      name: 'initActivityList',
+      args: []
+    }]
+}];
+</script>
+{% endblock %}

@@ -1,0 +1,107 @@
+{% block sidebar %}
+<ul class="sidebar-menu pull-left block">
+    <li class="treeview">
+        <a role="button">
+            <i class="icon fa fa-user-circle"></i>
+            <span>Usuarios</span>
+            <span class="pull-right-container">
+                <i class="treeview-indent fa fa-angle-right pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="treeview">
+                <a
+                    data-action="openTab"
+                    data-module="admin/user"
+                    href="?tabs=admin/user">
+                    Listado Usuarios
+                </a>
+            </li>
+            <li class="treeview">
+                <a
+                    data-action="openTab"
+                    data-module="admin/rol"
+                    href="?tabs=admin/rol">
+                    Facultades y Roles
+                </a>
+            </li>
+             <!--<li class="treeview">
+                <a
+                    data-action="openTab"
+                    data-module="admin/getLog"
+                    href="?tabs=admin/getLog">
+                    Bitacora de Actividades
+                </a>
+            </li>-->
+        </ul>
+    </li>
+    <li class="treeview">
+        <a role="button">
+            <i class="icon fa fa-briefcase"></i>
+            <span>Empresas</span>
+            <span class="pull-right-container">
+                <i class="treeview-indent fa fa-angle-right pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="treeview">
+                <a
+                    data-action="openTab"
+                    data-module="admin/company"
+                    href="?tabs=admin/company">
+                    Listado Empresas</a>
+            </li>
+        </ul>
+    </li>
+    <li class="treeview">
+        <a role="button">
+            <i class="icon fa fa-cube"></i>
+            <span>Paquetes</span>
+            <span class="pull-right-container">
+                <i class="treeview-indent fa fa-angle-right pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="treeview">
+                <a
+                    data-action="openTab"
+                    data-module="admin/packet"
+                    href="?tabs=admin/packet">
+                    Listado de Paquetes</a>
+            </li>
+            <li class="treeview">
+                <a
+                    data-action="openTab"
+                    data-module="admin/packet"
+                    href="?tabs=admin/packet/pagesfaculties">
+                    Facultades por Pagina</a>
+            </li>
+        </ul>
+    </li>
+        <li class="treeview">
+        <a role="button">
+            <i class="icon fa fa-book"></i>
+            <span>Bitacora de Actividades</span>
+            <span class="pull-right-container">
+                <i class="treeview-indent fa fa-angle-right pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li class="treeview">
+                <a
+                    data-action="openTab"
+                    data-module="admin/logTotal"
+                    href="?tabs=admin/logTotal">
+                    Lista De Actividades</a>
+            </li>
+            <li class="treeview">
+                <a
+                    data-action="openTab"
+                    data-module="admin/logTotal/errorLog"
+                    href="?tabs=admin/logTotal/errorLog">
+                    Gestion de Problemas</a>
+            </li>
+        </ul>
+    </li>
+</ul>
+{% endblock %}

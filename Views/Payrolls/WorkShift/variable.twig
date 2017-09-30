@@ -1,0 +1,80 @@
+<div v-if="radio=='r2'" class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+    <h3 class="panel-title">Horas por Trabajar</h3>
+    <div class="form-group">
+        <input type="checkbox" v-model="checkedVar.ch1">
+    <label >Lunes:</label>
+        <el-time-picker
+          v-model="shiftVar.d1"
+          :picker-options="{
+            selectableRange: '01:00:00 - 0800:00'
+          }"
+          placeholder="Arbitrary time" :disabled="!checkedVar.ch1">
+        </el-time-picker>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" v-model="checkedVar.ch2">
+        <label >Martes:</label>
+        <el-time-picker
+          v-model="shiftVar.d2"
+          :picker-options="{
+            selectableRange: '01:00:00 - 08:00:00'
+          }"
+          placeholder="Arbitrary time" :disabled="!checkedVar.ch2">
+        </el-time-picker>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" v-model="checkedVar.ch3">
+        <label >Miercoles:</label>
+        <el-time-picker
+          v-model="shiftVar.d3"
+          :picker-options="{
+            selectableRange: '01:00:00 - 08:00:00'
+          }"
+          placeholder="Arbitrary time" :disabled="!checkedVar.ch3">
+        </el-time-picker>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" v-model="checkedVar.ch4">
+        <label >Jueves:</label>
+        <el-time-picker
+          v-model="shiftVar.d4"
+          :picker-options="{
+            selectableRange: '01:00:00 - 08:00:00'
+          }"
+          placeholder="Arbitrary time" :disabled="!checkedVar.ch4">
+        </el-time-picker>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" v-model="checkedVar.ch5">
+        <label >Viernes:</label>
+        <el-time-picker
+          v-model="shiftVar.d5"
+          :picker-options="{
+            selectableRange: '01:00:00 - 08:00:00'
+          }"
+          placeholder="Arbitrary time" :disabled="!checkedVar.ch5">
+        </el-time-picker>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" v-model="checkedVar.ch6">
+        <label >Sabado:</label>
+        <el-time-picker
+          v-model="shiftVar.d6"
+          :picker-options="{
+            selectableRange: '01:00:00 - 08:00:00'
+          }"
+          placeholder="Arbitrary time" :disabled="!checkedVar.ch6">
+        </el-time-picker>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" v-model="checkedVar.ch7">
+        <label >Domingo:</label>
+        <el-time-picker
+          v-model="shiftVar.d7"
+          :picker-options="{
+            selectableRange: '01:00:00 - 08:00:00'
+          }"
+          placeholder="Arbitrary time" :disabled="!checkedVar.ch7">
+        </el-time-picker>
+    </div>
+</div>

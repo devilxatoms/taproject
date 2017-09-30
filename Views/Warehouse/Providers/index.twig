@@ -1,0 +1,138 @@
+{% block content %}
+    <section id="provider-extra-data">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    data-action="openLateral"
+                    data-panelsize="lg"
+                    data-route="almacenes/proveedores/nuevo"
+                    class="btn btn-success pull-right">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Nuevo Provedor</a>
+
+            </div>
+            <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    data-action="openLateral"
+                    data-panelsize="lg"
+                    data-route="AdditionalFeatures/providers"
+                    class="btn btn-success pull-right">
+
+                    Caracteriticas</a>
+
+            </div>
+        </div>
+        <div class="panel-content">
+            <div>
+                <vue-dynamic-table
+                    class-name="table table-bordered"
+                    v-bind:class="{ fullHeight }"
+                    v-bind:filter-enabled = "true"
+                    v-on:action-link-click="actionLink"
+                    {# v-on:action-button-click="actionButton" #}
+                    v-bind:pagination-options="providerTablePageOptions"
+                    v-bind:columns="sourceColumns"
+                    v-bind:data-model="listProviders">
+
+        <template slot="actions" scope="row">
+            <div class="ui-button bg-Light-Blue overflowInherit">
+                <div class="secondary">
+
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="Añadir Valor"
+                        data-toggle="modal" data-target="#AddValue"
+                        v-on:click="addId(row.object)"
+                        >
+                         <span class="glyphicon glyphicon-plus-sign"></span>
+                    </a>
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="ver valores"
+                        v-on:click="showValues(row.object)"
+                        >
+                         <span class="glyphicon glyphicon-eye-open"></span>
+                    </a>
+
+                </div>
+            </div>
+        </template>
+        <template  slot="status" scope="row">
+
+            <div v-if=" row.object.status == 1" class="ui-button btn-success  overflowInherit">
+               <div  class="secondary">
+                   <span v-on:click="activeCustomer(row.object)" class="btn align-right">Activo</span>
+               </div>
+            </div>
+
+            <div v-else  class="ui-button btn-danger  overflowInherit">
+               <div  class="secondary">
+                   <span  v-on:click="disableCustomer(row.object)" class="btn align-right">inactivo</span>
+               </div>
+            </div>
+        </template>
+
+                </vue-dynamic-table>
+            </div>
+
+        </div>
+
+        <!--Modal for add value-->
+<div class="modal fade" id="AddValue" role="dialog">
+        <div class="modal-dialog">
+
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">AÑADIR VALOR A CARACTERISTICA</h4>
+                </div>
+                <div class="modal-body">
+                   <form method="POST" id="addValue">
+                    <input type="hidden" id="id">
+                    <div class="form-group">
+                        <label for="">Valor</label>
+                        <input type="text" class="form-control" maxlength="255" name="value" id="value" placeholder="Valor">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Seleccione la caracteristica</label>
+
+                         <select id="additionalFeatures">
+
+                         </select>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" data-dismiss="modal" id="buttonSave">Guardar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+
+                </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+        <!-- Modal -->
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+    uiVars['provedores'] = {{ provedores | json_encode | raw }}
+        init.length = 0;
+        init = [ {
+            title: 'Provedores',
+            file: 'Warehouse/Providers/providersList.js',
+            functions: [ {
+                name: 'iniciarModuloListProviders',
+                args: [ uiVars['provedores']]
+            } ]
+        } ];
+    </script>
+{% endblock %}

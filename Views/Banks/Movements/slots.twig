@@ -1,0 +1,49 @@
+  <template slot="custom-docs" scope="row">
+    <div class="ui-button bg-Light-Blue overflowInherit">
+        <div class="secondary">
+            <a class="has-tooltip btn align-right" role="button" data-tooltip="Ver comprobante" v-on:click="showFiles(row.object.id)">
+                <i class="fa fa-file-text" aria-hidden="true"></i>
+            </a>
+            <a class="has-tooltip btn align-right" role="button" data-tooltip="Ver póliza" v-on:click="openPolicy(row.object)">
+                <i class="fa fa-calculator" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</template>
+
+<template slot="relation" scope="row">
+    <a
+        v-if="row.object.payment_id"
+         class="cursorPointer"
+         data-action="openLateral"
+         data-module="pagos"
+         data-panelsize="md" 
+         :data-route="'pagos/' + row.object.payment_id">
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i> Pago
+    </a>
+    <a
+        v-else-if="row.object.petty_cash_id"
+        class="cursorPointer"
+        data-action="openLateral"
+        data-module="compras"
+        data-panelsize="md"
+        :data-route="'compras/catalogos/cajasChicas/' + row.object.petty_cash_id">
+        <i class="fa fa-archive" aria-hidden="true"></i> Caja Chica
+    </a>
+    <a
+        v-else-if="row.object.charge_id"
+        class="cursorPointer">
+        <i class="fa fa-money" aria-hidden="true"></i> Cargo
+    </a>
+    <span v-else> N/A </span>
+</template>
+
+<template slot="cancel" scope="row">
+    <div class="ui-button bgRed overflowInherit">
+        <div class="secondary">
+            <a class="has-tooltip btn align-right" role="button" data-tooltip="Cancelar movimiento" v-on:click="deleteMovement(row.object)">
+                <i class="fa fa-ban" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</template>

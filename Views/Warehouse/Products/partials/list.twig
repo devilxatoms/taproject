@@ -1,0 +1,232 @@
+<div>
+    <!-- Dynamic Table -->
+    <vue-dynamic-table-rbc
+        box-classes="box box-primary full-height"
+        class-name="table table-bordered table-hover "
+        :total-results="totalResults"
+        :remote-method="loadData"
+
+        {# FAVORITOS #}
+        :favorites="dynamicTableFavorites"
+        @save-to-favorites="saveToFavorites"
+        @loaded-favorite="loadedFavorite"
+
+        :select-options="selectOptions"
+
+        :loading-from-server="loadingFromServer"
+        :source-columns="sourceColumns"
+        :data-model="listDataProducts">
+
+        <template slot="select_more" scope="row">
+            <div class="expand">
+                ${ row.object.product_name }
+            </div>
+        </template>
+        <template slot="description" scope="row">
+            <div v-if="row.object.product_description" class="expand">
+                ${ row.object.product_description }
+            </div>
+            <div v-else>
+                <span class="noDataCell">no disponible</span>
+            </div>
+        </template>
+
+        <template slot="providers" scope="row">
+            <div class="expandx cursorPointer " @dblclick="onEditProvider(row)">
+                <template v-for="item in row.object.product_providers">
+                    <label v-if="item" class="item-badge cursorPointer">
+                        ${ item }
+                    </label>
+                </template>
+            </div>
+        </template>
+        <template slot="attributes" scope="row">
+            <div class="expand cursorPointer" @dblclick="onEditAttributesDetail(row)">
+                <template v-for="item in row.object.product_attributes">
+                    <el-popover>
+
+                    </el-popover>
+                    <label v-if="item" class="item-badge cursorPointer">
+                        ${ item }
+                    </label>
+                </template>
+
+            </div>
+        </template>
+        <template slot="markets" scope="row">
+            <div class="expand cursorPointer" @dblclick="onEditMarkets(row)">
+                <label v-for="item in row.object.markets"
+                       class="item-badge cursorPointer">
+                    ${ item }
+                </label>
+            </div>
+        </template>
+        <template slot="tags" scope="row">
+            <label class="hidden">${ row.object.search_tags }</label>
+            <div class="expand cursorPointer" @dblclick="onEditTags(row)">
+                <label v-for="item in row.object.product_tags"
+                       class="item-badge cursorPointer">
+                    ${ item.tag_name }
+                </label>
+            </div>
+        </template>
+        <template slot="product_groups" scope="row">
+            <label class="hidden">${ row.object.search_product_groups }</label>
+            <div class="expand cursorPointer" @dblclick="onEditProductGroups(row)">
+                <label v-for="item in row.object.product_product_groups"
+                       class="item-badge cursorPointer">
+                    ${ item.group_name }
+                </label>
+            </div>
+        </template>
+
+        <template slot="invoice_type" scope="row">
+            <div v-if="row.object.invoice_type_code">
+                ${ row.object.invoice_type_code }
+            </div>
+            <div v-if="row.object.invoice_type_name">
+                ${ row.object.invoice_type_name }
+            </div>
+        </template>
+
+        <template slot="product_lines" scope="row">
+            <label class="hidden">${ row.object.search_product_lines }</label>
+            <div class="expand cursorPointer" @dblclick="onEditProductLines(row)">
+                <label v-for="item in row.object.product_product_lines"
+                       class="item-badge cursorPointer">
+                    ${ item.line_name }
+                </label>
+            </div>
+        </template>
+        <template slot="selectMore" scope="row">
+            <input class="selectmore" type="checkbox" id="">
+        </template>
+        <template slot="isActive" scope="row">
+            <div v-if="row.object.product_is_active"
+                 style="width: 18px; height: 18px; background-color: #008b00"></div>
+            {#<input class="" type="checkbox" v-model="row.object.product_is_active" >#}
+        </template>
+        <template slot="isFav" scope="row">
+            <div v-if="row.object.product_is_favorite"
+                 style="width: 18px; height: 18px; background-color: #008b00"></div>
+            {#<input class="" type="checkbox" v-model="row.object.product_is_favorite">#}
+        </template>
+        <template slot="isExpired" scope="row">
+            <div v-if="row.object.expired"
+                 style="width: 18px; height: 18px; background-color: #008b00"></div>
+            {#<input class="" type="checkbox" v-model="row.object.expired">#}
+        </template>
+        <template slot="inventariable" scope="row">
+            <div v-if="row.object.inventariable"
+                 style="width: 18px; height: 18px; background-color: #008b00"></div>
+            {#<input class="" type="checkbox" v-model="row.object.inventariable">#}
+        </template>
+        <template slot="hasSerialNumbers" scope="row">
+            <div v-if="row.object.register_serial_numbers"
+                 style="width: 18px; height: 18px; background-color: #008b00"></div>
+            {#<input class="" type="checkbox" v-model="row.object.register_serial_numbers">#}
+        </template>
+        <template slot="no-rows-found">
+            <span>No se encontraron resultados</span>
+        </template>
+    </vue-dynamic-table>
+
+    <template slot="actions" scope="row">
+        <div class="ui-button bg-Light-Blue overflowInherit">
+            <div class="secondary">
+                <a
+                    data-route="javascript:void(0);"
+                    class="has-tooltip btn align-right"
+                    data-tooltip="Editar"
+                    v-on:click="onEditClick(row.object)">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </a>
+                <a
+                    class="has-tooltip btn align-right"
+                    data-tooltip="Eliminar"
+                    data-route="javascript:void(0);"
+                    v-on:click="onRemoveClick(row.object)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+
+                <a class="has-tooltip btn align-right"
+                   data-tooltip="Añadir Valor"
+                   data-toggle="modal" data-target="#AddValue"
+                   v-on:click="addId(row.object)">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                </a>
+                <a class="has-tooltip btn align-right"
+                   role="button"
+                   data-tooltip="ver valores"
+                   v-on:click="showValues(row.object)">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                </a>
+            </div>
+        </div>
+    </template>
+    <!-- Dynamic Table -->
+</div>
+<!-- Modal -->
+<div id="product-categories-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        {# <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <vue-dynamic-table
+                        class-name="table table-bordered"
+                        v-bind:filter-enabled="true"
+                        v-bind:columns="sourceColumns"
+                        v-bind:data-model="listDataCategories"
+                        v-on:go-to-page="goToPage"
+                        v-bind:pagination-options="pageOptions">
+                    <template slot="description" scope="row">
+                        <div class="expand">
+                            ${ row.object.category_description }
+                        </div>
+                    </template>
+                    <template slot="no-rows-found">
+                        <span>No se encontraron resultados</span>
+                    </template>
+                </vue-dynamic-table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div> #}
+    </div>
+</div>
+
+{# Luciano, haz el indent bien. #}
+<!--Modal for add value-->
+{# <div class="modal fade" id="AddValue" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" id="addValue">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">AÑADIR VALOR A CARACTERISTICA</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="id">
+                    <div class="form-group">
+                        <label for="">Valor</label>
+                        <input type="text" class="form-control" maxlength="255" name="value" id="value"
+                               placeholder="Valor">
+                    </div>
+                    <div class="form-group">
+                        <label>Seleccione la caracteristica</label>
+                        <select id="additionalFeatures"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" data-dismiss="modal" id="buttonSave">Guardar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> #}

@@ -1,0 +1,222 @@
+{% block body %}
+<section>
+    <div id="view-movement-module-{{movement.id}}">
+        <div class="header-buttons">
+            <div v-if="!mountedVue">
+                Obteniendo datos del movimiento...
+            </div>
+            <div v-cloak class="btn-group main-buttons">
+                <button v-if="movementCanEdit"
+                    class="btn btn-warning cWhite"
+                    @click="onEdit">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                    Editar
+                </button>
+                <button v-if="movementType != 7 && movementCanReceive"
+                    class="btn btn-primary cWhite"
+                    @click="onDo">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Realizar
+                </button>
+                <button v-if="movementType == 7 && movementCanReceive"
+                    class="btn btn-primary cWhite"
+                    @click="onDo">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Dar Salida
+                </button>
+                <button v-if="movementType != 7 && movementStatusId == 4"
+                    class="btn btn-warning cWhite"
+                    @click="changeMovementStatus(6)">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Finalizar Parcialmente
+                </button>
+                <button v-if="movementStatusId == 1"
+                    class="btn btn-success"
+                    @click="changeMovementStatus(2)">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Autorizar
+                </button>
+            </div>
+            <div v-cloak class="btn-group secondary-buttons pull-right">
+                <button v-if="movementStatusId == 1"
+                    class="btn btn-warning cWhite"
+                    @click="changeMovementStatus(8)">
+                    <span class="glyphicon glyphicon glyphicon-remove"></span>
+                    No Autorizar
+                </button>
+                <button v-if="movementStatusId != 4 && movementStatusId != 5 &&
+                              movementStatusId != 6 && movementStatusId != 7 &&
+                              movementStatusId != 8"
+                    class="btn btn-danger cWhite"
+                    @click="changeMovementStatus(7)">
+                    <span class="glyphicon glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+        <div class="panel-content">
+
+            <div class="row">
+                {# Recuadro "DATOS DEL MOVIMIENTIO" #}
+                <div class="col-md-6">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Datos del Movimiento <span v-cloak>No. ${movementId}</span></h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                                        data-toggle="tooltip" title="Minimizar">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="box-body">
+                            <div class="col-md-7">
+                                <idp-movement-basic-info
+                                    :movement-type="movementType"
+
+                                    :origin-legal-name="movementOriginLegalName"
+                                    :movement-origin-description="movementOriginDescription"
+
+                                    :movement-destiny-description="movementDestinyDescription"
+
+
+                                    :movement-type-description="movementTypeDescription"
+                                    :movement-status-description="movementStatusDescription"
+                                    :movement-status-extra-description="movementStatusExtraDescription"
+                                    >
+
+                                </idp-movement-basic-info>
+                            </div>
+
+                            <div v-if="movementType == 1" class="col-md-5">
+                                <div>
+                                    <strong>Folio Compra: </strong>
+                                    <span v-text="movementRef"></span>
+                                </div>
+                                <div>
+                                    <label>Folios Facturas:</label>
+                                    {# <el-select
+                                        v-model="invoices"
+                                        multiple
+                                        filterable
+                                        allow-create
+                                        placeholder="Folios"
+                                        disabled>
+                                        <el-option
+                                          v-for="item in listInvoices"
+                                          :key="item.id"
+                                          :label="item.folio"
+                                          :value="item.id">
+                                        </el-option>
+                                    </el-select> #}
+                                </div>
+                                <div>
+                                    <strong>Comentarios: </strong>
+                                    <span v-text="movementDescription"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Recuadro "DATOS DE ENVÍO" #}
+                <div class="col-md-6">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Datos de Envío</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                                        data-toggle="tooltip" title="Minimizar">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="box-body">
+                            <div v-if="movementType == 4 || movementType == 8" class="row">
+                                <div class="col-md-4">
+                                    No Aplican datos de envío
+                                </div>
+                            </div>
+
+                            <div v-else class="row">
+                                <div class="col-md-4">
+                                    Aqui van muchos datos de envio pues
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                {# Recuadro "PRODUCTOS" #}
+                <div class="col-md-12">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Productos</h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                                        data-toggle="tooltip" title="Minimizar">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="box-body">
+                            <vue-dynamic-table-rbc
+                                class-name="table"
+                                hide-main-bar
+                                hide-filters-stats
+                                :source-columns="sourceColumnsProducts"
+                                :data-model="listProducts">
+                                    <template slot="productSerial" scope="row">
+
+                                    </template>
+                                    <template slot="productUnit" scope="row">
+                                        <template v-if="row.object.unit != null">
+                                            ${row.object.unit.name}
+                                        </template>
+                                    </template>
+                                    <template slot="productDescription" scope="row">
+                                        <div class="expand">
+                                            ${row.object.description}
+                                        </div>
+                                    </template>
+                                    <template slot="productToReceive" scope="row">
+                                        ${row.object.pivot.to_receive}
+                                    </template>
+                                    <template slot="productReceived" scope="row">
+                                        ${row.object.pivot.quantity}
+                                    </template>
+                                    <template slot="productExtraData" scope="row">
+                                        ${row.object.pivot.refQuantity}
+                                    </template>
+                            </vue-dynamic-table-rbc>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+
+        uiVars['movement'] = {{ movement|json_encode|raw }};
+        init.length = 0;
+        init = [ {
+            title: "Detalles de Movimiento No.: " + uiVars['movement'].id,
+            file: 'Warehouse/Movements/viewMovement.js',
+            functions: [ {
+                name: 'iniciarModuloViewMovement',
+                args: [ uiVars['movement'] ]
+            } ]
+        } ];
+
+    </script>
+{% endblock %}

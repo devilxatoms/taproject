@@ -1,0 +1,44 @@
+<section>
+    <div id="create-employee">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                class="btn btn-success"
+                @click="saveChecklist">
+                <span class="glyphicon glyphicon-floppy-disk"></span>
+                Guardar
+            </button>
+            <button
+            class="btn btn-danger"
+            data-action="closeTab">
+            <span class="glyphicon glyphicon-remove"></span>
+            Cancelar
+        </button>
+    </div>
+</div>
+<div class="panel-content">
+    <div class="row">
+        {% include '/HumanResources/PerformanceAssessment/Partials/header.twig' %}
+    </div>
+    <div class="row" id="content">
+        {% include '/HumanResources/PerformanceAssessment/Partials/checklistQuest.twig' %}
+    </div>
+    <div class="clear clearfix"></div>
+</div>
+</div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+uiVars['title'] = '{{title}}';
+uiVars['view'] = {{view}};
+uiVars['data']   = {{data|json_encode|raw}};
+uiVars['info']   = {{info|json_encode|raw}};
+init.lenght = 0;
+init = [ {
+    title: uiVars['title'],
+    file: 'HumanResources/PerformanceAssessment/form.js',
+    functions: [ {
+        name: 'initChecklist',
+        args: [ uiVars['data'], uiVars['info']]
+    } ]
+} ];
+</script>

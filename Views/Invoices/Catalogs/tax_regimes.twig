@@ -1,0 +1,53 @@
+{% block content %}
+<section>
+    <div id="taxRegimeList">
+        <div class="header-buttons">
+
+        </div>
+        <div class="panel-content">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :total-results="datasource.total"
+                :source-columns="columns"
+                :remote-method="loadData"
+                :data-model="datasource.data">
+                <template slot="customIndividual" scope="row">
+                    <div v-if="row.object.individuals == 1"> Si </div>
+                    <div v-else> No </div>
+                </template>
+                <template slot="customBusiness" scope="row">
+                    <div v-if="row.object.business == 1"> Si </div>
+                    <div v-else> No </div>
+                </template>
+                <template slot="customActivation" scope="row">
+                    <button v-if="row.object.deleted_at === null" type="button" class="btn btn-warning btn-block"
+                     @click="deactiveVisibility(row.object)">
+                        Desactivar
+                    </button>
+                    <button v-else type="button" @click="activeVisibility(row.object)"
+                     class="btn btn-success btn-block">
+                        Activar
+                    </button>
+                </template>
+                <template slot="no-rows-found">
+                    <span>No se encontrarón resultados</span>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script type="text/javascript" id="scriptContainer">
+    init.length = 0;
+    init = [{
+        title: 'Régimenes Fiscales',
+        file: 'Invoices/Catalogs/taxRegime.js',
+        functions: [{
+            name: 'initTaxRegimeList',
+            args: []
+        }]
+    }];
+</script>
+{% endblock %}

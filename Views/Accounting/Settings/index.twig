@@ -1,0 +1,36 @@
+<section>
+	<div class="header-buttons">
+		<div class="btn-group main-buttons">
+		</div>
+	</div>
+
+	{%  include 'Accounting/Config/Partials/periodConfig.twig' %}
+
+<style>
+	.config-container {
+		width: 100%;
+		padding: 1em;
+        margin-top: 3em;
+	}
+	.last-option {
+		border-bottom: 1px solid #DFE6EC;
+	}
+
+    .row {
+        margin-top: 1em;
+    }
+
+</style>
+</section>
+<script id="scriptContainer" type="text/javascript">
+console.log('antes de ir a vue');
+	init.lenght = 0;
+	init = [{
+		title: 'Configuración de contabilidad',
+		file: 'Accounting/Config/config.js',
+		functions: [{
+			name: 'initAccountingConfig',
+			args: []
+		}]
+	}];
+</script>

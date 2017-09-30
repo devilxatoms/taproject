@@ -1,0 +1,182 @@
+{% block content %}
+    <section id="formOpportunities">
+        <div class="header-buttons">
+           <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    class="btn btn  btn-success "
+                    v-on:click="onSaveOpportunity">
+                    <i class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></i>
+                    Guardar Oportunidad</a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <form>
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        <div class="box box-default">
+                            <div class="box-header">
+                                <h3 class="box-title">
+                                    ${ formTitle }
+                                 </h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Titulo</label>
+                                            <input type="text" class="form-control" v-model="opportunity.title">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Monto</label>
+                                            <input type="text" class="form-control" v-model="opportunity.amount">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="requisitionDate">Fecha de cierre</label>
+                                            <el-date-picker
+                                                name="expirationDate"
+                                                v-model="opportunity.expiration_date"
+                                                type="date"
+                                                format='dd-MM-yyyy'
+                                                placeholder="Fecha de cierre"
+                                                :picker-options="pickerOptions">
+                                            </el-date-picker>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="selectedCustomerProspect">Cliente/Prospecto</label>
+                                            <el-select 
+                                                v-model="selectedCustomerProspect"
+                                                filterable
+                                                placeholder="Nombre del Prospecto o cliente">
+                                                <el-option-group 
+                                                    v-for="(group, index) in info.CustomerProspect"
+                                                    :key="index"
+                                                    :label="group.options ? group.label : ''">
+                                                    <el-option
+                                                        v-for="item in group.options"
+                                                        :key="item.id"
+                                                        :label="item.business_name"
+                                                        :value="index +', '+ item.id">
+                                                        <div>${ item.business_name }</div>
+                                                        <div style=" color: #8492a6; font-size: 10px">
+                                                            ${item.legal_name}
+                                                        </div>
+                                                    </el-option>
+                                                </el-option-group>
+                                            </el-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="selectedCategory">Contacto</label>
+                                            <el-select 
+                                                v-model="selectedContacts"
+                                                filterable
+                                                placeholder="Nombre del Contacto">
+                                                <el-option-group 
+                                                    v-for="(group, index) in info.Contacts"
+                                                    :key="index"
+                                                    :label="group.options ? group.label : ''">
+                                                    <el-option
+                                                        v-for="item in group.options"
+                                                        :key="item.id"
+                                                        :label="item.name"
+                                                        :value="index +', '+ item.id">
+                                                        <div>${ item.name }</div>
+                                                    </el-option>
+                                                </el-option-group>
+                                            </el-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="selectedCategory">Categoria</label>
+                                            <el-select
+                                                v-model="opportunity.category_id" 
+                                                name="selectedCategory"
+                                                placeholder="Selecciona un estatus">
+                                                <el-option
+                                                    v-for="item in info.categories"
+                                                    :key="item.id"
+                                                    :label="item.name"
+                                                    :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="selectedEstatus">Estatus</label>
+                                            <el-select
+                                                v-model="selectedEstatus"
+                                                name="selectedEstatus"
+                                                placeholder="Selecciona un estatus">
+                                                <el-option
+                                                    v-for="item in info.status"
+                                                    :key="item.id"
+                                                    :label="item.name"
+                                                    :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <label>Descripcion</label>
+                                            <textarea
+                                                name= "description"
+                                                type="text"
+                                                class="form-control"
+                                                v-model="opportunity.description"
+                                                maxlength="160"
+                                                v-on:keyup="countKey('description')">
+                                            </textarea>
+                                            <div>${'Maximo de caracteres: ' + count + ' de 160'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 ">
+                        <div class="box box-default">
+                            <div class="box-header">
+                                <h3 class="box-title">
+                                    Asignada a
+                                 </h3>
+                            </div>
+                            <div class="box-body">
+                                <div class="row">
+                                    {% include 'crm/assignedCards.twig'%}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer">
+        uiVars['opportunityIdToEdit'] = '{{ opportunityIdToEdit }}';
+        uiVars['info'] = {{info|json_encode|raw}};
+        init.length = 0;
+        init = [{
+            title: 'Oportunidades',
+            file: 'CrmJs/FollowUp/saveOpportunity.js',
+            functions: [ {
+                name: 'addEditOpportunities',
+                args: [ uiVars['opportunityIdToEdit'], uiVars['info'] ]
+            } ]
+        }];
+    </script>
+{% endblock %}

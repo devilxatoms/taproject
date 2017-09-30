@@ -1,0 +1,214 @@
+{% block content  %}
+    <div class="panel-content" id="create-opening-module">
+        <div class="form-group">
+            <label for="">Cajero:</label>
+            <vue-selectize-js
+                    v-model="cashierId"
+                    @change="clearOpeningError('cashierId')"
+                    :selectize-options="listCashiers"
+                    :selectize-settings="cashierSelectizeOptions">
+            </vue-selectize-js>
+            <span class="cRed" v-if="openingValidatorErrors != null"  class="cRed">${ openingValidatorErrors.first('cashierId') }</span>
+        </div>
+        <div class="form-group">
+            <label for="">Sucursal:</label>
+            <vue-selectize-js
+                    v-model="subsidiaryId"
+                    :selectize-options="listSubsidiaries"
+                    :selectize-settings="subsidiarySelectizeOptions">
+            </vue-selectize-js>
+        </div>
+        <div class="form-group">
+            <label for="">Caja:</label>
+            <vue-selectize-js
+                    v-model="cashboxId"
+                    @change="clearOpeningError('cashboxId')"
+                    :selectize-options="listCashboxes"
+                    :selectize-settings="cashboxSelectizeOptions">
+            </vue-selectize-js>
+            <span class="cRed" v-if="openingValidatorErrors != null"  class="cRed">${ openingValidatorErrors.first('cashboxId') }</span>
+        </div>
+        <div class="form-group">
+            <label for="">Monto inicial</label>
+            <input type="number" v-model="initialAmount">
+        </div>
+        <button class="btn btn-success" @click="openingValidate()">
+            Guardar
+        </button>
+
+
+        <!-- Modal de notificaion de cambios -->
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="modal-error" id="modal-error">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            <span class="fa fa-exclamation-circle"></span> Error
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        ${ message }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- -->
+
+        <!-- Modal de notificaion de cambios -->
+        <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="modal-result" id="modal-result">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            <span class="fa fa-check-circle"></span> Aviso
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        Apertura realizada satisfactoriamente.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" @click="">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- -->
+
+
+    </div>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        var listCashiers     = {{ cashiers | json_encode | raw }};
+        var listCashboxes    = {{ cashboxes | json_encode | raw }};
+        var listSubsidiaries = {{ subsidiaries | json_encode | raw }};
+
+        (function(listCashiers, listCashboxes, listSubsidiaries) {
+            var cashierSelectizeOptions = {
+                valueField: 'id',
+                labelField: 'name',
+                searchField: ['name'],
+                maxItems: 1
+            };
+            var cashboxSelectizeOptions = {
+                valueField: 'id',
+                labelField: 'name',
+                searchField: ['name'],
+                maxItems: 1
+            };
+            var subsidiarySelectizeOptions = {
+                valueField: 'id',
+                labelField: 'name',
+                searchField: ['name'],
+                maxItems: 1
+            };
+
+            const openingValidator = new VeeValidate.Validator({
+                cashierId: "required",
+                cashboxId: "required",
+                initialAmount: "required"
+            });
+
+            var createOpeningModule = new Vue({
+                el: "#create-opening-module",
+                data: {
+                    listCashiers: listCashiers,
+                    listCashboxes: listCashboxes,
+                    listSubsidiaries: listSubsidiaries,
+                    cashierSelectizeOptions: cashierSelectizeOptions,
+                    subsidiarySelectizeOptions: subsidiarySelectizeOptions,
+                    cashboxSelectizeOptions: cashboxSelectizeOptions,
+
+                    openingValidator: openingValidator,
+                    openingValidatorErrors: null,
+
+                    subsidiaryId: null,
+                    cashierId: null,
+                    cashboxId: null,
+                    initialAmount: 0,
+
+                    message: null
+                },
+                methods: {
+                    loadCashboxes: function() {
+                        var filters = {
+                            subsidiaryId: this.subsidiaryId
+                        };
+                        $.get(
+                            AJAX_PATH + "punto-de-venta/cajas",
+                            filters,
+                            function(response) {
+                                this.listCashboxes = response;
+                                this.cashboxId     = null;
+                            }.bind(this)
+                        );
+                    },
+
+                    clearOpeningError: function (field) {
+                        console.log(field);
+                        if (this.openingValidatorErrors != null)
+                            this.openingValidatorErrors.remove(field);
+                    },
+                    openingValidate: function() {
+                        var openingData = {
+                            cashierId: this.cashierId,
+                            cashboxId: this.cashboxId,
+                            initialAmount: this.initialAmount
+                        };
+                        this.openingValidator
+                            .validateAll(openingData)
+                            .then(
+                                function(success) {
+                                    if (success) {
+                                        this.saveOpening();
+                                    }
+                                }.bind(this)
+                            )
+                            .catch(
+                                function (err) {
+                                    console.log(err);
+                                    this.openingValidatorErrors = this.openingValidator.errorBag;
+                                }.bind(this)
+                            );
+                    },
+                    saveOpening: function() {
+
+                        var data = {
+                            cashierId: this.cashierId,
+                            cashboxId: this.cashboxId,
+                            initialAmount: this.initialAmount
+                        };
+                        $.post(
+                            AJAX_PATH + "punto-de-venta/cajas/apertura-cierres/nuevo",
+                            data
+                        ).done(
+                            function (response) {
+                                console.log(response);
+                                $("#modal-result").modal("show");
+                            }.bind(this)
+                        ).fail(
+                            function (response) {
+                                this.message = response.responseJSON.message;
+                                $("#modal-error").modal("show");
+                            }.bind(this)
+                        );
+                    }
+                },
+                watch: {
+                    subsidiaryId: function() {
+                        this.loadCashboxes();
+                    }
+                },
+                delimiters: ['${', '}']
+            });
+        })(listCashiers, listCashboxes, listSubsidiaries);
+    </script>
+{% endblock %}

@@ -1,0 +1,213 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Evaluacion de Desempeño{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-12">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <table style="width:100%">
+                            <tr>
+                                <th>Areas de Desempeño</th>
+
+                            </tr>
+                        </table>
+                        <table style="width:100%">
+                            <tr>
+                                <td width="30%" >Habilidades par decidir</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='decisions' type="range" name="rangeInput" min="1" max="5" id="s1"
+                                    v-on:change="updateTextInput('q1', 's1')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q1" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Acepta Cambios</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='changes' type="range" name="rangeInput" min="1" max="5" id="s2"
+                                    v-on:change="updateTextInput('q2', 's2')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q2" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Acepta Dirección</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='directions' type="range" name="rangeInput" min="1" max="5" id="s3"
+                                    v-on:change="updateTextInput('q3', 's3')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q3" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Acepta Responsabilidares</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='responsabilities' type="range" name="rangeInput" min="1" max="5" id="s4"
+                                    v-on:change="updateTextInput('q4', 's4')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q4" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Actitud</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='attitud' type="range" name="rangeInput" min="1" max="5" id="s5"
+                                    v-on:change="updateTextInput('q5', 's5')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q5" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Cumple las Reglas</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='rules' type="range" name="rangeInput" min="1" max="5" id="s6"
+                                    v-on:change="updateTextInput('q6', 's6')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q6" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Cooperación</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='cooperation' type="range" name="rangeInput" min="1" max="5" id="s7"
+                                    v-on:change="updateTextInput('q7', 's7')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q7" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Autonomia</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='autonomy' type="range" name="rangeInput" min="1" max="5" id="s8"
+                                    v-on:change="updateTextInput('q8', 's8')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q8" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Presta Atención a los Costos</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='cost' type="range" name="rangeInput" min="1" max="5" id="s9"
+                                    v-on:change="updateTextInput('q9', 's9')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q9" >5</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <table style="width:100%">
+                            <tr>
+                                <th>Areas de Desempeño</th>
+                            </tr>
+                        </table>
+                        <table style="width:100%">
+                            <tr>
+                                <td width="30%">Iniciativa Personal</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='initiative' type="range" name="rangeInput" min="1" max="5" id="s10"
+                                    v-on:change="updateTextInput('q10', 's10')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q10" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Soporta la Tensión y la Presión</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='tension' type="range" name="rangeInput" min="1" max="5" id="s11"
+                                    v-on:change="updateTextInput('q11', 's11')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q11" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Conoce el Trabajo</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='knowledge' type="range" name="rangeInput" min="1" max="5" id="s12"
+                                    v-on:change="updateTextInput('q12', 's12')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q12" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Liderazgo</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='leadership' type="range" name="rangeInput" min="1" max="5" id="s13"
+                                    v-on:change="updateTextInput('q13', 's13')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q13" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Calidad del Trabajo</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='quality' type="range" name="rangeInput" min="1" max="5" id="s14"
+                                    v-on:change="updateTextInput('q14', 's14')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q14" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Cantidad de Producción</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='quantity' type="range" name="rangeInput" min="1" max="5" id="s15"
+                                    v-on:change="updateTextInput('q15', 's15')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q15" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Prácticas de Seguridad</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='security' type="range" name="rangeInput" min="1" max="5" id="s16"
+                                    v-on:change="updateTextInput('q16', 's16')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q16" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Planificación y Organización</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='planing' type="range" name="rangeInput" min="1" max="5" id="s17"
+                                    v-on:change="updateTextInput('q17', 's17')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q17" >5</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="30%">Cuida el Patrimonio</td>
+                                <td width="60%" style="padding-right: 2em; padding-left: 2em;">
+                                    <input v-model='heritage' type="range" name="rangeInput" min="1" max="5" id="s18"
+                                    v-on:change="updateTextInput('q18', 's18')">
+                                </td>
+                                <td width="5%" align="center">
+                                    <span id="q18" >5</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

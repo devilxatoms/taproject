@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link href="{{ url('public/css/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+	<style type="text/css">
+	p strong{
+		color: #8c8c8c;
+	}
+	table thead{
+		background-color: #D8D8D8;
+	}
+	table thead th{
+		color: #666666;
+	}
+	.date{
+		margin-top: 25px;
+		margin-bottom: 0;
+		padding: 0;
+		color: #8c8c8c;
+	}
+	hr{
+		border-top: 1.5px solid #8c8b8b;
+		padding: 0;
+		margin: 1px;
+	}
+	table{
+		font-size: 9pt;
+	}
+	table th{
+		text-align: center;
+	}
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-1">
+				<!-- <h2 class="text-uppercase text-center text-bold noMargin">Logo empresa</h1> -->
+				<img height="80px" src="{{ url('public/img/logo-placeholder.png') }}">
+			</div>
+			<div class="col-xs-6">
+				<p style="padding-top: 30px; font-size: 18pt; font-weight: bold;">Requisición de Compra</p>
+			</div>
+			<div class="col-xs-4">
+				<p style="padding-top: 20px" class="date">{{"now"|date("d-M-Y H:i:s")}}</p>
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="text-center">
+				<strong>EMPRESA DE EJEMPLO SPR DE RL</strong> Tel: 1234512
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-xs-2 text-right">
+				<p><strong>Soliciante:</strong></p>
+				<p><strong>Comprador:</strong></p>
+				<p><strong>Almacén:</strong></p>
+				<p><strong>Proveedor:</strong></p>
+				<p><strong>Departamento:</strong></p>
+			</div>
+			<div class="col-xs-2 text-left">
+				<p> {{ requisition.user_claimant.name }} &nbsp;</p>
+				<p> {{ requisition.user_responsible.name }} &nbsp;</p>
+				<p> {{ requisition.warehouse }} &nbsp;</p>
+				<p> {{ requisition.provider }} &nbsp;</p>
+			</div>
+			<div class="col-xs-2 text-right">
+				<p><strong>Folio:</strong> </p>
+				<p><strong>Fecha de Documento:</strong> </p>
+				<p><strong>Fecha de Requerimiento:</strong> </p>
+			</div>
+			<div class="col-xs-4 text-left">
+				<p> {{ requisition.id }} &nbsp;</p>
+				<p> {{ requisition.created_at|date("d/m/Y") }} &nbsp;</p>
+				<p> {{ requisition.requisition_date|date("d/m/Y") }} &nbsp;</p>
+			</div>
+		</div>
+		<div class="row">
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th>Código Barras</th>
+						<th>Código</th>
+						<th>Nombre</th>
+						<th>Costo</th>
+						<th>Cantidad</th>
+						<th>Unidad</th>
+						<th>Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in requisition.details %}
+						<tr>
+							<td> {{ item.barcode }}</td>
+							<td> {{ item.code }}</td>
+							<td> {{ item.name }}</td>
+							<td> $<p class="pull-right" style="display:inline"> {{ item.unit_cost|number_format(2, '.', ',') }}</p></td>
+							<td class="text-center">{{ item.quantity }}</td>
+							<td class="text-center"> {{ item.unit }}</td>
+							<td> $<p class="pull-right" style="display:inline">{{ item.subtotal|number_format(2, '.', ',') }}</p></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="row">
+			<div class="col-xs-5">
+				<p><strong>Comentarios</strong></p>
+				{{ requisition.comment }}
+			</div>
+			<div class="col-xs-4 text-right">
+				<p><strong>Total:</strong>$</p>
+			</div>
+			<div class="col-xs-1 text-right">
+				<p>{{ requisition.total|number_format(2, '.', ',') }}</p>
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-xs-6">
+				<p><strong>Estatus:</strong> {{ requisition.status }} </p>
+			</div>
+			<div class="col-xs-6">
+				<p><strong>Autorización:</strong> {{ requisition.user_responsible.name }} </p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

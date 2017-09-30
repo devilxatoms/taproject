@@ -1,0 +1,22 @@
+{% block box %}
+<div class="box box-default box-content">
+	{% block boxHeader %}
+	<div class="box-header">
+		<h3 class="box-title">{% block boxTitle %}{% endblock %}</h3>
+		<div class="box-tools pull-right">
+			<button
+			type="button"
+			data-widget="collapse"
+			data-toggle="tooltip"
+			title="Minimizar"
+			class="btn btn-box-tool">
+			<i class="fa fa-minus"></i>
+		</button>
+	</div>
+</div>
+{% endblock %}
+<div class="box-body">
+	{% block boxContent %}{% endblock %}
+</div>
+</div>
+{% endblock %}

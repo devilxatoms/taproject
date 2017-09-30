@@ -1,0 +1,107 @@
+{% block content %}
+<section>
+    <div class="box box-default">
+        <div class="box-header">
+            <h3 class="box-title">Datos de Centro Contable</h3>
+            <div class="box-tools pull-right">
+            </div>
+        </div>
+        <div class="box-body" id="newEditAccountingCenterEl">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="">Codigo </label>
+                        <input type='text' v-model='accountingCenter.code' class='form-control' placeholder='Codigo' ></input>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Nombre </label>
+                        <input type="text" v-model="accountingCenter.name" class="form-control"
+                        placeholder="Nombre">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="">Descripción</label>
+                        <textarea type="text" v-model="accountingCenter.description" class="form-control" placeholder="Descripción">
+                        </textarea>
+                    </div>
+                    <div class="form-group" v-if="accountingCenter.parentId == 0">
+                        <label for="">Sucursal</label>
+                        <el-select clearable v-model="accountingCenter.subsidiaryId" 
+                            placeholder="Selecciona">
+                            <el-option
+                                v-for="subsidiary in subsidiaries"
+                                :key="subsidiary.id"
+                                :label="subsidiary.name"
+                                :value="subsidiary.id">
+                            </el-option>
+                        </el-select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button v-on:click="newEditCenter()" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+        <div class='box-body' id='accountingAccounts'>
+            <h2>${ title }</h2>
+            <p class='center help-text' v-if="multiple === 'true'">(Usa ctrl o cmd para seleccionar multiples)</p>
+            <div class="row">
+                <div class="" >
+                    Filter:<input type="text" v-model="filter">
+                </div>
+                <div class="col-md-5">
+                    <select
+                      multiple="true"
+                      v-bind:class="{ 'fix-height': multiple === 'true' }"
+                      v-model="listadoCuentasSelections"
+                      >
+                      <option
+                        v-for="listadoCuentaContable in listadoCuentasContables"
+                        :value="listadoCuentaContable">
+                        ${listadoCuentaContable.concatName}
+                      </option>
+                    </select>
+                    {# ${ listadoCuentasSelections } #}
+                </div>
+                <div class="col-md-1">
+                    <button v-on:click="right()">&gt;</button>
+                    <button v-on:click="deleteSelected()">Borrar</button>
+                </div>
+                <div class="col-md-5">
+                    <select
+                      multiple="true"
+                      v-bind:class="{ 'fix-height': multiple === 'true' }"
+                      v-model="cuentasSelections"
+                      >
+                      <option
+                        v-for="cuentaContable in cuentasContables"
+                        :value="cuentaContable">
+                        ${cuentaContable.concatName}
+                      </option>
+                    </select>
+                    {# ${ cuentasSelections } #}
+                </div>
+            </div> 
+            
+        </div>
+</section>
+{% endblock %} {% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+    init.lenght = 0;
+    uiVars['id'] = {{id | json_encode | raw }};
+    uiVars['code'] = {{code | json_encode | raw }};
+    uiVars['level'] = {{level | json_encode | raw }};
+    uiVars['parentId'] = {{parentId | json_encode | raw }};
+    uiVars['accounts'] = {{accounts | json_encode | raw }};
+    uiVars['subsidiaries'] = {{subsidiaries | json_encode | raw }};
+
+    init = [{
+        title: 'Nuevo Centro',
+        file: 'Accounting/AccountingCenter/form.js',
+        functions: [{
+            name: 'newEditAccountingCenter',
+            args: [ uiVars['id'], uiVars['code'], uiVars['level'], uiVars['parentId'], uiVars['accounts'], uiVars['subsidiaries'] ]
+        }]
+    }];
+</script>
+{% endblock %}

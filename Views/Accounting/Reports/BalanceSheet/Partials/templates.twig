@@ -1,0 +1,149 @@
+<template id="company-name">
+    <tr style="text-align: center;
+	width: 100%;
+    border: none;">
+        <td colspan="12">
+            ${ company_name }
+        </td>
+    </tr>
+</template>
+<template id="report-date"
+<tr>
+    <td colspan ="12" style="text-align: center;
+	width: 100%;">
+        Balance general, al ${ currentDate() }
+    </td>
+</tr>
+</template>
+<template id="table-header">
+    <tr>
+        <td style="width: 4%;">
+        </td>
+        <td style="width: 3%;
+    	text-align: center;">
+        </td>
+        <td style="width: 32%;">
+        </td>
+        <td style="width: 14%;" colspan="2" align="center">
+            1
+        </td>
+        <td style="width: 14%;" colspan="2" align="center">
+            2
+        </td>
+        <td style="width: 14%;" colspan="2" align="center">
+            3
+        </td>
+        <td style="width: 14%;" colspan="2" align="center">
+            4
+        </td>
+        <td style="width: 4%;">
+        </td>
+    </tr>
+</template>
+
+<template id="account-category">
+    <tr>
+        <td></td><td></td>
+        <td style="width: 32%;
+    	font-weight: bold;
+    	text-align: center;"><b>${ category }</b></td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td></td>
+    </tr>
+</template>
+
+<template id="account-group">
+    <tr>
+        <td></td>
+        <td></td>
+        <td style="width: 32%;
+        	font-style: italic;
+        	padding-left: 5%;"><b>${ group }</b></td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td></td>
+    </tr>
+</template>
+
+<template id="account">
+    <tr>
+        <td></td>
+        <td style="width: 3%;
+    	text-align: center;">
+            ${ position + 1 }
+        </td>
+        <td style="width: 32%;
+    	padding-left: 2%;">
+            ${ account }
+        </td>
+        <td style="width: 2%;
+    	text-align: center;"></td>
+        <td style="width: 12%;
+    	text-align: right;"></td>
+        <td style="width: 2%;
+    	text-align: center;">
+            <template v-if="position == 0 && group.data.length > 1">
+                $
+            </template>
+        </td>
+        <td style="width: 12%;
+    	text-align: right;">
+            <template v-if="group.data.length > 1">
+                ${ numberWithSpaces(balance) }
+            </template>
+        </td>
+        <td style="width: 2%;
+    	text-align: center;">
+            <template v-if="position + 1 == group.data.length">$
+            </template>
+        </td>
+        <td style="width: 12%;
+    	text-align: right;">
+            <template v-if="position + 1 == group.data.length">
+                ${ numberWithSpaces(groupTotal(group)) }
+            </template>
+        </td>
+        <td style="width: 2%;
+    	text-align: center;">
+            <template v-if="position + 1 == group.data.length">
+                $
+            </template>
+        </td>
+        <td style="width: 12%;
+    	text-align: right;">
+            <template v-if="position + 1 == group.data.length">
+                ${numberWithSpaces(categoryTotal(category, position))}
+            </template>
+        </td>
+        <td></td>
+    </tr>
+</template>

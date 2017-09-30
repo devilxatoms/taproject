@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link href="{{ url('public/css/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+	<style type="text/css">
+	p strong{
+		color: #8c8c8c;
+	}
+	table thead{
+		background-color: #D8D8D8;
+	}
+	table thead th{
+		color: #666666;
+	}
+	.date{
+		margin-top: 25px;
+		margin-bottom: 0;
+		padding: 0;
+		color: #8c8c8c;
+	}
+	hr{
+		border-top: 1.5px solid #8c8b8b;
+		padding: 0;
+		margin: 1px;
+	}
+	table{
+		font-size: 9pt;
+	}
+	table th{
+		text-align: center;
+	}
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-8">
+				<p style="font-size: 18pt; font-weight: bold;">Cotización</p>
+			</div>
+			<div class="col-xs-4">
+				<p class="date">{{"now"|date("d-M-Y H:i:s")}}</p>
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="text-center">
+				<strong>{{ customerCompany.business_name }}</strong> Tel: {{ customerCompany.phone }}
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-xs-2 text-right">
+				<p><strong>Cliente:</strong> </p>
+			</div>
+			<div class="col-xs-2 text-left">
+				<p> {{ quotation.legal_name }} </p>
+			</div>
+			<div class="col-xs-2 text-right">
+				<p><strong>Folio:</strong> </p>
+				<p><strong>Fecha:</strong> </p>
+			</div>
+			<div class="col-xs-4 text-left">
+				<p> {{ quotation.folio }} </p>
+				<p> {{ quotation.created_at }} </p>
+			</div>
+		</div>
+		<div class="row">
+			<table class="table table-condensed table-striped">
+				<thead>
+					<tr>
+						<th>Código</th>
+						<th>Nombre</th>
+						<th>Precio U.</th>
+						<th>Cantidad</th>
+						<th>Unidad</th>
+						<th>Subtotal</th>
+						<th>Impuestos</th>
+						<th>Descuento</th>
+						<th>Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for concept in concepts %}
+						<tr>
+							<td> {{ concept.code }}</td>
+							<td> {{ concept.productName }}</td>
+							<td><p class="pull-right" style="display:inline">$ {{ concept.unitPrice }}</p></td>
+							<td class="text-center">{{ concept.quantity }}</td>
+							<td class="text-center"> {{ concept.unit }}</td>
+							<td> <p class="pull-right" style="display:inline">$ {{ concept.subtotal }}</p></td>
+							<td> <p class="pull-right" style="display:inline">$ {{ concept.tax }}</p></td>
+							<td class="text-center"> 
+								{{ concept.discountType == 0 ? '' : '$'}}
+								{{ concept.discount }}
+								{{ concept.discountType == 0 ? '%' : ''}}
+							</td>
+							<td> <p class="pull-right" style="display:inline">$ {{ concept.total }}</p></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="row">
+			<div class="col-xs-5">
+				<p><strong>Comentarios</strong></p>
+				{{ comment.comment }}
+			</div>
+			<div class="col-xs-3 text-right">
+				<p><strong>Subtotal:</strong></p>
+				<p><strong>Impuestos:</strong></p>
+				<p><strong>Descuento:</strong></p>
+				<p><strong>Total:</strong></p>
+			</div>
+			<div class="col-xs-2 text-right">
+				<p>$ {{ quotation.sale_price }}&nbsp;</p>
+				<p>$ {{ quotation.tax_price }}&nbsp;</p>
+				<p>$ {{ quotation.discount }}&nbsp;</p>
+				<p>$ {{ quotation.total_price }}&nbsp;</p>
+			</div>
+		</div>		
+	</div>
+</body>
+</html>

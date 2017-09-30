@@ -1,0 +1,10 @@
+{# LINK #}
+<template slot="count_quantity-slot" scope="row">
+    <idp-template-finder debug-info="{{ _self.templateName }}"></idp-template-finder>
+    <template v-if="row.object.count_quantity">
+        ${ row.object.count_quantity }
+    </template>
+    <template v-else>
+        <span class="noDataCell">sin contar</span>
+    </template>
+</template>

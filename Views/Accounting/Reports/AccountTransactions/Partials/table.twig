@@ -1,0 +1,26 @@
+<vue-dynamic-table-rbc box-classes="box box-primary full-height"
+                       class-name="table table-bordered table-hover"
+                       :remote-method="ajaxJournalEntryTransactionsSearch"
+                       :select-options="catalogs"
+                       :source-columns="sourceColumns"
+                       :data-model="journalEntryTransactions"
+                       :total-results="journalEntryTransactionsResults"
+                       template-file-name="Cuenta auxiliar" >
+
+    <template slot="isAdjustment" scope="row">
+        <i class="fa"
+            :class="row.object.is_adjustment ?
+                   'fa-check-circle' :
+                   'fa-times-circle'"
+            aria-hidden="true"></i>
+    </template>
+
+    <template slot="dontAffect" scope="row">
+        <i class="fa"
+            :class="row.object.dont_affect ?
+                   'fa-check-circle' :
+                   'fa-times-circle'"
+            aria-hidden="true"></i>
+    </template>
+
+</vue-dynamic-table-rbc>

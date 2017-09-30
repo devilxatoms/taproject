@@ -1,0 +1,154 @@
+    <section>
+        <div class="row" id="create-consignee-module">
+        	<div v-show="!panelCreateConsignee"></div>
+            <div v-show="panelCreateConsignee">
+        		<div class="col-md-12 modalRemoveIds">
+        			<h1 id="consignee_title">Nuevo consignatario</h1>
+        			<hr/>
+        		</div>
+        		<div class="col-md-12">
+        			<label style="color: #002a80" for="">Datos generales</label>
+        			<div class="col-md-12">
+        				<div class="form-group">
+        					<label for="name">Nombre: </label>
+        					<input type="text"
+        						class="form-control"
+        						name="name"
+        						id="name"
+        						v-model="consignee.name">
+        				</div>
+        			</div>
+        			<div class="col-md-6">
+        				<div class="form-group">
+        					<label for="phone">Teléfono: </label>
+        					<vue-selectize-js
+        						selectize-type="Tags"
+        						:selectize-settings="selectizePhoneSettings"
+        						v-model="consignee.phones">
+        					</vue-selectize-js>
+        				</div>
+        			</div>
+        			<div class="col-md-6">
+        				<div class="form-group">
+        					<label for="email">E-mail: </label>
+        					<vue-selectize-js
+        						selectize-type="Tags"
+        						:selectize-settings="selectizeEmailSettings"
+        						v-model="consignee.emails">
+        					</vue-selectize-js>
+        				</div>
+        			</div>
+        		</div>
+        		<div class="col-md-12">
+        			<label style="color: #002a80" for="">Dirección</label>
+        			<div class="col-md-12">
+        				<div class="form-group">
+        					<label for="street">Calle</label>
+        					<input type="text"
+        						name="street"
+        						class="form-control"
+        						id="street"
+        						v-model="consignee.address.street">
+        				</div>
+        			</div>
+        			<div class="col-md-6">
+        				<div class="form-group">
+        					<label for="external_number">No. Ext.</label>
+        					<input type="text"
+        						name="external_number"
+        						class="form-control"
+        						id="external_number"
+        						v-model="consignee.address.external_number">
+        				</div>
+        			</div>
+        			<div class="col-md-6">
+        				<div class="form-group">
+        					<label for="internal_number">No. Int.</label>
+        					<input type="text"
+        						name="internal_number"
+        						class="form-control"
+        						id="internal_number"
+        						v-model="consignee.address.internal_number">
+        				</div>
+        			</div>
+        			<div class="col-md-12">
+        				<div class="form-group">
+        					<label for="suburb">Colonia</label>
+        					<input type="text"
+        						name="suburb"
+        						class="form-control"
+        						id="suburb"
+        						v-model="consignee.address.suburb">
+        				</div>
+        			</div>
+        			<div class="col-md-12">
+        				<div class="form-group">
+        					<label for="postal_code">CP</label>
+        					<input type="text"
+        						name="postal_code"
+        						class="form-control"
+        						id="postal_code"
+        						v-model="consignee.address.postal_code">
+        				</div>
+        			</div>
+        			<div class="col-md-12">
+        				<div class="form-group">
+        					<label for="municipality">Municipio</label>
+        					<input type="text"
+        						name="municipality"
+        						class="form-control"
+        						id="municipality"
+        						v-model="consignee.address.municipality">
+        				</div>
+        			</div>
+        			<div class="col-md-12">
+        				<div class="form-group">
+        					<label for="town">Localidad</label>
+        					<input type="text"
+        						name="town"
+        						class="form-control"
+        						id="town"
+        						v-model="consignee.address.town">
+        				</div>
+        			</div>
+        			<div class="col-md-12">
+        				<div class="form-group">
+        					<label for="state">Estado</label>
+        					<input type="text"
+        						name="state"
+        						class="form-control"
+        						id="state"
+        						v-model="consignee.address.state">
+        				</div>
+        			</div>
+        			<div class="col-md-12">
+        				<div class="form-group">
+        					<label for="country">Pais</label>
+        					<input type="text"
+        						name="country"
+        						class="form-control"
+        						id="country"
+        						v-model="consignee.address.country">
+        				</div>
+        			</div>
+        		</div>
+        		<div class="col-md-6">
+        			<a style="margin-top: 10px; margin-bottom: 10px;"
+        				type="button"
+        				class="btn btn-success block"
+        				data-action="submit"
+        				@click="submitHandler">Guardar</a>
+        		</div>
+        		<div class="col-md-6">
+        			<a style="margin-top: 10px; margin-bottom: 10px;"
+        				type="button"
+        				class="btn btn-danger block"
+        				@click="closePanel">Cancelar</a>
+        		</div>
+        	</div>
+        </div>
+    </section>
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+	</script>
+{% endblock %}

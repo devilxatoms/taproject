@@ -1,0 +1,65 @@
+<div id="tableListCategories">
+    <!-- Dynamic Table -->
+    <vue-dynamic-table-rbc
+        box-classes="box box-primary full-height"
+        class-name="table table-bordered table-hover"
+
+        :remote-method="remoteMethod"
+        :total-results="totalResults"
+
+        {# FAVORITOS #}
+        :favorites="dynamicTableFavorites"
+        @save-to-favorites="saveToFavorites"
+        @loaded-favorite="loadedFavorite"
+
+        :loading-from-server="loadingFromServer"
+        {# :loading-error="listBackorders.error" #}
+
+
+        :source-columns="sourceColumns"
+        :data-model="listDataCategories">
+        <template slot="accountingAccount" scope="row">
+            <div v-if="row.object.accounting_account && row.object.accounting_account.strCurrent" class="expand">
+                ${ row.object.accounting_account.strCurrent }
+            </div>
+        </template>
+        <template slot="attributes" scope="row">
+            <div class="expand">
+                <span v-for="item in row.object.attributes" class="item-badge">${ item.name } </span>
+            </div>
+        </template>
+        <template slot="markets" scope="row">
+            <div class="expand">
+                <span v-for="item in row.object.markets" class="item-badge"> ${ item.name } </span>
+            </div>
+        </template>
+        <template slot="businessTypes" scope="row">
+            <div class="expand">
+                <span v-for="item in row.object.business_types" class="item-badge"> ${ item.name } </span>
+            </div>
+        </template>
+
+        {# ACCIONES #}
+        <template slot="actions" scope="row">
+            <div class="ui-button bg-Light-Blue overflowInherit">
+                <div class="secondary">
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="Editar Categoría"
+                        v-on:click="onEditClick(row.object)">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="Eliminar Categoría"
+                        v-on:click="onRemoveClick(row.object)">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                </div>
+            </div>
+        </template>
+    </vue-dynamic-table-rbc>
+    <!-- Dynamic Table -->
+</div>

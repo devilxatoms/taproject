@@ -1,0 +1,185 @@
+{% block main_customer %}
+    <section>
+        <div id="admin-container">
+           {% include( 'Admin/Log/partials/buttons.twig' ) %}
+            <div class="panel-content">
+                <div class="col-md-12">
+                    <div id="example-2">
+                        <simple-counter></simple-counter>
+                        <simple-counter></simple-counter>
+                        <simple-counter></simple-counter>
+                    </div>
+                    <div id="activityLog">
+                        <h4>
+                            <i class="fa fa-user" aria-hidden="true"></i>
+                            Bitacora de Actividades General</h4>
+                        <!-- Dynamic Table -->
+                        <vue-dynamic-table
+                            class-name="table table-bordered table-hover"
+                            v-bind:filter-enabled="true"
+                            v-bind:expandable-row="true"
+                            v-bind:columns="sourceColumns"
+                            v-bind:data-model="listLogs"
+                            v-on:go-to-page="goToPage"
+                            v-bind:pagination-options="PaginationOptions">
+                             {% include '/Admin/Log/slots.twig' %}
+                            
+                        </vue-dynamic-table>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+var logsTable = new Vue({
+  el: '#activityLog',
+  data: {
+      fullHeight: true,
+      selectedColumns: [],
+      listLogs: [],
+      PaginationOptions: {
+        position: 'both',
+          classSizeOption: 'pull-left form-control page-size',
+          classPaginator: 'pagination pagination-sm no-margin pull-right',
+          classPageOption: 'btn btn-default',
+          sizeOptions: [20, 30, 50, 100],
+          size: 20,
+          paginatorClass: 'list-inline',
+          pageOptionClass: 'btn btn-primary',
+          currentPage: 1,
+          lastPage: null
+      },
+      sourceColumns: [
+        {
+            name: 'id',
+            title: 'ID',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-xs',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'operation',
+            title: 'Operacion',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'tables',
+            title: 'tablas',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'rowId',
+            title: 'Renglon',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'date',
+            title: 'Fecha',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'userId',
+            title: 'Usuario',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            },
+            customRender: {
+                        slot: 'userId'
+                    }
+        },
+        {
+            name: 'ip',
+            title: 'IP',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        }
+        
+      ],
+      currentPage: 1,
+      lastPage: 1,
+      pageSize: 100
+  },
+
+  mounted: function() {
+      this.loadLogs();
+      console.log(this.listLogs);
+  },
+  methods: {
+      loadLogs: function() {
+          var filters = {};
+          this.sourceColumns.map(function(column) {
+              column.filterTag = false
+          }),
+          filters.size = this.PaginationOptions.size;
+          filters.page = this.PaginationOptions.currentPage;
+          //obtiene datos para la tabla
+          $.get(AJAX_PATH + 'admin/logTotal', filters, function(response) {
+              var paginator = response.data;
+              this.PaginationOptions.lastPage = paginator.last_page;
+              this.listLogs = response.data.data;
+
+          }.bind(this));
+
+      },
+      userData: function(event){
+                var element = $(event.currentTarget);
+                element.closest('td').find('.list-dt').slideToggle();
+              },
+      goToPage: function(page) {
+          this.PaginationOptions.currentPage = page;
+          this.loadLogs();
+      },
+  },
+  computed: {},
+  watch: {},
+  delimiters: ['${', '}']
+});
+</script>
+{% endblock %}

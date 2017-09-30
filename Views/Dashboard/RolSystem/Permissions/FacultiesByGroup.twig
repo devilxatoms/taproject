@@ -1,0 +1,261 @@
+{% block body %}
+<div class="header-buttons">
+   <div class="btn-group main-buttons">
+       <a name="add"
+        role="button"
+        class="btn btn-success"
+        data-action="openLateral"
+        data-panelsize="md"
+        data-module="usuarios"
+        data-route="usuarios/registro">
+         <i class="fa fa-plus-square" aria-hidden="true"></i>
+         Asignar Facultades
+       </a>
+   </div>
+</div>
+<div id="groupFacultyAssign" class="panel-content faculty-assign-control">
+  <div class="col-md-3">
+    <h4><i class="fa fa-users" aria-hidden="true"></i> Grupos</h4>
+    <template>
+          <el-tree
+           :data="groups"
+           show-checkbox
+           node-key="id"
+           ref="refGroups"
+           @check-change="getCheckedGroups"
+           :props="defaultProps">
+          </el-tree>
+    </template>
+  </div>
+  <div class="col-md-3">
+    <h4>
+      <i class="fa fa-cubes" aria-hidden="true"></i>
+      Módulos
+      <button type="button" @click="getFaculties" name="button" class="btn-primary">
+          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+      </button>
+    </h4>
+    <el-tree
+      :data="modules"
+      show-checkbox
+      node-key="id"
+      default-expand-all
+      ref="refModules"
+      @check-change="getCheckedPages"
+      :props="defaultProps">
+    </el-tree>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="fa fa-list" aria-hidden="true"></i> Facultades
+      <button type="button" @click="getAssigned" name="button" class="btn-primary">
+        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+      </button>
+    </h4>
+    <el-tree
+      :data="faultyList"
+       show-checkbox
+       node-key="id"
+       ref="refFaculty"
+       default-expand-all
+       @check-change="getCheckedFaculties"
+       :props="defaultProps">
+    </el-tree>
+  </div>
+  <div class="col-md-3">
+    <h4><i class="fa fa-info-circle" aria-hidden="true"></i> Asignados</h4>
+    <el-tree
+      :data="assigned"
+      node-key="id"
+      ref="refAssigned"
+      default-expand-all
+      :props="defaultProps">
+    </el-tree>
+  </div>
+</div>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+init = [{
+  title: 'Facultades Por Grupo'
+}];
+var companyid = {{session.userData.company}}
+
+var groupFaculties = new Vue({
+  el: '#groupFacultyAssign',
+  data: {
+       checkedGroup: "",
+       currentGroup: "",
+       labelGroup:"",
+       checkedModule:"",
+       currentModules:"",
+       currentFaculty:"",
+       currentModules2:[],
+       checkedPages:[],
+       nodeskey: [],
+       labelPages:[],
+       checkedFaculty:[],
+       labelFaculty:[],
+       modules: [],
+       groups: [],
+       moduleNodes: [],
+       facutlyNodes: [],
+       faultyList: [],
+       assigned:[],
+       defaultProps: {
+         children: 'children',
+         label: 'label'
+       }
+   },
+   mounted: function() {
+       this.loadModuleList();
+       this.loadGroupList();
+   },
+   watch: {
+       moduleNodes: function(evt){
+           console.log(evt);
+       }
+   },
+   methods: {
+    loadModuleList: function(){
+       $.ajax({
+           url: AJAX_PATH + 'dashboard/faculty/moduleList',
+           data:{
+             id: companyid
+           },
+           type: 'POST'
+       }).done( function( response ) {
+         console.log(response.data);
+         this.modules = response.data;
+       }.bind(this));
+    },
+    loadGroupList: function(){
+       $.ajax({
+           url: AJAX_PATH + 'dashboard/faculty/groupList',
+           type: 'POST'
+       }).done( function( response ) {
+         this.groups = response.data;
+        //  console.log(this.groups);
+       }.bind(this));
+    },
+    getCheckedGroups: function(checked, indeterminate) {
+         if (indeterminate == true){
+             this.checkedGroup = checked.id;
+             this.labelGroup = checked.label;
+             this.$refs.refGroups.setCheckedKeys([checked.id]);
+             //limpia los checks marcados
+             this.$refs.refModules.setCheckedNodes([]);
+             this.$refs.refFaculty.setCheckedNodes([]);
+             if (_.findKey(this.assigned, {id: checked.id}) == undefined) {
+                 //this.assigned.push({id: checked.id, label: checked.label, children: []});
+             }
+             //obtiene el id del areglo de el grupo
+             //this.currentGroup = _.findKey(this.assigned, {id: this.checkedGroup, label: this.labelGroup});
+             //this.$refs.refModules.setCheckedNodes(this.assigned[this.currentGroup].children);
+             //this.$refs.refFaculty.setCheckedNodes(this.assigned[this.currentModules].children);
+             this.faultyList = [];
+             //console.log(this.checkedGroup);
+         } else {
+          checked == false;
+         }
+    },
+    getCheckedPages: function(checked, indeterminate){
+        if(indeterminate == true){
+          this.checkedPages = checked.id;
+          this.labelPages = [checked.label];
+            //this.checkedModule = checked.id;
+            //this.$refs.refModules.setCheckedKeys([checked.id]);
+             currentModules2 = JSON.parse(JSON.stringify(this.$refs.refModules.getCheckedNodes(true)));
+            _.each(currentModules2, function(obj, key){
+                currentModules2[key].children = [];
+            });
+            //groupFaculties.assigned.pop({id: checked.id, label: checked.label, children: []});
+            //groupFaculties.assigned[this.currentGroup].children = currentModules2;
+            //this.$refs.refFaculty.setCheckedNodes(this.assigned[this.checkedModule].children);
+            //groupFaculties.assigned.push({id: checked.id, label: checked.label, children: []});
+            //console.log(groupFaculties.assigned[this.currentGroup].children = currentModules2);
+             this.currentModules = _.findKey(this.currentGroup, {id: this.checkedPages, label: this.labelPages, children:[]});
+            console.log("holis");
+            console.log(this.checkedPages);
+            console.log("holis");
+            //groupFaculties.assigned[{id: this.nodeskey}];
+
+
+        }
+    },
+    getCheckedFaculties: function(checked, indeterminate){
+        // this.assigned[this.currentGroup].children =  this.$refs.refFaculty.getCheckedNodes(true);
+         //$key = _.findKey(this.assigned[this.currentGroup].children, {id: checked.id});
+        if(indeterminate == true){
+          
+           this.nodeskey = this.$refs.refModules.getCheckedNodes(true);
+          this.labelFaculty = [checked.label];
+          //console.log(this.checkedFaculty);
+          //console.log(this.labelFaculty);
+          //console.log(this.nodeskey);
+           currentFaculty = JSON.parse(JSON.stringify(this.$refs.refFaculty.getCheckedNodes(true)));
+            _.each(currentFaculty, function(obj, key){
+                currentFaculty[key].children = [];
+            });
+            console.log( this.labelFaculty);
+            //groupFaculties.assigned[this.currentGroup].children = currentFaculty;
+            //this.assigned.append({ id:checked.id , label:checked.label, children: [] },this.currentGroup);
+            // console.log(this.$refs.refFaculty.getCheckedKeys(true));
+            //console.log(currentFaculty);
+
+            //groupFaculties.assigned[{id: this.nodeskey}];
+              //groupFaculties.currentModules[this.currentModules2] = currentFaculty;
+            //groupFaculties.assigned[this.currentGroup].children= currentFaculty;
+           // console.log(groupFaculties.assigned[this.currentGroup].children= currentFaculty);
+            //groupFaculties.assigned[this.currentModules2] = currentFaculty;
+           
+        }
+
+
+    },
+    getFaculties: function(){
+        this.moduleNodes = this.$refs.refModules.getCheckedNodes(true);
+        
+        console.log(this.moduleNodes);
+
+
+        $.ajax({
+            url: AJAX_PATH+'dashboard/faculty/getFacultiesByPageId',
+            data:{
+              pages: this.moduleNodes
+            },
+            type: 'POST'
+        }).done( function( response ){
+            console.log(response.data);
+            this.faultyList = response.data;
+        }.bind(this));
+    },
+    getAssigned: function(){
+
+      this.facutlyNodes= this.$refs.refFaculty.getCheckedNodes(true);
+      this.groupNodes = this.$refs.refGroups.getCheckedNodes(true);
+      //console.log(this.facutlyNodes);
+        //this.assigned.push({id: this.checkedGroup, label: this.labelGroup, children:[{
+         // id: this.checkedPages, label: this.labelPages, children: [{
+          //  id: this.checkedFaculty, label: this.labelFaculty}]}]});
+     // this.facutlyNodes = this.$refs.refFaculty.getCheckedNodes(true);
+
+      $.ajax({
+        url: AJAX_PATH+'dashboard/faculty/getFacultiesByModule',
+         data:{
+              pages: this.facutlyNodes,
+              group:  this.groupNodes
+            },
+            type: 'POST'
+      }).done(function(response){
+        console.log("aqui");
+        console.log(response);
+
+        this.assigned = response.data;
+      }.bind(this));
+
+    }
+   }
+});
+</script>
+{% endblock %}

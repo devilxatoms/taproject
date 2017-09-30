@@ -1,0 +1,45 @@
+{% block content %}
+    <section id="formTag">
+        <div class="box box-default">
+            <div class="box-header">
+                <h3 class="box-title" >{% if Editar == 1 %} Editar Etiqueta {% else %} Nueva Etiqueta {% endif %}</h3>
+                <div class="box-tools pull-right">
+
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="modal-body">
+                      <div class="form-group">
+                          <label for="">Nombre</label>
+                          <input type="text" v-model="name">
+                      </div>
+                      <div class="form-group">
+                          <label for="">Color de Etiqueta</label>
+                          <el-color-picker v-model="color"></el-color-picker>
+                      </div>
+                </div>
+            </div>
+            <div class="box-footer">
+                <button type="button" class="btn btn-default" v-on:click="saveOrEditTag">Guardar</button>
+            </div>
+        </div>
+    </section>
+{% endblock %} {% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+    uiVars['Tag'] =  {{ Tag|json_encode|raw }};
+    var editar =uiVars['Editar'] = {{ Editar|json_encode|raw }};
+    var title;
+        if(editar == 1){ title = 'Editar Eitiqueta' }else{ title ='Nueva Etiqueta'}
+        init.lenght = 0;
+        init = [{
+            title: title ,
+            file: 'CrmJs/Tags/Tags.js',
+            functions: [{
+                name: 'initForm',
+                args: [
+                    uiVars['Tag']
+                ]
+            }]
+        }];
+    </script>
+{% endblock %}

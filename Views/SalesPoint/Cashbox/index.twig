@@ -1,0 +1,308 @@
+{% block content  %}
+    <section>
+        <div id="list-cashboxes-module">
+            <div class="header-buttons">
+                <div class="btn-group main-buttons">
+                    <button class="btn btn-success" @click="newCashboxClick">
+                        <span class="fa fa-plus"></span> Nueva Caja
+                    </button>
+                    <button class="btn btn-success">
+                        <span class="fa fa-check-square-o"></span> Campos
+                    </button>
+                </div>
+            </div>
+            <div class="panel-content">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            Sucursal
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <div class="form-group noMargin noPadding" v-for="subsidiary in listSubsidiaries">
+                                            <input class="checkbox" name="subsidiary" type="checkbox" v-model="subsidiaries" :id="subsidiary.name" :value="subsidiary.id">
+                                            <label class="checkbox-label filter-option" :for="subsidiary.name">${ subsidiary.name }</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <h4 class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                            Moneda
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                    <div class="panel-body">
+                                        <div class="form-group noMargin noPadding" v-for="currency in listCurrencies">
+                                            <input class="checkbox" name="subsidiary" type="checkbox" v-model="currencies" :id="currency.code" :value="currency.id">
+                                            <label class="checkbox-label filter-option" :for="currency.code"><strong>${ currency.code }</strong>: ${ currency.name }</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <vue-dynamic-table
+                            class-name="table table-bordered"
+                            v-bind:class="{ fullHeight }"
+                            :pagination="true"
+                            :pagination-options="paginationOptions"
+                            @go-to-page="gotoPage"
+                            :columns="columns"
+                            :data-model="listCashboxes">
+                            <template slot="no-rows-found">
+                                No se encontrarón resultados
+                            </template>
+                            <template slot="number" scope="row">
+                                ${ ((paginationOptions.currentPage - 1) * paginationOptions.size) + row.index + 1 }
+                            </template>
+                            <template slot="cashbox-actions" scope="row">
+                                <a class="has-tooltip center-block" @click="openCashbox()">
+                                    <span class="fa fa-external-link"></span> Abrir caja
+                                </a>
+                            </template>
+                            <template slot="actions" scope="row">
+                                <div class="ui-button bg-Light-Blue overflowInherit">
+                                    <div class="secondary">
+                                        <a 
+                                            class="has-tooltip btn align-right"
+                                            data-tooltip="Editar" 
+                                            role="button" 
+                                            @click="askForEditCashbox(row.index)">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                        <a 
+                                            class="has-tooltip btn align-right"
+                                            data-tooltip="Eliminar" 
+                                            role="button" 
+                                            @click="askForDeleteCashbox(row.index)">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </template>
+                        </vue-dynamic-table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="modal-delete-cashbox" id="modal-delete-cashbox">
+                <div class="modal-dialog modal-sm" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Confirmacion</h4>
+                        </div>
+                        <div class="modal-body">
+                            <template v-if="cashboxIndexToDelete >= 0">
+                                ¿Desea eliminar la caja: <strong>${ listCashboxes[cashboxIndexToDelete].name }</strong>?
+                            </template>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" @click="deleteCashbox()">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="modal-open-cashbox" id="modal-open-cashbox">
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">
+                                <span class="fa fa-external-link"></span> Nueva apertura de caja
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary">Aceptar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        var listSubsidiaries = {{ subsidiaries | json_encode | raw }};
+        var listCurrencies   = {{ currencies | json_encode | raw }};
+        var listCashiers     = {{ cashiers | json_encode | raw }};
+
+        var listCashboxModule = (function (listSubsidiaries, listCurrencies, listCashiers) {
+            var columns = [
+                {
+                    title: 'N°',
+                    class:'col-xs',
+                    customRender: {
+                        slot: 'number'
+                    },
+                    visible: true,
+                },
+                {
+                    name: 'name',
+                    class:'col-md',
+                    title: 'Nombre',
+                    visible: true,
+                },
+                {
+                    name: 'subsidiary',
+                    class:'col-md',
+                    title: 'Sucursal',
+                    visible: true,
+                },
+                {
+                    name: 'currency',
+                    class:'col-xs-sm',
+                    title: 'Moneda',
+                    visible: true,
+                },
+                {
+                    name: 'status',
+                    class:'col-sm',
+                    title: 'Estatus',
+                    visible: true,
+                },
+                {
+                    title: 'Abrir/Cerrar',
+                    class:'col-sm-md',
+                    customRender: {
+                        slot: 'cashbox-actions'
+                    },
+                    visible: true,
+                },
+                {
+                    customRender: {
+                        slot: 'actions'
+                    },
+                    title:'Acciones',
+                    visible: true,
+                    class: 'col-md acciones',
+                }
+            ];
+
+            var paginationOptions = {
+                position: 'bottom',
+                classSizeOption: 'pull-left form-control page-size',
+                classPaginator: 'pull-right list-inline',
+                classPageOption: 'btn btn-default',
+                sizeOptions: [20, 30, 50, 100],
+                size: 20,
+                currentPage: 1
+            };
+
+            var cashierSelectizeOptions = {
+                valueField: 'id',
+                labelField: 'name',
+                searchField: ['name'],
+                maxItems: 1
+            };
+
+            /**
+             * Modulo Javascript para la pantalla de lista de cajas.
+             *
+             * @author Agustin Cepeda
+             */
+            var listCashboxesModule = new Vue({
+                el: '#list-cashboxes-module',
+                data: {
+                    fullHeight: true,
+                    listCashboxes: [],
+                    cashboxIndexToEdit: -1,
+                    cashboxIndexToDelete: -1,
+                    columns: columns,
+                    paginationOptions: paginationOptions,
+                    subsidiaries: [],
+                    currencies: [],
+                    listSubsidiaries: listSubsidiaries,
+                    listCurrencies: listCurrencies,
+                    listCashiers: listCashiers,
+                    cashierSelectizeOptions: cashierSelectizeOptions
+                },
+                mounted: function () {
+                    this.loadListCashboxes();
+                },
+                methods: {
+                    loadListCashboxes: function (page, size) {
+                        var filters = {};
+
+                        if (page != null)
+                            filters.page = page;
+                        if (size != null)
+                            filters.size = size;
+                        if (this.subsidiaries.length > 0)
+                            filters.subsidiaries = this.subsidiaries.join(',');
+                        if (this.currencies.length > 0)
+                            filters.currencies = this.currencies.join(',');
+
+                        $.get(
+                            AJAX_PATH + 'punto-de-venta/cajas/index',
+                            filters,
+                            function (response) {
+                                this.listCashboxes = response.data;
+                                this.paginationOptions.lastPage = parseInt(response.last_page);
+                                this.paginationOptions.currentPage = parseInt(response.current_page);
+                            }.bind(this)
+                        );
+                    },
+                    newCashboxClick: function () {
+                        console.log('newCashboxClick');
+                        openOnLateral('punto-de-venta/cajas/nuevo', 'sm');
+                    },
+                    askForEditCashbox: function (index) {
+                        var cashboxId = this.listCashboxes[index].id;
+                        openOnLateral('punto-de-venta/cajas/' + cashboxId + '/editar', 'sm');
+                    },
+                    askForDeleteCashbox: function (index) {
+                        this.cashboxIndexToDelete = index;
+                        $('#modal-delete-cashbox').modal('show');
+                    },
+                    deleteCashbox: function () {
+                        var cashboxId = this.listCashboxes[this.cashboxIndexToDelete].id;
+                        $.get(
+                            AJAX_PATH + 'punto-de-venta/cajas/' + cashboxId + '/borrar',
+                            null,
+                            function (response) {
+                                this.cashboxIndexToDelete = -1;
+                                $('#modal-delete-cashbox').modal('hide');
+                                this.loadListCashboxes();
+                            }.bind(this)
+                        );
+                    },
+                    openCashbox: function() {
+                        $('#modal-open-cashbox').modal('show');
+                    },
+                    gotoPage: function (page) {
+                        this.loadListCashboxes(page, this.paginationOptions.size);
+                    }
+                },
+                watch: {
+                    subsidiaries:  function() {
+                        this.loadListCashboxes();
+                    },
+                    currencies:  function() {
+                        this.loadListCashboxes();
+                    }
+                },
+                delimiters:['${', '}']
+            });
+            return listCashboxesModule;
+        })(listSubsidiaries, listCurrencies, listCashiers);
+
+        console.log(listCashboxModule);
+    </script>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% block content %}
+<div id="customer-create-module" v-cloak>
+    <div class="header-buttons">
+        <div class="btn-group main-buttons">
+            <button
+                class="btn btn-success"
+                @click="save()">|
+                <span class="glyphicon glyphicon-plus"></span>
+                Guardar
+            </button>
+        </div>
+    </div>
+    <div class="panel-content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos Generales</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div>
+                            <vue-image-picker
+                                    v-model="logoFile"
+                                    class-name="center-block"
+                                    :placeholder="customerLogo"
+                                    width="200"
+                                    height="200"
+                                    text="Choose an image"
+                                    :show-input="true">
+                            </vue-image-picker>
+                        </div>
+                        <div class="form-group">
+                            <label for="legal_name">Razon Social:</label>
+                            <input id="legal_name" name="legal_name" v-model="customer.legalName" @keypress="clearValidationError('legalName')">
+                            <span v-if="validationErrors != null" class="cRed">
+                                ${ validationErrors.legalName }
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label for="rfc">RFC:</label>
+                            <input id="rfc" name="rfc" v-model="customer.rfc" @keypress="clearValidationError('rfc')" @keypress="clearValidationError('rfc')">
+                            <span class="cRed" v-if="validationErrors != null"  class="cRed">${ validationErrors.rfc }</span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="business_name">Nombre Comercial:</label>
+                                    <input id="business_name" name="business_name" v-model="customer.businessName" @keypress="clearValidationError('businessName')">
+                                    <span v-if="validationErrors != null" class="cRed">${ validationErrors.businessName }</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="business_activity">Giro:</label>
+                                    <!--
+                                    <vue-selectize-js
+                                            :selectize-options="listBusinessTypes"
+                                            :selectize-settings="selectizeBusinessTypeSettings"
+                                            
+                                            v-model="customer.businessTypeId">
+                                    </vue-selectize-js>
+                                    -->
+                                    <el-select v-model="customer.businessTypeId" placeholder="Selecciona un giro">
+                                        <el-option
+                                            v-for="businessType in listBusinessTypes"
+                                            :key="businessType.id"
+                                            :label="businessType.name"
+                                            :value="businessType.id"
+                                            @change="clearValidationError('businessTypeId')">
+                                        </el-option>
+                                    </el-select>
+                                    <span v-if="validationErrors != null" class="cRed">${ validationErrors.businessTypeId }</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Direccion</h3>
+                    </div>
+                    <div class="panel-body">
+                        <address-form
+                            v-model="customer.addresses[0]"
+                            id="customer-address">
+                        </address-form>
+                    </div>
+                </div>
+                <!--
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="phones">Telefono:</label>
+                            <vue-selectize-js
+                                    selectize-type="Tags"
+                                    :selectize-settings="selectizePhoneSettings"
+                                    v-model="phones">
+                            </vue-selectize-js>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="emails">Email:</label>
+                            <vue-selectize-js
+                                    selectize-type="Tags"
+                                    :selectize-settings="selectizeEmailSettings"
+                                    v-model="emails">
+                            </vue-selectize-js>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="emails">Asegurado</label>
+                            <input id="si" type="radio" name="asegurado" value="Si" v-model="asegurado">
+                            <label for="Si">Si</label>
+                            <input id="no" type="radio" name="asegurado" value="No" v-model="asegurado">                                    
+                            <label for="No">No</label>
+                        </div>
+                    </div>
+                </div>
+                -->
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Sucursales</h3>
+                    </div>
+                    <div class="panel-body">
+                        <customer-subsidiaries
+                            v-model="customer.subsidiaries">
+                        </customer-subsidiaries>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos Bancarios</h3>
+                    </div>
+                    <div class="panel-body">
+                        <bank-accounts-form
+                            v-model="customer.bankAccounts"
+                            :list-banks="listBanks">
+                        </bank-accounts-form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+    {% include 'GenericPartials/address-form.twig' %}
+    {% include 'System/Customer/partials/contacts.twig' %}
+    {% include 'System/Customer/partials/consignees.twig' %}
+    {% include 'System/Customer/partials/bank_accounts.twig' %}
+    {% include 'System/Customer/partials/subsidiaries.twig' %}
+</div>
+{% endblock %}
+
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+    var args = [];
+    args.push(
+        {{ businessTypes | json_encode | raw }}
+    );
+    args.push(
+        {{ banks | json_encode | raw }}
+    );
+    init = [
+        {
+            file: 'components/address-form.js'
+        },
+        {
+            file: 'System/Customer/contacts.js'
+        },
+        {
+            file: 'System/Customer/consignees.js'
+        },
+        {
+            file: 'System/Customer/bank_accounts.js'
+        },
+        {
+            file: 'System/Customer/subsidiaries.js'
+        },
+        {   
+            title: 'Nuevo cliente',
+            file: 'System/Customer/create.js',
+            functions: [
+                {
+                    name: 'initModuleCustomerCreate',
+                    args: args
+                }
+            ]
+        }
+    ];
+</script>
+{% endblock %}

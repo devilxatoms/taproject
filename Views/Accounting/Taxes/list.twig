@@ -1,0 +1,95 @@
+<section>
+    <div id="taxesList">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    data-action="openLateral"
+                    data-panelsize="sm"
+                    data-route="contabilidad/impuestos/nuevo"
+                    class="btn btn-success">
+                    Nuevo impuesto
+                </a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :total-results="listTaxes.total"
+                :source-columns="sourceColumns"
+                :remote-method="ajaxLoadTaxesList"
+                :data-model="listTaxes.data">
+                <template slot="actions" scope="row">
+                    <div class="ui-button bg-Light-Blue overflowInherit">
+                        <div class="secondary">
+                            <a
+                                class="has-tooltip btn align-right"
+                                role="button"
+                                data-tooltip="Editar nombre de impuesto"
+                                v-on:click="onEditClick(row.object)">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <a
+                                class="has-tooltip btn align-right"
+                                role="button"
+                                data-tooltip="Eliminar"
+                                v-on:click="onRemoveClick(row.object)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+        <!-- Modal Edit Tax -->
+        <div class="modal fade" id="modal-tax" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" data-dismiss="modal" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Editar Impuesto</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Nuevo nombre:</label>
+                            <input type="text" v-model="name">
+                        </div>
+                        <div class="form-group">
+                            <label>Cuenta Contable:</label>
+                            <el-select v-model="accountingAccount" placeholder="Seleccione...">
+                                <el-option
+                                    v-for="item in accountingAccounts"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                                    <span style="float: left">${ item.name }</span>
+                                    <span style="float: right; color: #8492a6; font-size: 13px">${ item.account }</span>
+                                </el-option>
+                            </el-select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" scope="tax"  v-on:click="saveEditedTax()">
+                            <span class="glyphicon glyphicon-list-alt"></span> Guardar
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Listado de Impuestos',
+            file: 'Accounting/Taxes/taxes.js',
+            functions: [ {
+                name: 'loadTaxesListNew',
+                args: [ ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

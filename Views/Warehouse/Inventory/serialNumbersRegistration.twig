@@ -1,0 +1,61 @@
+{% block body %}
+    <div id="serial-numbers-registration">
+        <h4>Registro de números de serie</h4>
+
+        <div class="col-sm-4">
+            <div v-if="productId">
+
+            </div>
+            {# PRODUCTOS #}
+            <div v-else class="form-group">
+                <label>Producto</label>
+                {# SELECTIZE #}
+                <vue-selectize-js
+                    v-bind:selectize-settings="defaultSelectize.settings"
+                    v-bind:selectize-options="selectizeProductOptions"
+                    v-bind:selectize-enabled="defaultSelectize.enabled"
+                    v-model="selectedProduct">
+                </vue-selectize-js>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            {# PRODUCTOS #}
+            <div class="form-group">
+                <label>Almacén</label>
+                {# SELECTIZE #}
+                <vue-selectize-js
+                    v-bind:selectize-settings="defaultSelectize.settings"
+                    v-bind:selectize-options="selectizeWarehouseOptions"
+                    v-bind:selectize-enabled="defaultSelectize.enabled"
+                    v-model="selectedWarehouse">
+                </vue-selectize-js>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+
+        </div>
+
+        <input type="text">
+        <button>Agregar</button>
+    </div>
+{% endblock %}
+
+{% block loadScripts %}
+    <script>
+        moment().locale('es');
+
+        var inventoriesSerialNumbersRequired = [
+            {
+                file: 'warehouse/inventories/inventories_serialNumbersRegistration.js',
+                functions: [
+                    {
+                        name: 'inventoriesSerialNumbersInit'
+                    }
+                ]
+            }
+        ];
+        initModule( inventoriesSerialNumbersRequired );
+    </script>
+{% endblock %}

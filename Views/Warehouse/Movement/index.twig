@@ -1,0 +1,384 @@
+{% block body %}
+<section>
+    <style>
+        .link-warning {
+            color: #ffd400;
+        }
+        .link-primary {
+            color: #5681ad;
+        }
+        .link-success {
+            color: #3bad3b;
+        }
+        .link-danger {
+            color: #e50202;
+        }
+    </style>
+    <div id="movements-module">
+
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    data-action="openLateral"
+                    data-module="warehouse"
+                    data-route="almacenes/movimientos/crear"
+                    data-panelsize="md"
+                    class="btn btn-success">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                    Nuevo Movimiento
+                </a>
+
+                <a
+                    role="button"
+                    @click="loadMovements()"
+                    class="btn btn-success buttons-top">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                </a>
+                <a class="buttons-top">
+                    <span id="color-entrada"></span><label for="color-entrada"> Movimientos de Entrada</label>
+                    <span id="color-salida"></span><label for="color-salida"> Movimientos de Salida</label>
+                </a>
+            </div>
+        </div>
+
+        <div class="panel-content">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <vue-dynamic-table-rbc
+                        box-classes="box box-primary full-height"
+                        class-name="table table-bordered table-hover"
+
+                        :remote-method="loadMovements"
+                        :loading-from-server="isLoading"
+                        :total-results="totalResults"
+
+                        {# FAVORITOS #}
+                        :favorites="dynamicTableFavorites"
+                        @save-to-favorites="saveToFavorites"
+                        @loaded-favorite="loadedFavorite"
+
+                        hide-import-export
+
+                        :select-options="selectOptions"
+
+                        @action-link-click="actionLink"
+
+
+                        :source-columns="sourceColumns"
+                        :data-model="listMovements"
+                        >
+
+                        <template slot="movement-type" scope="row">
+                            <div>
+                                <template v-if="row.object.type_name == 'Salida'">
+                                    <span id="color-salida"></span>
+                                </template>
+                                <template v-else>
+                                    <span id="color-entrada"></span>
+                                </template>
+                                ${ row.object.type_name }
+                            </div>
+                        </template>
+
+                        <template slot="linkId" scope="row">
+                            <a
+                                role="button"
+                                data-action="openTab"
+                                data-module="warehouse"
+                                :data-route="'almacenes/movimientos/' + row.object.id + '/ver'"
+                                class="btn btn-success linkId">
+                                ${row.object.id}
+                            </a>
+                        </template>
+                        <template slot="info" scope="row">
+                            <div v-if="row.object.type_id == 1">
+                                Folio Compra: ${row.object.reference_id}
+                            </div>
+                        </template>
+
+                        <template slot="authUserName" scope="row">
+                            ${ row.object.auth_user_name }
+                        </template>
+
+                        <template slot="updatedUserName" scope="row">
+                            ${ row.object.updatedUserName }
+                        </template>
+
+                        <template slot="actions" scope="row">
+                            <div class="movements-details">
+                                <template>
+                                    <button
+                                        class="has-tooltip btn"
+                                        data-tooltip="Detalles del movimiento"
+                                        @click="showMovementDetails(row.object)">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                        ${row.object.noProducts}
+                                    </button>
+                                </template>
+                            </div>
+                            <div class="movements-dropdown">
+                                <div class="movements-dropdown-text autorize">
+                                    <template>
+                                        <button
+                                            class="btn"
+                                            :disabled="!(row.object.status_id == 1)"
+                                            @click="changeMovementStatus(2, row.object.id)">
+                                            <span class="fa fa-check-square-o"></span>
+                                            <template v-if="row.object.status_id == 2 || row.object.status_id == 3 || row.object.status_id == 5">
+                                                Autorizado
+                                            </template>
+                                            <template v-else-if="row.object.status_id == 8">
+                                                No autorizado
+                                            </template>
+                                            <template v-else>
+                                                Autorizar
+                                            </template>
+                                        </button>
+                                    </template>
+                                </div>
+                                <div class="movements-dropdown-options dropdown">
+                                    <button
+                                        class="btn dropdown-toggle"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        :disabled="!(row.object.status_id == 1)"
+                                        aria-expanded="false">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu noMargin noPadding">
+                                        <li>
+                                            <template>
+                                                <a
+                                                    role="button"
+                                                    class="btn"
+                                                    @click="changeMovementStatus(8, row.object.id)">
+                                                    <span class="fa fa-window-close-o"></span>
+                                                    No Autorizar
+                                                </a>
+                                            </template>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="movements-dropdown">
+                                <div class="movements-dropdown-text realize">
+                                    <template v-if="(row.object.typeId == 1 || row.object.typeId == 2 || row.object.typeId == 3 || row.object.typeId == 4 || row.object.typeId == 5 || row.object.typeId == 6 || row.object.typeId == 8) && ( row.object.status_id == 2 || row.object.status_id == 3 || row.object.status_id == 4 )">
+                                        <button
+                                            data-action="openTab"
+                                            data-module="warehouse"
+                                            :data-route="'almacenes/movimientos/' + row.object.id + '/realizar'"
+                                            class="btn link-success">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                            <template v-if="row.object.status_id == 4 || row.object.status_id == 5">
+                                                Realizado
+                                            </template>
+                                            <template v-else>
+                                                Realizar
+                                            </template>
+                                        </button>
+                                    </template>
+                                    <template v-else-if="row.object.typeId == 7 && row.object.status_id == 2">
+                                        <button
+                                            role="button"
+                                            data-action="openTab"
+                                            data-module="warehouse"
+                                            :data-route="'almacenes/movimientos/' + row.object.id + '/realizar'"
+                                            class="btn link-success">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                            Dar salida
+                                        </button>
+                                    </template>
+                                    <template v-else>
+                                        <button
+                                            data-action="openTab"
+                                            data-module="warehouse"
+                                            :disabled="!((row.object.typeId == 1 || row.object.typeId == 2 || row.object.typeId == 3 || row.object.typeId == 4 || row.object.typeId == 5 || row.object.typeId == 6 || row.object.typeId == 8) && ( row.object.status_id == 2 || row.object.status_id == 3 || row.object.status_id == 4 )) || !(row.object.typeId == 7 && row.object.status_id == 2)"
+                                            :data-route="'almacenes/movimientos/' + row.object.id + '/realizar'"
+                                            class="btn link-success">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                             <template v-if="row.object.status_id == 4 || row.object.status_id == 5">
+                                                Realizado
+                                            </template>
+                                            <template v-else>
+                                                Realizar
+                                            </template>
+                                        </button>
+                                    </template>
+                                </div>
+                                <div class="movements-dropdown-options dropdown">
+                                    <button
+                                        class="btn dropdown-toggle"
+                                        data-toggle="dropdown"
+                                        :disabled="!(row.object.typeId != 7 && row.object.status_id == 4)"
+                                        aria-haspopup="true"
+                                        aria-expanded="false">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </button>
+                                    <ul class="dropdown-menu noMargin noPadding">
+                                        <li>
+                                            <template>
+                                                <button
+                                                    role="button"
+                                                    class="btn"
+                                                    @click="changeMovementStatus(6, row.object.id)">
+                                                    <span class="glyphicon glyphicon-ok"></span>
+                                                    Finalizar Parcialmente
+                                                </button>
+                                            </template>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="movements-cancel">
+                                <template>
+                                    <button
+                                        class="btn link-danger"
+                                        :disabled="!(row.object.status_id != 4 && row.object.status_id != 5 &&
+                                              row.object.status_id != 6 && row.object.status_id != 7 &&
+                                              row.object.status_id != 8)"
+                                        @click="changeMovementStatus(7, row.object.id)">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                        <template v-if="row.object.status_id == 7">
+                                            Cancelado
+                                        </template>
+                                        <template v-else>
+                                            Cancelar
+                                        </template>
+                                    </button>
+                                </template>
+                            </div>
+                        </template>
+
+                        <template slot="movementEditColumn" scope="row">
+                            <template v-if="row.object.typeId === 1">
+                                <a v-if="row.object.status_id == 1" role="button" data-tooltip="Editar" class="has-tooltip link-primary">
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                    <!-- Editar -->
+                                </a>
+                            </template>
+                        </template>
+                        <template slot="movementDetails" scope="row">
+                            <a role="button" @click="showMovementHistory(row.object)">
+                                Ver Historial
+                            </a>
+                        </template>
+                        <template slot="no-rows-found">
+                            <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> No se encontraron resultados</h4>
+                        </template>
+                    </vue-dynamic-table-rbc>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal movement history -->
+        <div class="modal fade" ref="modalMovementHistory" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+            <div role="document" class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title" id="myModalLabel">Historial del movimiento ${selectedMovement.id}</h3>
+                        <h4 class="modal-title" id="myModalLabel">${selectedMovement.typeDescription}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <vue-dynamic-table
+                            class-name="table table-bordered"
+                            sort-indicator-asc-class="glyphicon glyphicon-triangle-top"
+                            sort-indicator-desc-class="glyphicon glyphicon-triangle-bottom"
+                            v-bind:columns="sourceHistory"
+                            v-bind:data-model="listMovementsHistory">
+                            <template slot="pin-movement-type" scope="row">
+                                <template v-if="row.object.type == 'Salida'">
+                                    <span id="color-salida"></span>
+                                </template>
+                                <template v-else>
+                                    <span id="color-entrada"></span>
+                                </template>
+                            </template>
+                            <template slot="no-rows-found">
+                                <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> Sin historial</h4>
+                            </template>
+                        </vue-dynamic-table>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal movement history -->
+
+        <!-- Modal movement Products -->
+        <div class="modal fade" ref="modalMovementDetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"  data-backdrop="false">
+            <div class="modal-dialog" role="document" class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title" id="myModalLabel">Detalles de productos en movimiento ${selectedMovement.id}</h3>
+                        <h4 class="modal-title" id="myModalLabel">${selectedMovement.typeDescription}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Código Barras</th>
+                                    <th>Nombre</th>
+                                    <th>Unidad</th>
+                                    <template v-if="selectedMovement.type == 'Entrada'">
+                                        <th>Cantidad a Entrar</th>
+                                        <th>Entraron</th>
+                                    </template>
+                                    <template v-else>
+                                        <th>Cantidad a Salir</th>
+                                        <th>Salieron</th>
+                                    </template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="product in selectedMovement.products">
+                                    <td>${ product.code }</td>
+                                    <td>${ product.barcode }</td>
+                                    <td>${ product.name }</td>
+                                    <td>
+                                        <template v-if="product.unit">
+                                            ${ product.unit.name }
+                                        </template>
+                                    </td>
+                                    <td>
+                                        ${ product.pivot.to_receive }
+                                    </td>
+                                    <td>
+                                        ${ product.pivot.quantity }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" v-on:click="closeModalMovementProducts">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal movement Products -->
+
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['warehouseFilters'] = {{ warehouses|json_encode|raw }};
+        init.lenght =0;
+        init = [ {
+            title: 'Listado de Movimientos',
+            file: 'Warehouse/Movements/listMovement.js',
+            functions: [ {
+                name: 'iniciarModuloListMovements',
+                args: [ uiVars['warehouseFilters'] ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

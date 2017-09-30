@@ -1,0 +1,56 @@
+<div id="modalFormExport" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Filtros de Exportación</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Empleado</label>
+                            <vue-selectize-js
+                                ref = "searchId"
+                                selectize-type = "select"
+                                v-bind:selectize-settings = "employeeSelectize.settings"
+                                v-bind:selectize-options = "employees"
+                                v-bind:selectize-enabled = "employeeSelectize.enabled"
+                                v-model = "searchId">
+                            </vue-selectize-js>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <el-date-picker
+                                v-model="date"
+                                type="daterange"
+                                placeholder="Sin filtro">
+                            </el-date-picker>
+                        </div>
+                     </div>
+                     <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                         <div class="form-group">
+                             <label>Asistencia</label>
+                             <vue-selectize-js
+                                 ref = "attendance"
+                                 selectize-type = "select"
+                                 v-bind:selectize-settings = "attendanceSelectize.settings"
+                                 v-bind:selectize-options = "attendanceList"
+                                 v-bind:selectize-enabled = "attendanceSelectize.enabled"
+                                 v-model = "attendance">
+                             </vue-selectize-js>
+                         </div>
+                      </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button v-on:click="exportAttendance" class="btn btn-success" name="button">Guardar</button>
+                <button type="button" name="button" class="btn btn-default" data-dismiss="modal" >Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

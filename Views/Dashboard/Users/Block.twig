@@ -1,0 +1,223 @@
+{% block body %}
+<section>
+  <div id="users-module-block" class="panel-content" >
+    <!-- Dynamic Table -->
+    <vue-dynamic-table
+    class-name="table table-bordered"
+    v-bind:class="{ fullHeight }"
+    v-bind:filter-enabled="true"
+    v-bind:expandable-row="true"
+    v-bind:columns="sourceColumns"
+        v-bind:data-model="listUsers"
+        v-on:go-to-page="goToPage"         
+        v-bind:pagination-options="PaginationOptions"
+        >
+        <template slot="actions" scope="row"  >
+            <div>
+              <input  v-on:click="onRemoveClick(row.object)" type="checkbox" :checked="row.object.status" >
+            </div>
+      </template>
+
+    </vue-dynamic-table>
+    <!-- Dynamic Table -->
+  </div>
+</section>
+{% endblock %}
+
+
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+init = [{
+  title: 'Bloqueo De Usuarios'
+}];
+
+var usersTable = new Vue({
+  el: '#users-module-block',
+  data: {
+      fullHeight: true,
+      selectedColumns: [],
+      listUsers: [],
+      status:[],
+      PaginationOptions: {
+        position: 'both',
+          classSizeOption: 'pull-left form-control page-size',
+          classPaginator: 'pagination pagination-sm no-margin pull-right',
+          classPageOption: 'btn btn-default',
+          sizeOptions: [20, 30, 50, 100],
+          size: 20,
+          paginatorClass: 'list-inline',
+          pageOptionClass: 'btn btn-primary',
+          currentPage: 1,
+          lastPage: null
+      },
+      sourceColumns: [
+        {
+            name: 'id',
+            title: 'ID',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-xs',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'nickname',
+            title: 'Alias',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'name',
+            title: 'Nombre',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'lastname',
+            title: 'Apellido Paterno',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'surname',
+            title: 'Apellido Materno',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+              name: 'status',
+              title: 'Bloquear',
+              class: 'col-xs',
+              customRender: {
+                  slot: 'actions'
+
+              },
+              visible: true,
+
+
+
+        }
+      ],
+      currentPage: 1,
+      lastPage: 1,
+      pageSize: 100
+  },
+
+  mounted: function() {
+      this.loadUsers();
+  },
+  methods: {
+      loadUsers: function() {
+          var filters = {};
+          this.sourceColumns.map(function(column) {
+              column.filterTag = false
+          })
+          filters.size = this.PaginationOptions.size;
+          filters.page = this.PaginationOptions.currentPage;
+          //obtiene datos para la tabla
+          $.get(AJAX_PATH + 'dashboard/users/list', filters, function(response) {
+              var paginator = response.data;
+              this.PaginationOptions.lastPage = paginator.last_page;
+              this.listUsers = response.data.data;
+              this.status = response.data
+              console.log(this.status);
+              console.log(this.selectedColumns);
+          }.bind(this));
+
+      },
+      goToPage: function(page) {
+          this.PaginationOptions.currentPage = page;
+          this.loadUsers();
+      },
+      onRemoveClick: function(row) {
+          this.$confirm('Desea Bloquear o Desbloquear Usuario?', 'Adviertencia!', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+                }).then(() => {
+                  $.ajax({
+                      data: {
+                        id: row.id
+                      },
+                      url: AJAX_PATH + 'admin/company/removeCompany',
+                      type: 'POST'
+                }).done( function( response ) {
+                adminUserList.loadCompanyList();
+                switch (response.data[0].status) {
+                  case 0:
+                  document.getElementById("toggle-two").checked = true;
+                  this.$message({
+                            message: 'Usuario Bloqueado.',
+                            type: 'warning'
+                        });
+                    break;
+                  case 1:
+                   rolesTable.loadRoles();
+                   document.getElementById("toggle-two").checked = false;
+                   this.$message({
+                             message: 'Usuario Desbloqueado.',
+                             type: 'success'
+                         });
+                    break;
+                  default:
+                    break;
+                }
+                }.bind( this ));
+                this.$message({
+                  type: 'success',
+                  message: 'Operacion Realizada Con Exito!'
+                });
+                }).catch(() => {
+                this.$message({
+                  type: 'info',
+                  message: 'Operacion Cancelado'
+                });
+                });
+      },
+      onFacultiesClick(row){
+        var element = $('#rolselect-list li');
+        $.each(element, function(){
+          if ($(this).find('input[type=checkbox]').val() == row.id) {
+              $(this).trigger('click');
+              $('#faculrol-tab').trigger('click');
+          }
+        });
+      },
+      onEditClick: function(row) {
+          editUser(row)
+      }
+  },
+  computed: {},
+  watch: {},
+  delimiters: ['${', '}']
+});
+</script>
+{% endblock %}

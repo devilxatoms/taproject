@@ -1,0 +1,119 @@
+{% block content %}
+    <section>
+        <div class="box box-default">
+            <div class="box-header">
+                <h3 class="box-title">DATOS PARA AGREGAR NUEVO TIPO DE EMPAQUETADO</h3>
+                <div class="box-tools pull-right">
+
+                </div>
+            </div>
+            <div id="add-packaging-type-container" class="box-body" >
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="hidden" id="id_packaging" name="id_packaging" hidden
+                               value="{{ tipesOfPackaging.id }}">
+                        <div class="req form-group">
+                            <label>Código </label>
+                            <input
+                                v-model="packagingType.code"
+                                type="text"
+                                class="form-control"
+                                @input="$v.packagingType.code.$touch()"
+                                placeholder="Código">
+                            <div style="text-align: right; font-size: 0.8em; color: red;">
+                                <span v-if="$v.packagingType.code.$dirty && !$v.packagingType.code.required">
+                                    El campo código es obligatorio
+                                </span>
+
+                                <span v-if="!$v.packagingType.code.minLength">
+                                    El campo código debe tener ${$v.packagingType.code.$params.minLength.min} letras como mínimo.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="req form-group">
+                            <label>Nombre</label>
+                            <input
+                                v-model="packagingType.name"
+                                type="text"
+                                class="form-control"
+                                @input="$v.packagingType.name.$touch()"
+                                placeholder="Nombre">
+                            <div style="text-align: right; font-size: 0.8em; color: red;">
+                                <span v-if="$v.packagingType.name.$dirty && !$v.packagingType.name.required">
+                                    El campo nombre es obligatorio</span>
+                                <span v-if="!$v.packagingType.name.minLength">
+                                    El campo nombre debe tener ${$v.packagingType.name.$params.minLength.min} letras como mínimo.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class=" form-group">
+                            <label for="">descripción</label>
+                            <textarea type="text" class="form-control" id="descripción" name="descripción"
+                                      placeholder="Descripción">{{ tipesOfPackaging.description }}
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Profundidad</label>
+                            <input
+                                type="number"
+                                class="form-control"
+                                placeholder="profundidad">
+
+                            <label for="">Medida</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Altura</label>
+                            <input type="number" class="form-control" id="height" name="height"
+                                           placeholder="Altura" value="{{ tipesOfPackaging.height }}">
+                            <label for="">Medida</label>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Largo</label>
+                            <input type="number" class="form-control" id="widht" name="widht"
+                                placeholder="Largo" value="{{ tipesOfPackaging.width }}">
+                            <label for="">Medida</label>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button @click="savePackaging" :disabled="$v.$invalid" class="btn btn-success">Guardar</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+{% endblock %} {% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.lenght = 0;
+        init = [{
+            title: 'Tipos de empaquetado',
+            file: 'Warehouse/PackagingTypes/addPackagingType.js',
+            functions: [{
+                name: 'addnewPackagingType',
+                args: []
+            }]
+        }];
+    </script>
+{% endblock %}

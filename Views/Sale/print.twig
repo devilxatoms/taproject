@@ -1,0 +1,224 @@
+<div class="printable">
+    <div class="letter boxShadow">
+        <div class="container-fluid noPadding">
+            <div class="row noMargin">
+                <div class="col-md-4 col-xs-4">
+                    <div class="block h70 bgBlack">
+                        <div class="content contentMiddle">
+                            <!-- <h2 class="text-uppercase text-center text-bold noMargin">Logo empresa</h1> -->
+                            <img src="public/img/logo_ta.svg" class="logo">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-xs-8">
+                    <div class="block h70">
+                        <div class="content contentMiddle">
+                            <h4 class="text-uppercase text-bold">
+                                {{ customerCompany.business_name }}
+                            </h4>
+                            <p>
+                                RFC: {{ customerCompany.rfc }}
+                            </p>
+                            <small>
+                                Tel: {{ customerCompany.phone }}
+                            </small>
+                            <p>
+                                Dirección: {{ customerCompany.address }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="linea-reporte">
+            <div class="row noMargin">
+                <div class="col-md-4 col-xs-4">
+                    <div class="row" v-if="cliente.nombre">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                Cliente:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p class="text-left">
+                                {{ quotation.legalName }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row" v-if="cliente.rfc">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                RFC:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p class="text-left">
+                                {{ quotation.rfc }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xs-4">
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                Folio:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p class="text-left">
+                                {{ quotation.folio }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                Vigencia:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p class="text-left">
+                                {{ quotation.effectiveDate|date("d-M-Y") }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-xs-4">
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                Fecha:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p class="text-left">
+                                {{"now"|date("d-M-Y H:i:s")}}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="linea-reporte">
+            <div class="row noMargin">
+                <div class="col-xs-12">
+                    <table class="">
+                        <thead class="thead-reporte">
+                            <tr>
+                                <th class="th-reporte" v-if="conceptos.codigo">Código</th>
+                                <th class="th-reporte" v-if="conceptos.nombre">Nombre</th>
+                                <th class="th-reporte" v-if="conceptos.precioUnitario">Precio U.</th>
+                                <th class="th-reporte" v-if="conceptos.cantidad">Cantidad</th>
+                                <th class="th-reporte" v-if="conceptos.subtotal">Subtotal</th>
+                                <th class="th-reporte" v-if="conceptos.impuestos">Impuestos</th>
+                                <th class="th-reporte" v-if="conceptos.descuento">Descuento</th>
+                                <th class="th-reporte">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for concept in concepts %}
+                            <tr>
+                                <td class="text-center" v-if="conceptos.codigo">
+                                    {{ concept.code }}
+                                </td>
+                                <td v-if="conceptos.nombre">
+                                    {{ concept.productName }}
+                                </td>
+                                <td class="text-center" v-if="conceptos.precioUnitario">
+                                    $ {{ concept.unitPrice }}
+                                </td>
+                                <td class="text-center" v-if="conceptos.cantidad">
+                                    {{ concept.quantity }} {{ concept.unit }}
+                                </td>
+                                <td class="text-center" v-if="conceptos.subtotal">
+                                    $ {{ concept.subtotal }}
+                                </td>
+                                <td class="text-center" v-if="conceptos.impuestos">
+                                    $ {{ concept.tax }}
+                                </td>
+                                <td class="text-center" v-if="conceptos.descuento">
+                                    {{ concept.discountType == 0 ? '' : '$'}}
+                                    {{ concept.discount }}
+                                    {{ concept.discountType == 0 ? '%' : ''}}
+                                </td>
+                                <td class="text-center">
+                                    $ {{ concept.total }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="clear h35"></div>
+            <div class="row noMargin">
+                <div class="col-xs-6">
+                    <div class="row" v-if="condiciones.cuenta || condiciones.condiciones">
+                        <p class="text-uppercase text-bold">
+                            Condiciones de pago:
+                        </p>
+                        <p v-if="condiciones.condiciones">
+                            {{ conditions.payment_condition }}
+                        </p>
+                        <p v-if="condiciones.cuenta">
+                            El pago se realizará en la cuenta <strong>{{ conditions.account }}</strong>
+                        </p>
+                        <br>
+                    </div>
+                    <div class="row" v-if="condiciones.comentarios">
+                        <p class="text-uppercase text-bold">
+                            Comentarios
+                        </p>
+                        <p>
+                            {{ comment.comment }}
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="clear"></div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                Subtotal:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p>$ {{ quotation.sale_price }}&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                Impuestos:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p>$ {{ quotation.tax_price }}&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                Descuento:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p>$ {{ quotation.discount }}&nbsp;</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5 col-xs-5">
+                            <p class="text-right text-uppercase text-bold">
+                                Total:
+                            </p>
+                        </div>
+                        <div class="col-md-7 col-xs-7">
+                            <p>$ {{ quotation.total_price }}&nbsp;</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

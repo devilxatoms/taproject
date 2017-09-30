@@ -1,0 +1,76 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Datos Bancarios{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="box-form">
+            <h3 class="panel-title"></h3>
+            <div class="form-group">
+                <label for="">Cuenta:</label>
+                <input type="text" v-model="bankAccount.account" @keypress="clearBankAccountError('Cuenta')">
+                <span class="error-validate" :class="banksErrorsClass" v-if="bankAccountValidatorErrors != null">${ bankAccountValidatorErrors.first('Cuenta') }</span>
+            </div>
+            <div class="form-group">
+                <label for="">Clave:</label>
+                <input type="text" v-model="bankAccount.clabe" @keypress="clearBankAccountError('Clabe')">
+                <span class="error-validate" :class="banksErrorsClass" v-if="bankAccountValidatorErrors != null">${ bankAccountValidatorErrors.first('Clabe') }</span>
+            </div>
+            <div class="form-group">
+                <label for="">Banco:</label>
+                <vue-selectize-js
+                        v-model="bankAccount.bank_id"
+                        @select-option="onSelectBankOption($event)"
+                        @change="clearBankAccountError('Banco')"
+                        :selectize-settings="selectizeBankSettings"
+                        :selectize-options="data.banks">
+                </vue-selectize-js>
+                <span class="error-validate" :class="banksErrorsClass" v-if="bankAccountValidatorErrors != null">${ bankAccountValidatorErrors.first('Banco') }</span>
+            </div>
+            <div class="form-group">
+                <label for="">Sucursal:</label>
+                <input type="text" v-model="bankAccount.subsidiary" @keypress="clearBankAccountError('Sucursal')">
+                <span class="error-validate" :class="banksErrorsClass" v-if="bankAccountValidatorErrors != null">${ bankAccountValidatorErrors.first('Sucursal') }</span>
+            </div>
+        </div>
+        <div class="box-btn">
+            <div class="row noMargin">
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 noPadding">
+                    <button class="btn btn-primary block" @click="bankAccountValidate()">
+                        <span class="fa fa-floppy-o"></span> Agregar
+                    </button>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 noPadding">
+                    <button class="btn btn-warning block" @click="cancelBankAccount">
+                        <span class="fa fa-ban"></span> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div> 
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <div class="box-table">
+           <vue-dynamic-table
+                class-name="table table-striped"
+                :pagination-options="bankAccountsTablePageOptions"
+                @go-to-page="goToPageBankAccountsTable"
+                :data-model="chunksListBankAccounts()[bankAccountsTablePageOptions.currentPage - 1]"
+                :columns="bankAccountsTableColumnsModel">
+                <template slot="no-rows-found">
+                    No se encontraron cuentas
+                </template>
+                <template slot="actions" scope="row">
+                    <div class="text-right">
+                        <a role="button" @click="editBankAccount(row.index)">
+                            <span class="fa fa-pencil"></span>
+                        </a>
+                        <a role="button" @click="askForDeleteBankAccount(row.index)">
+                            <span class="fa fa-remove"></span>
+                        </a>
+                    </div>
+                </template>
+            </vue-dynamic-table> 
+        </div>
+    </div> 
+</div>
+        
+{% endblock %}

@@ -1,0 +1,78 @@
+{% block content %}
+<section id="{{ 'tableCashFunds' ~ id }}">
+	<div class="header-buttons">
+		<div class="btn-group main-buttons">
+			<a
+				role="button"
+				id="btnNewExpense"
+				v-on:click="onClick"
+				class="btn btn  btn-success ">
+				<i class="fa fa-plus " aria-hidden="true"></i>
+				Agregar Caja Chica
+			</a>
+			<a role="button" 
+				data-action="openTab" 
+				class="btn btn-default" 
+				data-module="compras" 
+				data-route="compras/catalogos/cajasChicas/movimientos">
+				<i class="fa fa-th-list" aria-hidden="true"></i> Ver Movimientos
+			</a>
+		</div>
+	</div>
+	{% include '/Purchases/Catalogs/PettyCash/add.twig' %}
+	<div class="panel-content">
+		<div class="row">
+			<div class="col-md-12">
+				<div>
+					 <vue-dynamic-table-rbc
+						box-classes="box box-primary full-height"
+						class-name="table table-bordered table-hover"
+						:source-columns="columns"
+						:select-options="selectOptions"
+						:data-model="datasource"
+						@export="exportTable"
+						:remote-method="remoteSearch"
+						template-file-name="Requisiciones de Compras"
+						:total-results="totalResults">
+						<template slot="test-custom-render" scope="row">
+			                 <div class="ui-button bg-Light-Blue overflowInherit">
+			                 	<div class="secondary">
+			                 		<a 
+			                 			role='button'
+			                 			data-tooltip="Editar"
+			                 			class="has-tooltip btn align-right"
+			                 			data- 
+			                 			v-on:click="onEditClick(row.object)">
+			                 		    <span class="glyphicon glyphicon-edit"></span>
+			                 		</a>
+			                 		<a 
+			                 			role='button'
+			                 			data-tooltip="Eliminar"
+			                 			class="has-tooltip btn align-right"
+			                 			data- 
+			                 			v-on:click="onRemoveClick(row.object)">
+			                 		    <span class="glyphicon glyphicon-trash"></span>
+			                 		</a>
+			                 	</div>
+			                 </div>
+			             </template>
+					</vue-dynamic-table>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}
+{% block loadScripts  %}
+	<script id="scriptContainer" type="text/javascript">
+	    uiVars['pettyCashId'] = {{ id | json_encode | raw }};
+		init = [ {
+			title: 'Cajas Chicas',
+	        file: 'Purchase/Catalogs/PettyCash/list.js',
+	        functions: [ {
+	            name: 'initTablePettyCash',
+	            args: [ uiVars['pettyCashId'] ]
+	        } ]
+	    } ];
+    </script>
+{% endblock %}

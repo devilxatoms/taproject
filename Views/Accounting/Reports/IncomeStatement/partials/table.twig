@@ -1,0 +1,420 @@
+<table id="report-table" style="width: 100%;">
+	<!-- Cabeceras de la tabla -->
+	<tr>
+		<th style="width: 100%; text-align: center; border-bottom: none;" colspan="5">
+			${ company_name }
+		</th>
+	</tr>
+	<tr>
+		<th style="width: 100%; text-align: center; border-bottom: solid; border-width: thin; border-color: #dfe6ec" colspan="5">
+			${ report_name }
+		</th>
+	</tr>
+	<!-- Columnas de la tabla -->
+	<tr>
+		<th class="account-description">Cuenta</th>
+		<th class="regular-column">1</th>
+		<th class="regular-column">2</th>
+		<th class="regular-column">3</th>
+		<th class="regular-column">4</th>
+	</tr>
+	<tr>
+		<td class="account-description account">
+			${ results.sales.total_sales.name } 
+		</td>
+		<td></td>
+		<td></td>
+		<td>
+			<span style="float: left;">$</span>
+			${ nws(results.sales.total_sales.balance) } 
+		</td>
+		<td></td>
+	</tr>
+	<template v-for="(negative, nkey) in results.sales.negatives">
+		<tr>
+			<td class="account">
+				${ negative.name }
+			</td>
+			<td></td>
+			<td :class="cf(results.sales.negatives, nkey, 'heavy-underline')" class="negative">
+				<span v-if="nkey == 0" style="float: left;">$</span>
+				${ nws(negative.balance) }
+			</td>
+			<td :class="cf(results.sales.negatives, nkey, 'heavy-underline')" class="negative">
+				<template v-if="results.sales.negatives[nkey + 1] == undefined">
+					<span style="float: left;">$</span>
+					${ nws(gt('sales', 'negatives')) }
+				</template>
+			</td>
+			<td></td>
+		</tr>
+	</template>
+	<tr>
+		<td class="account-header">
+			Ventas netas
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>
+			<span style="float: left;">$</span>
+			${ nws(results.sales.total_sales.balance - gt('sales', 'negatives')) }
+		</td>
+	</tr>
+	<tr>
+		<td class="account">
+			${ results.purchases.initial_inventory.name }
+		</td>
+		<td></td>
+		<td></td>
+		<td>
+			<span style="float: left;">$</span>
+			${ nws(results.purchases.initial_inventory.balance) }
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="account">
+			${ results.purchases.bought.name }
+		</td>
+		<td>
+			<span style="float: left;">$</span>
+			${ nws(results.purchases.bought.balance) }
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="account">
+			${ results.purchases.expenses.name }
+		</td>
+		<td class="heavy-underline">
+			${ nws(results.purchases.expenses.balance) }
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="account-header">
+			Compras totales
+		</td>
+		<td></td>
+		<td>
+			<span style="float: left;">$</span>${ nws(results.purchases.bought.balance + results.purchases.expenses.balance) }
+		</td>
+		<td></td>
+		<td></td>
+	</tr>
+	<template v-for="(negative, nkey) in results.purchases.negatives">
+		<tr>
+			<td class="account">
+				${ negative.name }
+			</td>
+			<td :class="cf(results.sales.negatives, nkey, 'heavy-underline')" class="negative">
+				<span v-if="nkey == 0" style="float: left;">$</span>
+				${ nws(negative.balance) }
+			</td>
+			<td :class="cf(results.purchases.negatives, nkey, 'heavy-underline')" class="negative">
+				<template v-if="results.purchases.negatives[nkey + 1] == undefined">
+					<span style="float: left;">$</span>
+					${ nws(gt('purchases', 'negatives')) }
+				</template>
+			</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</template>
+	<tr>
+		<td class="account-header">
+			Compras netas
+		</td>
+		<td></td>
+		<td></td>
+		<td>
+			${ nws((results.purchases.bought.balance + results.purchases.expenses.balance) - gt('purchases', 'negatives')) }
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="account-classification">
+			Total de mercancías
+		</td>
+		<td></td>
+		<td></td>
+		<td>
+			<span style="float: left;">$</span>
+			${ nws(results.purchases.initial_inventory.balance + (results.purchases.bought.balance + results.purchases.expenses.balance) - gt('purchases', 'negatives')) }
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="account">
+			${ results.purchases.final_inventory.name }
+		</td>
+		<td></td>
+		<td></td>
+		<td class="heavy-underline negative">
+			${ nws(results.purchases.final_inventory.balance) }
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="account-header">
+			Costo de lo vendido
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td class="heavy-underline">
+			${ nws(results.purchases.initial_inventory.balance + (results.purchases.bought.balance + results.purchases.expenses.balance) - gt('purchases', 'negatives') - results.purchases.final_inventory.balance) }
+		</td>
+	</tr>
+	<tr>
+		<td class="account-header" style="text-align: center;">
+			Utilidad bruta
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>
+			<span style="float: left;">$</span>
+			${ nws(results.sales.total_sales.balance - gt('sales', 'negatives') - results.purchases.initial_inventory.balance + (results.purchases.bought.balance + results.purchases.expenses.balance) - gt('purchases', 'negatives') - results.purchases.final_inventory.balance) }
+		</td>
+	</tr>
+	<tr>
+		<th class="account-description">
+			Gastos de operación
+		</th>
+		<th></th>
+		<th></th>
+		<th></th>
+		<th></th>
+	</tr>
+	<template v-for="(expenses, ekey) in results.expenses.operation_expenses">
+		<tr>
+			<td class="account-classification">
+				${ expenses.name }
+			</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<template v-for="(expense, exkey) in expenses.data">
+			<tr>
+				<td class="account">
+					${ expense.name }
+				</td>
+				<td :class="cf(expenses.data, exkey, 'heavy-underline')">
+					<span v-if="exkey == 0" style="float: left;">$</span>
+					${ nws(expense.balance) }
+				</td>
+				<td :class="results.expenses.operation_expenses[parseInt(ekey) + 1] == undefined  && expenses.data[parseInt(exkey) + 1 ] == undefined ? 'heavy-underline' : ''">
+					<template v-if="expenses.data[parseInt(exkey) + 1] == undefined">
+						<span style="float: left;">$</span>${ nws(gt('operation_expenses', ekey)) }
+					</template>
+				</td>
+				<td>
+					<template v-if="results.expenses.operation_expenses[parseInt(ekey) + 1] == undefined  && expenses.data[parseInt(exkey) + 1 ] == undefined">
+						<span style="float: left;">$</span>
+						${ nws(gt('operation_expenses')) }
+					</template>
+				</td>
+				<td></td>
+			</tr>
+		</template>
+	</template>
+	<tr>
+		<td class="account-classification">
+			${ results.expenses.financial_products.name }
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<template v-for="(fproduct, pkey) in results.expenses.financial_products.data">
+		<tr>
+			<td class="account">
+				${ fproduct.name }
+			</td>
+			<td :class="results.expenses.financial_products.data[pkey + 1] == undefined ? 'heavy-underline' : ''">
+				<span v-if="pkey == 0" style="float: left;">$</span>
+				${ nws(fproduct.balance) }
+			</td>
+			<td>
+				<template v-if="results.expenses.financial_products.data[pkey + 1] == undefined">
+					<span style="float: left;">$</span>
+					${ nws(gt('financial_products')) }
+				</template>
+			</td>
+			<td></td>
+			<td></td>
+		</tr>
+	</template>
+	<tr>
+		<td class="account-classification">
+			${ results.expenses.financial_expenses.name }
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<template v-for="(fexpense, ekey) in results.expenses.financial_expenses.data">
+		<tr>
+			<td class="account">
+				${ fexpense.name }
+			</td>
+			<td :class="results.expenses.financial_expenses.data[ekey + 1] == undefined ? 'heavy-underline' : ''" class="negative">
+				<span v-if="ekey == 0" style="float: left;">$</span>
+				${ nws(fexpense.balance) }
+			</td>
+			<td :class="results.expenses.financial_expenses.data[ekey + 1] == undefined ? 'heavy-underline' : ''" class="negative">
+				<template v-if="results.expenses.financial_expenses.data[ekey + 1] == undefined">
+					${ nws(gt('financial_expenses')) }
+				</template>
+			</td>
+			<td :class="results.expenses.financial_expenses.data[ekey + 1] == undefined ? 'heavy-underline' : ''" class="negative">
+				<template v-if="results.expenses.financial_expenses.data[ekey + 1] == undefined">
+					${ nws(gt('financial_products') - gt('financial_expenses')) }
+				</template>
+			</td>
+			<td :class="results.expenses.financial_expenses.data[ekey + 1] == undefined ? 'heavy-underline' : ''" class="negative">
+				<template v-if="results.expenses.financial_expenses.data[ekey + 1] == undefined">
+					${ nws(gt('operation_expenses') - (gt('financial_products') - gt('financial_expenses'))) }
+				</template>
+			</td>
+		</tr>
+	</template>
+	<tr>
+		<td class="account-header" style="text-align: center;">
+			Utilidad de la operación
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>
+			<span style="float: left;">$</span>
+			${ nws(results.sales.total_sales.balance - gt('sales', 'negatives') - results.purchases.initial_inventory.balance + (results.purchases.bought.balance + results.purchases.expenses.balance) - gt('purchases', 'negatives') - results.purchases.final_inventory.balance - (gt('operation_expenses') - (gt('financial_products') - gt('financial_expenses'))))  }
+		</td>
+	</tr>
+	<tr>
+		<td class="account-classification">
+			${ results.expenses.other_expenses.name }
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<template v-for="(oexpense, okey) in results.expenses.other_expenses.data">
+		<tr>
+			<td class="account">
+				${ oexpense.name }
+			</td>
+			<td></td>
+			<td :class="results.expenses.other_expenses.data[okey + 1] == undefined ? 'heavy-underline' : ''" class="negative">
+				<span v-if="okey == 0" style="float: left;">$</span>
+				${ nws(oexpense.balance) }
+			</td>
+			<td class="negative">
+				<template v-if="results.expenses.other_expenses.data[okey + 1] == undefined">
+					<span style="float: left;">$</span>
+					${ nws(gt('other_expenses')) }
+				</template>
+			</td>
+			<td></td>
+		</tr>
+	</template>
+	<tr>
+		<td class="account-classification">
+			${ results.sales.other_products.name }
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<template v-for="(op, okey) in results.sales.other_products.data">
+		<tr>
+			<td class="account">
+				${ op.name }
+			</td>
+			<td></td>
+			<td :class="results.sales.other_products.data[okey + 1] == undefined ? 'heavy-underline' : ''">
+				<span v-if="okey == 0" style="float: left;">$</span>
+				${ nws(op.balance) }
+			</td>
+			<td :class="results.sales.other_products.data[okey + 1] == undefined ? 'heavy-underline' : ''">
+				<template v-if="results.sales.other_products.data[okey + 1] == undefined">
+					${ nws(gt('other_products')) }
+				</template>
+			</td>
+			<td></td>
+		</tr>
+	</template>
+	<tr>
+		<td class="account-classification">
+			Pérdida neta entre otros gastos y productos
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>
+			${ nws(gt('other_expenses') - gt('other_products')) }
+		</td>
+	</tr>
+	<tr>
+		<td class="account-header">
+			Utilidad antes del ISR y de la PTU
+		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td>
+			<span style="float: left;">$</span>
+			${ nws(results.sales.total_sales.balance - gt('sales', 'negatives') - results.purchases.initial_inventory.balance + (results.purchases.bought.balance + results.purchases.expenses.balance) - gt('purchases', 'negatives') - results.purchases.final_inventory.balance - (gt('operation_expenses') - (gt('financial_products') - gt('financial_expenses'))) - gt('other_expenses') - gt('other_products')) }
+		</td>
+	</td>
+</tr>
+<tr>
+	<td>
+		${ results.taxes.name }
+	</td>
+	<td></td>
+	<td></td>
+	<td class="negative">
+		<span style="float: left;">$</span>
+		${ nws(results.taxes.balance) }
+	</td>
+	<td></td>
+</tr>
+<tr>
+	<td>
+		${ results.ptu.name }
+	</td>
+	<td></td>
+	<td></td>
+	<td class="negative heavy-underline">
+		${ nws(results.ptu.balance) }
+	</td>
+	<td class="negative heavy-underline">
+		${ nws(results.taxes.balance + results.ptu.balance) }
+	</td>
+</tr>
+<tr>
+	<td class="account-header">
+		Utilidad neta del ejercicio
+	</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td style="border-bottom: double">
+		<span style="float: left;">$</span>
+		${  nws(results.sales.total_sales.balance - gt('sales', 'negatives') - results.purchases.initial_inventory.balance + (results.purchases.bought.balance + results.purchases.expenses.balance) - gt('purchases', 'negatives') - results.purchases.final_inventory.balance - (gt('operation_expenses') - (gt('financial_products') - gt('financial_expenses'))) - gt('other_expenses') - gt('other_products') - (results.taxes.balance + results.ptu.balance)) }
+	</td>
+</tr>
+</table>

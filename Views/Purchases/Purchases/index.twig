@@ -1,0 +1,82 @@
+{% block content %}
+    <section id="tablePurchases">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a role="button" data-action="openLateral" class="btn btn-default" data-module="compras" data-route="compras/nueva" data-panelSize="md">
+                    <span class="fa fa-plus"></span> Nueva Compra
+                </a>
+                <a
+                    class="btn btn-primary"
+                    role="button"
+                    data-toggle="collapse"
+                    href="#collapsePurchases">
+                    Ver métricas
+                </a>
+                <!-- este btn va a abrir el colapse -->
+            </div>
+                <div class="clearfix">
+                </div>
+                <div class="collapse" id="collapsePurchases">
+                    <div class="block h100">
+                        <div class="contentMiddle content-fluid">
+                            <div class="description-block border-right">
+                                <h5 class="description-header">$${ totalCost }</h5>
+                                <span class="description-text">TOTAL COSTO</span>
+                            </div>
+                        </div>
+                        <div class="contentMiddle content-fluid">
+                            <div class="description-block border-right">
+                                <h5 class="description-header">${ totalPur }</h5>
+                                <span class="description-text">TOTAL COMPRAS</span>
+                            </div>
+                        </div>
+                        <div class="contentMiddle content-fluid">
+                            <div class="description-block border-right">
+                                <h5 class="description-header">${ totalRec }</h5>
+                                <span class="description-text">COMPRAS RECBIDAS</span>
+                            </div>
+                        </div>
+                        <div class="contentMiddle content-fluid">
+                            <div class="description-block">
+                                <h5 class="description-header">${ totalProd }</h5>
+                                <span class="description-text">TOTAL PRODUCTOS COMPRADOS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- este div se va a colapsar y adentro debe llevar las metricas -->
+        </div>
+        <div class="panel-content">
+            <input @change="saveDocs" ref="fileXml" type="file" style="display: none" accept=".xml">
+            <input @change="saveDocs" ref="filePdf" type="file" style="display: none" accept=".pdf">
+            <vue-file-modal ref="fileModal" module="purchases"></vue-file-modal>
+            <vue-dynamic-table-rbc
+                :loading-from-server="loadingFromServer"
+                box-classes="box box-primary full-height"
+                :pagination-options="{ pageSizes: [ 20, 50, 100 ], pageSize: 100 }"                
+                class-name="table table-bordered table-hover"
+                :source-columns="columns"
+                :select-options="selectOptions"
+                :data-model="datasource"
+                @export="exportTable"
+                :remote-method="remoteSearch"
+                template-file-name="Listado de Compras"
+                :total-results="totalResults">
+                {% include 'Purchases/Purchases/slots.twig' %}
+            </vue-dynamic-table-rbc>
+            {% include 'Purchases/Purchases/modaldocs.twig' %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts  %}
+	<script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Compras',
+			file: 'Purchase/Purchases/list.js',
+			functions: [ {
+				name: 'initPurchasesList',
+				args: []
+			} ]
+		} ];
+	</script>
+{% endblock %}

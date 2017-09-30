@@ -1,0 +1,205 @@
+{% block content  %}
+<section>
+	<form id="newRequisition">
+		<div class="container-fluid" data-tab-num="">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="pull-right">
+						<a rol="button" class="btn btn-success" data-toggle="modal" data-target="#importModal">
+							<i class="fa fa-file-text" aria-hidden="true"></i> Importar Archivos
+						</a>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="user_claimant_id">Encargado de la Compra</label>
+						<input type="text" disabled="true" value="{{user_claimant.name}}">
+						<input id="user_claimant_id" name="user_claimant_id" type="hidden" value="{{user_claimant.id}}">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="created_at">Fecha</label>
+						<input id="created_at" name="created_at" type="text" value="{{fecha}}" disabled="">
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="id">Folio</label>
+						<input id="id" name="id" type="text" value="{{requisition.id}}" disabled="">
+					</div>
+				</div>
+			</div>
+		</div>
+		{# fin header window #}
+		<div id="headerSelects">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="warehouse">Almacén</label>
+						<vue-selectize-js
+		                    ref="warehouse"
+		                    selectizeType="select"
+		                    v-bind:selectize-settings="warehouseSelectize.settings"
+		                    v-bind:selectize-options="warehouseSelectize.options"
+		                    v-bind:selectize-enabled="warehouseSelectize.enabled"
+		                    v-model="warehouse">
+		                </vue-selectize-js>
+					</div>
+					<div class="form-group">
+						<label for="warehouse">Al almacén</label>
+						<vue-selectize-js
+		                    ref="targetWarehouse"
+		                    selectizeType="select"
+		                    v-bind:selectize-settings="targetWarehouseSelectize.settings"
+		                    v-bind:selectize-options="targetWarehouseSelectize.options"
+		                    v-bind:selectize-enabled="targetWarehouseSelectize.enabled"
+		                    v-model="targetWarehouse">
+		                </vue-selectize-js>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="form-group">
+						<label for="required_date">Fecha de requerimiento</label>
+						<vue-datetimepicker
+                            class-name="form-control"
+                            v-bind:min-date="required_dateDatePickerOptions.minDate"
+                            v-bind:max-date="required_dateDatePickerOptions.maxDate"
+                            v-bind:format="required_dateDatePickerOptions.format"
+                            v-bind:time-picker="required_dateDatePickerOptions.timePicker"
+                            v-model="required_date">
+                        </vue-datetimepicker>
+					</div>
+					<div class="form-group">
+						<label for="required_date">Revisar antes de</label>
+						<vue-datetimepicker
+                            class-name="form-control"
+                            v-bind:min-date="required_dateDatePickerOptions.minDate"
+                            v-bind:max-date="required_dateDatePickerOptions.maxDate"
+                            v-bind:format="required_dateDatePickerOptions.format"
+                            v-bind:time-picker="required_dateDatePickerOptions.timePicker"
+                            v-model="review_date">
+                        </vue-datetimepicker>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# tabla #}
+		<div id="productsTable">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+					  	<div class="panel panel-default">
+					    	<div class="panel-heading" role="tab" id="headingOne">
+						      	<h4 class="panel-title">
+						        	<a role="button" data-toggle="collapse" data-parent="#accordion" href="#productsDetail" aria-expanded="true" aria-controls="productsDetail">
+						          Lista de productos <i class="fa fa-caret-down" aria-hidden="true"></i>
+						        	</a>
+						      	</h4>
+						    </div>
+						    <div id="productsDetail" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+						      	<div class="panel-body">
+									<!-- Tabla detalle de productos -->
+								   	<div class="row" id="create-movement-module-productsTable-container">
+								   		<div id="loading" class="text-center">
+								   			<div>Cargando... porfavor espere</div>
+								   		</div>
+								        <div class="col-md-12">
+								            <vue-products-table 
+								            	v-bind:class-name="className"
+				                                v-bind:columns="sourceColumns"
+				                                v-bind:show-rows="showRows"
+				                                v-bind:default-model="defaultModel"
+				                                v-bind:default-objects="defaultObjects"
+				                                v-bind:on-remove="onRemove"
+				                                v-bind:selectize-fields="selectizeFields">
+								            </vue-products-table>
+								        </div>
+								    </div>
+								    <div class="pull-right">
+									{% if edit %}
+								    	<button class="btn btn-primary btn-xs" v-on:click="detailsHistory"><i class="fa fa-history" aria-hidden="true"></i> Historial de cambios</button>
+									{% endif %}
+								    </div>
+						      	</div>
+						    </div>
+						</div>
+					</div>
+				</div>
+		    </div>
+		</div>
+		<div id="userResponsible">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<textarea  rows="3" class="form-t " name="comment" id="comment" placeholder="Comentarios" >{{requisition.comment}}</textarea>
+					</div>
+				</div>
+
+				<div class="col-md-3">
+					<div class="form-group form-inline">
+						<label for="responsible">Con atención a:</label>
+						<vue-selectize-js
+		                    ref="responsible"
+		                    selectizeType="select"
+		                    v-bind:selectize-settings="responsibleSelectize.settings"
+		                    v-bind:selectize-options="responsibleSelectize.options"
+		                    v-bind:selectize-enabled="responsibleSelectize.enabled"
+		                    v-model="responsible">
+		                </vue-selectize-js>
+					</div>
+				</div>
+			</div>
+		</div>
+	    {# end tabla #}
+		<div class="row">
+			<div class="col-md-12">
+				<div class="text-center">
+					<a class="requisition_submit btn btn-success" href="#guardar" data-action="submit"><i class="glyphicon glyphicon-ok" aria-hidden="true"></i> Guardar</a>
+					<a class="btn btn-danger" href="#cancelar" data-action="closePane"><i class="glyphicon glyphicon-remove" aria-hidden="true"></i> Cancelar</a>
+				</div>
+			</div>
+		</div>
+	</form>
+	{% include '/Purchases/partials/import_modal.twig' %}
+
+    {% if edit %}
+    	{% include '/Purchases/partials/history_modal.twig' %}
+    {% endif %}
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+		{% if edit %}
+    		uiVars['data'] = {{ data|json_encode|raw }};
+            
+            init = [ {
+                file: 'Warehouse/Movements/Requisition/edit.js',
+                functions: [ {
+                    name: 'initEditMovementRequisition',
+                    args: [ data ]
+                } ]
+            } ];
+            // initModule( init );
+		{% else %}
+    		uiVars['data'] = {{ data|json_encode|raw }};
+            
+            init = [ {
+                file: 'Warehouse/warehouses.js',
+                functions: [ {
+                    name: 'initWarehouseData',
+                    args: [ ]
+                } ]
+            },{
+                file: 'Warehouse/Movements/Requisition/create.js',
+                functions: [ {
+                    name: 'initAddMovementRequisition',
+                    args: [ data ]
+                } ]
+            } ];
+            // initModule( init );
+		{% endif %}
+	</script>
+{% endblock %}

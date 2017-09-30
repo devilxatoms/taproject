@@ -1,0 +1,305 @@
+{% block body %}
+<section>
+  <div class="header-buttons">
+    <div class="btn-group main-buttons">
+      <a name="add" role="button" class="btn btn-success" data-action="openLateral" data-module="usuarios" data-route="usuarios/registro" data-panelsize="md">
+        <i class="fa fa-plus-square" aria-hidden="true"></i>
+          Nuevo Usuario
+      </a>
+        <!-- <a name="add" role="button" class="btn btn-success" data-action="openLateral" data-module="usuarios" data-route="usuarios/blocking">
+          <i class="fa fa-plus-square" aria-hidden="true"></i>
+          Bloquear/Desbloquear Usuarios
+      </a> -->
+    </div>
+  </div>
+  <div class="panel-content">
+    <div id="users-table">
+      <vue-dynamic-table
+        class-name="table table-bordered"
+        v-bind:class="{ fullHeight }"
+        v-bind:filter-enabled="true"
+        v-bind:expandable-row="true"
+        v-bind:columns="sourceColumns"
+        v-bind:data-model="listRoles"
+        v-on:go-to-page="goToPage"
+        v-bind:pagination-options="PaginationOptions">
+        <template slot="blocking" scope="row">
+          <div class="ui-button">
+            <button v-if="row.object.status == 1" type="button" name="button" class="btn secondary bgRed" v-on:click="blockUser(row.object)">Bloqueado
+            </button>
+            <button v-else type="button" name="button" class="btn secondary bgGreen" v-on:click="blockUser(row.object)">Activo
+            </button>
+          </div>
+        </template>
+        <template slot="actions" scope="row">
+          <div class="ui-button">
+            <div class="secondary Bluebg">
+              <a role="button"
+                class="btn"
+                data-action="openLateral"
+                data-route="usuarios/editar"
+                v-on:click="onEditClick(row.object)"
+                data-panelsize="md">
+                <i class="fa fa-pencil"></i>
+              </a>
+              <a role="button"
+                class="btn"
+                v-on:click="onRemoveClick(row.object)">
+                <i class="fa fa-trash"></i>
+              </a>
+            </div>
+          </div>
+        </template>
+      </vue-dynamic-table>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+(function() {
+var usersTable;
+var rolDataId;
+var userDataNickname;
+var userDataName;
+var userDateLast;
+var userDateSurname;
+var userDataStatus;
+var userDatePic;
+var usersTable;
+
+})();
+usersTable = new Vue({
+  el: '#users-table',
+  data: {
+      fullHeight: true,
+      selectedColumns: [],
+      listRoles: [],
+      PaginationOptions: {
+        position: 'both',
+          classSizeOption: 'pull-left form-control page-size',
+          classPaginator: 'pagination pagination-sm no-margin pull-right',
+          classPageOption: 'btn btn-default',
+          sizeOptions: [20, 30, 50, 100],
+          size: 20,
+          paginatorClass: 'list-inline',
+          pageOptionClass: 'btn btn-primary',
+          currentPage: 1,
+          lastPage: null
+      },
+      sourceColumns: [
+        {
+            name: 'id',
+            title: 'ID',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-xs',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'nickname',
+            title: 'Usuario',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'name',
+            title: 'Nombre',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'lastname',
+            title: 'Apellido Paterno',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'surname',
+            title: 'Apellido Materno',
+            visible: true,
+            sortable: true,
+            filterable: true,
+            class: 'col-md',
+            filter: {
+                type: 'text',
+                filterClass: 'form-control'
+            }
+        },
+        {
+            name: 'status',
+            title: 'Estatus',
+            class: 'col-sm acciones',
+            customRender: {
+                slot: 'blocking'
+            },
+            sortable: true,
+            visible: true
+        },
+        {
+              title: 'Acciones',
+              class: 'col-sm acciones',
+              customRender: {
+                  slot: 'actions'
+              },
+              visible: true
+        }
+      ],
+      currentPage: 1,
+      lastPage: 1,
+      pageSize: 100
+  },
+
+  mounted: function() {
+      this.loadUsers();
+  },
+  methods: {
+      loadUsers: function() {
+          var filters = {};
+          this.sourceColumns.map(function(column) {
+              column.filterTag = false
+          })
+          filters.size = this.PaginationOptions.size;
+          filters.page = this.PaginationOptions.currentPage;
+          //obtiene datos para la tabla
+          $.get(AJAX_PATH + 'dashboard/users/list', filters, function(response) {
+              var paginator = response.data;
+              this.PaginationOptions.lastPage = paginator.last_page;
+              this.listRoles = response.data.data;
+          }.bind(this));
+
+      },
+      goToPage: function(page) {
+          this.PaginationOptions.currentPage = page;
+          this.loadUsers();
+      },
+      onRemoveClick: function(row) {
+          this.$confirm('Desea eliminar el Usuario Permenantemente?', 'Warning', {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }).then(() => {
+           $.ajax({
+            url: AJAX_PATH + 'dashboard/users/remove',
+            data:{
+              id: row.id
+            },
+            type: 'POST'
+        }).done( function( response ) {
+            // console.log(response);
+          switch (response) {
+            case 0:
+            usersTable.$message({
+                      message: 'Este Usuario No Puede Ser Eliminado.',
+                      type: 'warning'
+                  });
+              break;
+            case 1:
+                // usersTable.loadUsers();
+                usersTable.$message({
+                    message: 'Usuario Eliminado Correctamente.',
+                    type: 'success'
+                });
+              break;
+            default:
+              break;
+          }
+
+        }.bind( this ));
+          this.$message({
+            type: 'success',
+            message: 'Usuario Eliminado'
+          });
+          usersTable.loadUsers();
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Operacion Cancelado'
+          });
+        });
+
+      },
+      onEditClick: function(row) {
+        userDataId = row.id;
+        userDataNickname = row.nickname;
+        userDataName= row.name;
+        userDateLast= row.lastname;
+        userDateSurname = row.surname;
+        userDataStatus= row.status;
+        userDatePic=row.picture;
+    },
+    blockUser: function(row){
+        console.log(row.id);
+        this.$confirm('Desea Bloquear o Desbloquear Usuario?', 'Adviertencia!', {
+              confirmButtonText: 'OK',
+              cancelButtonText: 'Cancel',
+              type: 'warning'
+              }).then(() => {
+                $.ajax({
+                    data: {
+                      id: row.id
+                    },
+                    url: AJAX_PATH + 'dashboard/users/block',
+                    type: 'POST'
+              }).done( function( response ) {
+              switch (response) {
+                case 0:
+                document.getElementById("toggle-two").checked = true;
+                this.$message({
+                          message: 'Usuario Bloqueado.',
+                          type: 'warning'
+                      });
+                  break;
+                case 1:
+                 document.getElementById("toggle-two").checked = false;
+                 this.$message({
+                           message: 'Usuario Desbloqueado.',
+                           type: 'success'
+                       });
+                  break;
+                default:
+                  break;
+              }
+              }.bind( this ));
+              this.$message({
+                type: 'success',
+                message: 'Operacion Realizada Con Exito!'
+              });
+              usersTable.loadUsers();
+              }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: 'Operacion Cancelado'
+              });
+              });
+    }
+  },
+  computed: {},
+  watch: {},
+  delimiters: ['${', '}']
+});
+</script>
+{% endblock %}

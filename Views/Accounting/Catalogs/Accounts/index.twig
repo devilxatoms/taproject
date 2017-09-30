@@ -1,0 +1,116 @@
+<!-- %CONTENT% -->
+<section>
+<div id="accountingList">
+    <div class="header-buttons">
+        <div class="btn-group main-buttons">
+            {# <a name="add" role="button" class="btn btn-success" data-action="openTab" data-module="contabilidad" data-route="contabilidad/impuestos/nuevo"> #}
+            <a
+            role="button"
+            id="btnNewAccount"
+            data-action="openLateral"
+            data-route="contabilidad/catalogos/cuentascontables/nuevo"
+            data-panelsize="sm"
+            class="btn btn  btn-success ">
+            <i class="fa fa-plus " aria-hidden="true"></i>
+            Nueva Cuenta Mayor</a>
+            <a role="button" class="btn btn-default" v-on:click="checkFields()">Mostrar/Ocultar Columnas </a>
+        </div>
+    </div>
+    <div class="panel-content">
+        <div class="table-autofix">
+            {% include '/Accounting/Catalogs/Accounts/table.twig' %}
+        </div>  
+        <div class="panel panel-default col-md-12 fix">
+            <div id="home" class="tab-pane fade in active">
+                <h3>CSV</h3>
+                <p>Descarga la plantilla de excel para importar cuentas contables</p>
+                <a role="button" class="btn btn-primary" download href="{{ url('public/formato_cuentas_contables.csv') }}">
+                    <i class="fa fa-download" aria-hidden="true"></i> 
+                    Descargar plantilla
+                </a>
+                <hr>
+                <P>Seleccione un documento con formato CSV para importar la lista de cuentas contables.</p>
+                <label>Seleccione el archivo CSV:</label>
+                <input id="file_csv" type="file" name="file_csv" accept=".csv">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                <button @click="fileUpload" type="button" class="btn btn-primary">Aceptar</button>
+            </div>
+            <div class="row">
+                <dl class="col-md-1">
+                    <dt>Tipo de cuenta:</dt>
+                        <dd>Balance = 1</dd>
+                        <dd>Resultados = 2</dd>
+                        <dd>Orden = 3</dd>
+                </dl>
+                <dl class="col-md-1">
+                    <dt>Clasificacion:</dt>
+                        <dd>Activo Circulante= 1</dd>
+                        <dd>Activo Fijo = 2</dd>
+                        <dd>Activo Diferido = 3</dd>
+                        <dd>Pasivo a Corto Plazo = 4</dd>
+                        <dd>Pasivo a Largo Plazo = 5</dd>
+                        <dd>Capital = 6</dd>
+                        <dd>Ingresos = 7</dd>
+                        <dd>Gastos = 8</dd>
+                        <dd>Orden Deudora = 9</dd>
+                        <dd>Orden Acreedora = 10</dd>
+                </dl>
+                <dl class="col-md-1">
+                    <dt>Naturaleza:</dt>
+                    <dd>Deudora = 1</dd>
+                    <dd>Acreedora = 2</dd>
+                </dl>
+                <dl class="col-md-1">
+                    <dt>Moneda:</dt>
+                    <dd>MXN = 2</dd>
+                    <dd>USD = 4</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modal-select-fields" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Selecciona los campos</h4>
+                </div>
+                <div class="modal-body">
+                    <ul>
+                        <li v-for="(column, index) in sourceColumns">
+                            <input class="" type="checkbox"  v-model="column.visible">
+                            <label class="checbox-label" v-bind:for="'column-visible' + index">${ column.title }</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<!-- /%CONTENT% -->
+<script id="scriptContainer" type="text/javascript">
+    uiVars['classificationOptions'] = {{ classification|json_encode|raw }};
+    uiVars['TypeOptions'] = {{ type|json_encode|raw }};
+    uiVars['natureOptions'] = {{ nature|json_encode|raw }};
+    uiVars['levelTypeOptions'] = {{ levelType|json_encode|raw }};
+    uiVars['currencyOptions'] = {{ currency|json_encode|raw }};
+    uiVars['grouperSATOptions'] = {{ grouperSAT|json_encode|raw }};
+    uiVars['title'] = '{{title}}';
+    // argumentos = [ classificationOptions, classOptions, natureOptions,
+    // levelTypeOptions, grouperSATOptions ]; loadAccountList(
+    // classificationOptions, classOptions, natureOptions, levelTypeOptions,
+    // grouperSATOptions )
+    init.length = 0;
+    init = [ {
+        file: 'Accounting/Catalogs/AccountingAccount.js',
+        functions: [ {
+            title: uiVars['title'],
+            name: 'loadAccountList',
+            args: [ uiVars['classificationOptions'], uiVars['TypeOptions'], uiVars['natureOptions'], uiVars['levelTypeOptions'], uiVars['currencyOptions'], uiVars['grouperSATOptions'] ]
+        } ]
+    } ];
+</script>

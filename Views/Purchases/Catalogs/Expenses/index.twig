@@ -1,0 +1,69 @@
+{% block content %}
+<section id="tableExpenses">
+	<div class="header-buttons">
+		<div class="btn-group main-buttons">
+			<a
+				role="button"
+				id="btnNewExpense"
+				v-on:click="onClick"
+				class="btn btn  btn-success ">
+				<i class="fa fa-plus " aria-hidden="true"></i>
+				Agregar Gasto
+			</a>
+		</div>
+	</div>
+	{% include '/Purchases/Catalogs/Expenses/add.twig' %}
+	<div class="panel-content">
+		<div id="tableExpenses">
+			<vue-dynamic-table-rbc
+				box-classes="box box-primary full-height"
+				class-name="table table-bordered table-hover"
+				:source-columns="columns"
+				:select-options="selectOptions"
+				:data-model="datasource"
+				@export="exportTable"
+				:remote-method="remoteSearch"
+				template-file-name="Requisiciones de Compras"
+				:total-results="totalResults">
+				<template slot="test-custom-render" scope="row">
+	                 <div class="ui-button bg-Light-Blue overflowInherit">
+	                 	<div class="secondary">
+	                 		<a 
+	                 			role='button'
+	                 			data-tooltip="Editar"
+	                 			class="has-tooltip btn align-right"
+	                 			data- 
+	                 			v-on:click="onEditClick(row.object)">
+	                 		    <span class="glyphicon glyphicon-edit"></span>
+	                 		</a>
+	                 		<a 
+	                 			role='button'
+	                 			data-tooltip="Eliminar"
+	                 			class="has-tooltip btn align-right"
+	                 			data- 
+	                 			v-on:click="onRemoveClick(row.object)">
+	                 		    <span class="glyphicon glyphicon-trash"></span>
+	                 		</a>
+	                 	</div>
+	                 </div>
+	            </template>
+				<template slot="no-rows-found">
+	              <span>No se encontrarón resultados</span>
+	            </template>
+			</vue-dynamic-table-rbc>
+		</div>
+	</div>
+</section>
+{% endblock %}
+{% block loadScripts  %}
+	<script id="scriptContainer" type="text/javascript">
+		init = [ {
+			title: 'Gastos',
+	        file: 'Purchase/Catalogs/expenses.js',
+	        functions: [ {
+	            name: 'init',
+	            args: [ ]
+	        } ]
+	    } ];
+    </script>
+{% endblock %}

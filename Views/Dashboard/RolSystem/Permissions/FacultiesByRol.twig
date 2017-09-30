@@ -1,0 +1,230 @@
+{% block body %}
+<div class="header-buttons">
+   <div class="btn-group main-buttons">
+       <a name="add" role="button" class="btn btn-success" data-action="openLateral" data-panelsize="md" data-module="usuarios" data-route="usuarios/registro">
+         <i class="fa fa-plus-square" aria-hidden="true"></i>
+         Asignar Facultades
+       </a>
+   </div>
+</div>
+<div id="rolFacultyAssign"  class="panel-content faculty-assign-control">
+   <div class="col-md-3">
+     <h4><i class="fa fa-id-card-o" aria-hidden="true"></i> Roles</h4>
+     <template>
+
+     <el-select v-model="value" placeholder="Select" @change="prueba">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
+           <el-tree
+            :data="roles"
+            show-checkbox
+            node-key="id"
+            ref="refRoles"
+            @check-change="getCheckedRoles"
+            :props="defaultProps">
+           </el-tree>
+     </template>
+   </div>
+   <div class="col-md-3">
+    <h4><i class="fa fa-cubes" aria-hidden="true"></i> Módulos
+     <button type="button" @click="getFaculties" name="button" class="btn-primary">
+        <i class="fa fa-arrow-right" aria-hidden="true"></i></button></h4>
+    <template>
+    <el-tree
+     :data="modules"
+     show-checkbox
+     node-key="id"
+     ref="refModules"
+     @check-change="getCheckedModules"
+     :props="defaultProps">
+    </el-tree>
+    </template>
+   </div>
+   <div class="col-md-3">
+     <h4><i class="fa fa-list" aria-hidden="true"></i> Facultades
+      <button type="button" @click="getAssigned" name="button" class="btn-primary">
+        <i class="fa fa-arrow-right" aria-hidden="true"></i></button></h4>
+     <template>
+    <el-tree
+     :data="faculty"
+     show-checkbox
+     node-key="id"
+     ref="refFaculty"
+     @check-change="getCheckedModules"
+     :props="defaultProps">
+    </el-tree>
+    </template>
+    
+   </div>
+   <span>valor: ${value}</span>
+   <div class="col-md-3">
+     <h4><i class="fa fa-info-circle" aria-hidden="true"></i> Asignados</h4>
+   </div>
+</div>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+init = [{
+  title: 'Facultades Por Rol'
+}];
+
+var companyid = {{session.userData.company}}
+
+var rolFaculties = new Vue({
+  el: '#rolFacultyAssign',
+  data: {
+       modules: [],
+       roles: [],
+       faculty:[],
+       value:"",
+       options:[{value: '1',
+          label: 'Roles'}, {value: '2',
+          label: 'Grupos'}, {value: '3',
+          label: 'Usuarios'}],
+       defaultProps: {
+         children: 'children',
+         label: 'label'
+       }
+   },
+   mounted: function() {
+       this.loadModuleList();
+   },
+   watch: {
+              value(val){
+                //console.log(val);
+             }
+  },
+   methods: {
+     loadModuleList: function(){
+       $.ajax({
+           url: AJAX_PATH + 'dashboard/faculty/moduleList',
+           data:{
+             id: companyid
+           },
+           type: 'POST'
+       }).done( function( response ) {
+         this.modules = response.data;
+       }.bind(this));
+     },
+     getCheckedRoles(checked,indeterminate) {
+      //  var checkedRol = this.$refs.refRoles.getCheckedKeys();
+      if (indeterminate == true) {
+        // console.log(indeterminate);
+        this.$refs.refRoles.setCheckedKeys([checked.id]);
+      }
+    },
+    getCheckedModules(checked, indeterminate){
+
+
+    },
+    getCheckedPages(checked, indeterminate){
+      this.$refs.refPages.setCheckedKeys([checked.id]);
+    },
+    
+    getFaculties: function(){
+        this.moduleNodo = this.$refs.refModules.getCheckedNodes(true);
+        this.rolNodo = this.$refs.refRoles.getCheckedNodes(true);
+        
+        console.log(this.moduleNodo);
+        console.log( this.rolNodo);
+
+
+        $.ajax({
+            url: AJAX_PATH+'dashboard/faculty/getFacultiesByPageId',
+            data:{
+              pages: this.moduleNodo,
+              rol: this.rolNodo
+            },
+            type: 'POST'
+        }).done( function( response ){
+            console.log(response.data);
+            this.faculty = response.data;
+        }.bind(this));
+    },
+    getAssigned: function(){
+        this.moduleNodo = this.$refs.refFaculty.getCheckedNodes(true);
+        this.rolNodo = this.$refs.refRoles.getCheckedNodes(true);
+        $valor= this.value;
+        
+        console.log(this.moduleNodo);
+        console.log( this.rolNodo);
+        console.log("inicio");
+        console.log($valor);
+        console.log("final");
+
+
+        $.ajax({
+            url: AJAX_PATH+'dashboard/faculty/getJson',
+            data:{
+              pages: this.moduleNodo,
+              rol: this.rolNodo,
+              type: this.value
+            },
+            type: 'POST'
+        }).done( function( response ){
+            console.log(response);
+            this.faculty = response;
+        }.bind(this));
+    },
+    prueba: function(){
+      $valor= this.value;
+      console.log($valor);
+      if ($valor==1) {
+        $.ajax({
+            url: AJAX_PATH+'dashboard/faculty/rolList',
+            data:{
+              pages: this.moduleNodo,
+              rol: this.moduleUser
+            },
+            type: 'POST'
+        }).done( function( response ){
+            console.log(response.data);
+           this.roles = response.data;
+        }.bind(this));
+
+      }
+
+      if ($valor==2) {
+
+        $.ajax({
+           url: AJAX_PATH + 'dashboard/faculty/groupList',
+           type: 'POST'
+       }).done( function( response ) {
+         this.groups = response.data;
+        //  console.log(this.groups);
+           this.roles = response.data;
+       }.bind(this));
+
+      }
+
+      if ($valor==3) {
+
+        $.ajax({
+            url: AJAX_PATH+'dashboard/faculty/userList',
+            data:{
+              id: companyid,
+            },
+            type: 'POST'
+        }).done( function( response ){
+            console.log(response.data);
+            
+           this.roles = response.data;
+
+        }.bind(this));
+
+      }
+      
+
+    }
+   }
+});
+
+
+</script>
+{% endblock %}

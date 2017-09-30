@@ -1,0 +1,25 @@
+{% block body %}
+    <section>
+
+        {% include( 'crm/FollowUpCategories/partials/buttonAddCategory.twig' ) %}
+        <div class="panel-content">
+            {% include( 'crm/FollowUpCategories/partials/list.twig' ) %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.lenght = 0;
+        init = [ {
+            title: 'Categorias',
+            file: 'CrmJs/FollowUp/Categories.js',
+            functions: [ {
+                name: 'initListCategories'
+            } ]
+        } ];
+
+        $("#btn_Category").click(function() {
+            $('#TitleModal').text('Nueva Categoria');
+        });
+    </script>
+{% endblock %}

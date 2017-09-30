@@ -1,0 +1,409 @@
+{% block content %}
+    <section>
+        <style>
+            #containerAdditionalTag {
+                height: 242px;
+                overflow: auto;
+            }
+        </style>
+        <div class="row">
+        <div id="editCompanyLT">
+            <!-- %CONTENT% -->
+            <!-- basic product data -->
+
+
+
+            <!-- / additionalTags -->
+            <div class="col-md-6">
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">INFORMACION</h3>
+
+                    </div>
+                    <div class="panel-body">
+
+                        <div class="col-md-12">
+                            <div class="logo-image">
+                                <img src="" id="logoimg" height="118px" width="118px">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="">Empresa:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="coname"
+                                    placeholder="N/A"
+                                    v-bind:value="coname"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label for="">Razon Social:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corsocial"
+                                    placeholder="N/A"
+                                    v-bind:value="corsocial"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">RFC:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="corfc"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Giro:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="cgiro"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Direccion:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="coaddress"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4>Datos Contacto</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Telefono:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="cophone"
+                                    placeholder="N/A"
+                                    v-bind:value="cophone"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Fax:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="cofax"
+                                    placeholder="N/A"
+                                    v-bind:value="cofax"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">E-mail:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="comail"
+                                    placeholder="N/A"
+                                    v-bind:value="comail"
+                                    disabled>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <h4>Datos Paquete</h4>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Nombre</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_name"
+                                    placeholder="Nombre"
+                                    v-model="pktname"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Descripcion</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_description"
+                                    placeholder="descripcion"
+                                    v-model="pktdescription"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Usuarios</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_users"
+                                    placeholder="# usuarios"
+                                    v-model="pktusers"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Timbres</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_timbres"
+                                    placeholder="# timbres"
+                                    v-model="pkttimbres"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Emails</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    id="pkt_mail"
+                                    placeholder="# Emails"
+                                    v-model="pktmails"
+                                    disabled>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+             
+        </div>
+        <div id="metrics">
+            <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">USUARIOS</h3>
+                            <div class="box-tools pull-right">
+
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="linechartexample" style="width: 60px; height: 25px;">
+                            </vue-chart>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <i class="fa fa-bar-chart-o"></i>
+                            <h3 class="box-title">TIMBRES</h3>
+                            <div class="box-tools pull-right">
+                                
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <vue-chart
+                                :chart-data-model="piechartexample" style="width: 60px; height: 30px;">
+                            </vue-chart>
+                        </div>
+                    </div>
+            </div>
+        </div>
+            
+    </div>
+
+       
+    </section>
+    <!-- /%CONTENT% -->
+{% endblock %}
+
+{% block loadScripts %}
+
+    <script id="scriptContainer" type="text/javascript">
+        var editCompany;
+
+        // function onFileSelected( event ) {
+        //     var selectedFile = event.target.files[0];
+        //     var reader = new FileReader( );
+        //     var imgtag = document.getElementById( "logoimg" );
+        //     imgtag.title = selectedFile.name;
+        //     reader.onload = function( event ) {
+        //         imgtag.src = event.target.result;
+        //     };
+        //     reader.readAsDataURL( selectedFile );
+        // }
+
+        editCompany = new Vue({
+            el: "#editCompanyLT",
+            data: {
+                coid: adminUserList.editData.id,
+                coname: adminUserList.editData.company,
+                corfc: adminUserList.editData.rfc,
+                corsocial: adminUserList.editData.businessName,
+                cgiro: adminUserList.editData.businessType,
+                coaddress: adminUserList.editData.address,
+                cophone: adminUserList.editData.phone,
+                comail: adminUserList.editData.mail,
+                cofax: adminUserList.editData.fax,
+                copacket: adminUserList.editData.package,
+                cologo: CDN_PATH+adminUserList.editData.logo,
+                conusers: adminUserList.editData.nusers,
+                coacuser: adminUserList.editData.active_users,
+                pktname: "",
+                pktdescription: "",
+                pktusers: "",
+                pkttimbres: "",
+                pktmails: "",
+                pktsList: [ ]
+            },
+            mounted: function( ) {
+                this.getPackets();
+                console.log(adminUserList.editData);
+            },
+            created: function(){
+              $('#logoimg').prop('src', this.cologo);
+
+            },
+            watch:{
+              pktsList: function(e){
+                this.getPkgData(this.copacket);
+              }
+            },
+            methods: {
+                getPackets: function( ) {
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/list',
+                        type: 'POST'
+                    }).done( function( response ) {
+                        this.pktsList = response.data;
+                    }.bind( this ));
+                },
+                onChange: function( e ) {
+                  console.log('access');
+                  console.log($('#pktid').val( ));
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/byid',
+                        data: {
+                            id: $( '#pktid' ).val( )
+                        },
+                        type: 'POST'
+                    }).done( function( response ) {
+                        this.pktname = response.data.name;
+                        this.pktdescription = response.data.description;
+                        this.pktusers = response.data.users;
+                        this.pkttimbres = response.data.stamps;
+                        this.pktmails = response.data.mails;
+                    }.bind( this ));
+                },
+                getPkgData: function(idp) {
+                    $.ajax({
+                        url: AJAX_PATH + 'admin/packet/byid',
+                        data: {
+                            id: idp
+                        },
+                        type: 'POST'
+                    }).done( function( response ) {
+                        this.pktname = response.data.name;
+                        this.pktdescription = response.data.description;
+                        this.pktusers = response.data.users;
+                        this.pkttimbres = response.data.stamps;
+                        this.pktmails = response.data.mails;
+
+
+                    }.bind( this ));
+                },
+                editCompany: function( ) {
+                    console.log('editar');
+                    this.$validator.validateAll( ).then(( ) => {
+                    var form = $('#companyForm')[0];
+                    var formData = new FormData(form);
+                      $.ajax({
+                          url: AJAX_PATH + 'admin/company/editCompany',
+                          data: formData,
+                          cache:false,
+                          contentType: false,
+                          processData: false,
+                          type: 'POST'
+                      }).done( function( response ) {
+                          if (response == 1) {
+                            adminUserList.loadCompanyList();
+                            new PNotify({
+                              title: 'Exito',
+                              text: 'Empresa Registrada Correctamente',
+                              type: 'success',
+                              icon: 'ui-icon ui-icon-flag'
+                            });
+                          }else{
+                            new PNotify({
+                              title: 'Error',
+                              text: 'No se completo el registro',
+                              type: 'warning',
+                              icon: 'ui-icon ui-icon-flag'
+                            });
+                          }
+                      }.bind( this ));
+                     }).catch(( ) => {
+                      new PNotify({
+                        title: 'Error',
+                        text: 'Completa el formulario como se indica',
+                        type: 'warning',
+                        icon: 'ui-icon ui-icon-flag'
+                      });
+                    });
+                },
+                onFileSelected: function(event){
+                  var selectedFile = event.target.files[0];
+                  var reader = new FileReader( );
+                  var imgtag = document.getElementById( "logoimg" );
+                  imgtag.title = selectedFile.name;
+                  reader.onload = function( event ) {
+                      imgtag.src = event.target.result;
+                  };
+                  reader.readAsDataURL( selectedFile );
+                }
+            },
+            delimiters: [ '${', '}' ]
+        });
+
+
+uiVars['nusers']= adminUserList.editData.nusers;
+uiVars['active']= adminUserList.editData.active_users;
+
+
+  init.lenght = 0;
+        init = [ {
+            title: 'Metricas de Rendimiento',
+            file: 'Admin/company/metrics.js',
+            functions: [ {
+                name: 'initMetricas',
+                args: [
+                uiVars['nusers'], 
+                uiVars['active']
+                ]
+            } ]
+        } ];
+
+    </script>
+{% endblock %}

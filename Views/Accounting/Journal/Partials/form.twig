@@ -1,0 +1,46 @@
+<section>
+    <div class="row" id="journal-form">
+        <div class="box box-default">
+            <div class="box-header">
+                <h3 class="box-title">DATOS DIARIO</h3>
+                <div class="box-tools pull-right">
+                </div>
+            </div>
+            <div class="box-body" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">Codigo </label>
+                            <input type="text" class="form-control" v-model="journal.code">
+
+                        </div>
+                        <div class="req form-group">
+                            <label for="">Nombre</label>
+                            <input type="text" class="form-control" v-model="journal.name">
+
+                        </div>
+                        <div class=" form-group">
+                            <label for="">descripción</label>
+                            <textarea type="text" class="form-control" v-model="journal.description" ></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" @click="saveJournal">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+    init.lenght = 0;
+    uiVars['journal'] = {{ journal|json_encode|raw }};
+    init = [ {
+        title: 'nuevo diario',
+        file: 'Accounting/Journal/form.js',
+        functions: [ {
+            name: 'addJournal',
+            args: [ uiVars['journal'] ]
+        } ]
+    } ];
+</script>

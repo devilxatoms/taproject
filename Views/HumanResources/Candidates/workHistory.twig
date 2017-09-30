@@ -1,0 +1,91 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Historial de Trabajo{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="box-form">
+            <div class="form-group">
+                <label for="">Compañia:</label>
+                <input type="text" v-model="workHistory.company" @keypress="clearWorkHistoryError('Compañia')">
+                <span class="error-validate" :class="banksErrorsClass" v-if="workHistoryValidatorErrors != null">
+                    ${ workHistoryValidatorErrors.first('Compañia') }
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="">Puesto:</label>
+                <input type="text" v-model="workHistory.position" @keypress="clearWorkHistoryError('Puesto')">
+                <span class="error-validate" :class="banksErrorsClass" v-if="workHistoryValidatorErrors != null">${ workHistoryValidatorErrors.first('Puesto') }</span>
+            </div>
+            <div class="form-group">
+                <label for="">Fecha de inicio:</label>
+                <el-date-picker
+                    v-model="workHistory.start_date"
+                     type="date"
+                     :picker-options="birthdayDatePickerOptions"
+                    @pick="clearWorkHistoryError('Fecha de inicio')"
+                    placeholder="Seleccione el día">
+                </el-date-picker>
+                <span class="error-validate" :class="banksErrorsClass" v-if="workHistoryValidatorErrors != null">
+                    ${ workHistoryValidatorErrors.first('Fecha de inicio') }
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="">Fecha en que finalizo:</label>
+                <el-date-picker
+                    v-model="workHistory.end_date"
+                    type="date"
+                    :picker-options="birthdayDatePickerOptions"
+                    @pick="clearWorkHistoryError('Fecha en que finalizo')"
+                    placeholder="Seleccione el día">
+                </el-date-picker>
+                <span class="error-validate" :class="banksErrorsClass" v-if="workHistoryValidatorErrors != null">
+                    ${ workHistoryValidatorErrors.first('Fecha en que finalizo') }
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="">Comentarios:</label>
+                <input type="text" v-model="workHistory.comment" @keypress="clearWorkHistoryError('Comentarios')">
+                <span class="error-validate" :class="banksErrorsClass" v-if="workHistoryValidatorErrors != null">${ workHistoryValidatorErrors.first('Comentarios') }</span>
+            </div>
+        </div>
+        <div class="box-btn"> 
+            <div class="row noMargin">
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 noPadding">
+                    <button class="btn btn-primary block" @click="workHistoryValidate()" >
+                        <span class="fa fa-floppy-o"></span> Agregar
+                    </button>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 noPadding">
+                    <button class="btn btn-warning block" @click="cancelWorkHistory" >
+                        <span class="fa fa-ban"></span> Cancelar
+                    </button> 
+                </div>
+            </div>  
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <div class="box-table">
+            <vue-dynamic-table
+            class-name="table table-striped"
+            :pagination-options="workHistoriesTablePageOptions"
+            @go-to-page="goToPageWorkHistoriesTable" 
+            :data-model="chunksListWorkHistories()[workHistoriesTablePageOptions.currentPage - 1]"
+            :columns="workHistoriesTableColumnsModel" >
+            <template slot="no-rows-found">
+                No se encontraron registros
+            </template>
+            <template slot="actions" scope="row">
+                <div class="text-right">
+                    <a role="button" @click="editWorkHistory(row.index)">
+                        <span class="fa fa-pencil"></span>
+                    </a>
+                    <a role="button" @click="askForDeleteWorkHistory(row.index)">
+                        <span class="fa fa-remove"></span>
+                    </a>
+                </div>
+            </template>
+        </vue-dynamic-table>
+        </div>
+    </div>
+</div>
+{% endblock %}

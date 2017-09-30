@@ -1,0 +1,46 @@
+<div class="box box-default">
+    <div class="box-header with-border">
+        <h3 class="box-title">Categoría del {{ typeName }}</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target=".collapseExample1"
+                aria-expanded="false" aria-controls="collapseExample1" data-toggle="tooltip"
+                    title="Indicaciones">
+                <i class="ui ui-help_outline"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                    data-toggle="tooltip" title="Minimizar">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="indication collapse collapseExample1">
+        <div class="indication-content">
+            <div class="indication-img">
+                <span class="indication-icon ui ui-help"></span>
+            </div>
+            <div class="indication-text">
+                Seleccione la Categoría a la que pertenece el producto si se da el caso,
+                si lleva subcategorías seleccione las deseadas hasta colocar el producto
+                al nivel en el que realmente está.
+            </div>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="">Categorías:</label>
+                <el-cascader
+                    expand-trigger="hover"
+                    filterable
+                    clearable
+                    :options="selectizeCategoriesOptions"
+                    :show-all-levels="false"
+                    v-model="categories">
+                </el-cascader>
+            </div>
+        </div>
+        <div class="col-md-12" id="containerSubCategories">
+            {# JQUERY #}
+        </div>
+    </div>
+</div>

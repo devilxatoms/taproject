@@ -1,0 +1,23 @@
+{% block body %}
+    <div id="table-products">
+        <section>
+            {% include( 'Warehouse/Products/partials/buttons.twig' ) %}
+            <div class="panel-content">
+                {% include( 'Warehouse/Products/partials/list.twig' ) %}
+            </div>
+        </section>
+    </div>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.lenght = 0;
+        init = [ {
+            title: 'Productos',
+            file: 'Warehouse/Products/products.js',
+            functions: [ {
+                name: 'initListVue',
+                args: []
+            } ]
+        } ];
+    </script>
+{% endblock %}

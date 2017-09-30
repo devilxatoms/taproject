@@ -1,0 +1,42 @@
+{% block content %}
+    <section id="formCategories">
+        <div class="box box-default">
+            <div class="box-header">
+                <h3 class="box-title">{% if Editar == 1 %} Editar Categoria {% else %} Nueva Categoria {% endif %}</h3>
+                <div class="box-tools pull-right">
+
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="">Nombre</label>
+                        <input type="text" v-model="name">
+                    </div>
+                </div>
+
+            </div>
+            <div class="box-footer">
+                <button type="button" class="btn btn-default" v-on:click="saveOrEditActivity">Guardar</button>
+            </div>
+        </div>
+    </section>
+{% endblock %} {% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+    uiVars['Category'] = {{ Category|json_encode|raw }};
+    var editar =uiVars['Editar'] = {{ Editar|json_encode|raw }};
+    var title;
+        if(editar == 1){ title = 'Editar categoria' }else{ title ='Nueva categoria'}
+        init.lenght = 0;
+        init = [{
+            title: title,
+            file: 'CrmJs/FollowUp/Categories.js',
+            functions: [{
+                name: 'initFormCategories',
+                args: [
+                    uiVars['Category']
+                ]
+            }]
+        }];
+    </script>
+{% endblock %}

@@ -1,0 +1,44 @@
+<template slot="driversActions" scope="row">
+    <div class="ui-button bg-Light-Blue overflowInherit">
+        <div class="secondary">
+            <a 
+                data-tooltip="Editar"
+                role="button"
+                class="btn btn-info"
+                v-on:click="onEditClick(row.object)"
+                style="color:  #fff;">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a 
+                data-tooltip="Eliminar"
+                role="button"
+                class="has-tooltip btn align-right" 
+                v-on:click="onRemoveClick(row.object)">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </div>
+    </div>
+</template>
+
+<template slot="showLicenses" scope="row">
+    <el-button class="block" @click="showFiles(row.object.id)" size="mini" type="default">
+        <a v-if="row.object.num_licenses > 0" style="color: #359bdc; cursor:pointer;" v-on:click="showLicenses(row.object.id)">
+            <i class="fa fa-address-card" aria-hidden="true"></i> 
+            Gestionar licencias (${ row.object.num_licenses })
+        </a>
+        <a v-else style="color: #dd4b39; cursor:pointer;" v-on:click="showLicenses(row.object.id)">
+            <i class="fa fa-address-card" aria-hidden="true"></i> 
+            Gestionar licencias (${ row.object.num_licenses })
+        </a> 
+    </el-button>
+</template>
+
+<template slot="typeDriver" scope="row">
+    <i v-if="row.object.is_employee == 1" class="fa fa-user-circle-o" style="color: #00a65a;"></i>
+    <i v-else class="fa fa-external-link-square" style="color: #dd4b39;"></i>
+    ${ row.object.type }
+</template>
+
+<template slot="no-rows-found">
+    <span>No se encontrarón resultados</span>
+</template>

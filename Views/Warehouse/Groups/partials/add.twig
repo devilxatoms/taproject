@@ -1,0 +1,141 @@
+{% block content %}
+
+<section>
+    <div class="panel-grup panel-body">
+        <div>
+            <h3 class="title-grup">Título uno
+                <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target=".collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample" data-toggle="tooltip"
+                        title="Indicaciones">
+                    <i class="ui ui-help_outline"></i>
+                </button>
+            </h3>
+        </div>
+        <form method="post" action="" id="{{ formName }}" enctype="multipart/form-data">
+            <div class="indication collapse collapseExample">
+                <!--alert alert-dismissible" role="alert"<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>-->
+                <div class="indication-content">
+                    <div class="indication-img">
+                        <span class="indication-icon ui ui-help"></span>
+                    </div>
+                    <div class="indication-text">
+                        Etsy sustainable try-hard selfies lo-fi
+                        polaroid sriracha butcher PBR&B, artisan man
+                        bun glossier. Health goth snackwave microdosing
+                        synth dreamcatcher, brunch cronut crucifix.
+                        Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+                        Etsy sustainable try-hard selfies lo-fi
+                        polaroid sriracha butcher PBR&B, artisan man
+                        bun glossier. Health goth snackwave microdosing
+                        synth dreamcatcher, brunch cronut crucifix.
+                        Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+                        Etsy sustainable try-hard selfies lo-fi
+                        polaroid sriracha butcher PBR&B, artisan man
+                        bun glossier. Health goth snackwave microdosing
+                        synth dreamcatcher, brunch cronut crucifix.
+                        Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="padding-bottom: 10px">
+
+            <input v-validate="'required|email'" :class="{'input': true, 'is-danger': errors.has('email') }" name="email" type="text" placeholder="Email">
+                    <span v-show="errors.has('email')" class="help is-danger">{{ errors.first('email') }}</span>
+
+            <div class="col-md-4">
+                <div class="req form-group">
+                    <label for="group_code">Código: </label>
+                    <input type="text" class="form-control" value="{{ group.code }}" name="group_code" id="group_code">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="req form-group">
+                    <label for="group_name">Nombre: </label>
+                    <input type="text" class="form-control" value="{{ group.name }}" name="group_name" id="group_name">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="group_name">Descripción: </label>
+                    <textarea type="text" class="form-control" name="group_description" id="group_description">{{ group.description }}</textarea>
+                </div>
+            </div>
+            </div>
+        </form>
+    </div>
+    <div class="panel-grup panel-body">
+    <div>
+        <h3 class="title-grup">Título dos
+            <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target=".collapseExample2"
+                aria-expanded="false" aria-controls="collapseExample2" data-toggle="tooltip"
+                    title="Indicaciones">
+                <i class="ui ui-help_outline"></i>
+            </button>
+        </h3>
+    </div>
+        <form method="post" action="" id="{{ formName }}" enctype="multipart/form-data">
+            <div class="indication collapse collapseExample2">
+                <div class="indication-content">
+                    <div class="indication-img">
+                        <span class="indication-icon ui ui-help"></span>
+                    </div>
+                    <!--class="alert alert-dismissible" role="alert"<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>-->
+                    <div class="indication-text">
+                        Etsy sustainable try-hard selfies lo-fi
+                        polaroid sriracha butcher PBR&B, artisan man
+                        bun glossier. Health goth snackwave microdosing
+                        synth dreamcatcher, brunch cronut crucifix.
+                        Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+                        Etsy sustainable try-hard selfies lo-fi
+                        polaroid sriracha butcher PBR&B, artisan man
+                        bun glossier. Health goth snackwave microdosing
+                        synth dreamcatcher, brunch cronut crucifix.
+                        Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+                        Etsy sustainable try-hard selfies lo-fi
+                        polaroid sriracha butcher PBR&B, artisan man
+                        bun glossier. Health goth snackwave microdosing
+                        synth dreamcatcher, brunch cronut crucifix.
+                        Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="padding-bottom: 10px">
+                <div class="col-md-12">
+                    <div class="form-group" id="group_attributes_id"></div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group" id="group_markets_id"></div>
+                </div>
+                <div class="col-md-12">
+                    <div class="ui-button bgGreen">
+                        <button
+                            @click="createGroup"
+                            type="button" class="btn">
+                            <span class="fa fa-save"></span>
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['attributesTwig'] = {{ attributes|json_encode|raw }};
+        uiVars['marketsTwig'] = {{ markets|json_encode|raw }};
+        init.length = 0;
+        init = [ {
+            title: '',
+            file: 'Warehouse/Groups/groups.js',
+            functions: [ {
+                name: 'buildThirdPartyGroups',
+                args: [ uiVars['attributesTwig'], uiVars['marketsTwig'] ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

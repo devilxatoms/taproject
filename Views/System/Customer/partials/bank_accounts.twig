@@ -1,0 +1,67 @@
+<script type="text/x-template" id="bank-accounts-form">
+<div>
+    <div v-show="!editingBankAccount">
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-success" @click="addNewBankAccount">
+                    <span class="fa fa-plus"></span> Nueva Cuenta Bancaria
+                </button>
+            </div>
+        </div>
+        <vue-dynamic-table
+                class-name="table table-striped"
+
+                :pagination-options="paginationOptions"
+                @go-to-page="gotoPage"
+
+                :data-model="getSubList()"
+                :columns="columnsModel">
+            <template slot="no-rows-found">
+                No se encontraron cuentas bancarias
+            </template>
+            <template slot="actions" scope="row">
+                <div class="text-right">
+                    <a role="button" @click="editBankAccount(row.index)">
+                        <span class="fa fa-pencil"></span>
+                    </a>
+                    <a role="button" @click="askForDeleteBankAccount(row.index)">
+                        <span class="fa fa-remove"></span>
+                    </a>
+                </div>
+            </template>
+        </vue-dynamic-table>
+    </div>
+    <div v-show="editingBankAccount">
+        <h3>Nueva Cuenta Bancaria</h3>
+        <div class="form-group">
+            <label for="">Cuenta:</label>
+            <input type="text" v-model="bankAccount.account" @change="removeValidationError('account')">
+            <span v-if="hasValidationError('account')" class="cRed">${ validationErrors.account }</span>
+        </div>
+        <div class="form-group">
+            <label for="">Clabe:</label>
+            <input type="text" v-model="bankAccount.clabe" @change="removeValidationError('clabe')">
+            <span v-if="hasValidationError('clabe')" class="cRed">${ validationErrors.clabe }</span>
+        </div>
+        <div class="form-group">
+            <label for="">Banco:</label>
+            <span v-if="hasValidationError('bank')" class="cRed">${ validationErrors.bank }</span>
+        </div>
+        <div class="form-group">
+            <label for="">Sucursal:</label>
+            <input type="text" v-model="bankAccount.subsidiary" @change="removeValidationError('subsidiary')">
+            <span v-if="hasValidationError('subsidiary')" class="cRed">${ validationErrors.subsidiary }</span>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-primary" @click="saveBankAccount()">
+                    <span class="fa fa-floppy-o"></span> Guardar
+                </button>
+                <button class="btn btn-warning" @click="cancel()">
+                    <span class="fa fa-ban"></span> Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</script>

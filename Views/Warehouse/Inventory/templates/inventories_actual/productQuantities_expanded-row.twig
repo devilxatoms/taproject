@@ -1,0 +1,38 @@
+<template slot="expanded-row" scope="row">
+    <h4 style="text-align:center;">Existencias totales: ${ row.object.totalStock }</h4>
+    <div v-if="row.object.quantities" style="padding:16px">
+        <table :id="'invForm_' + row.object.id" class="tg" style="margin: auto">
+          <tr>
+            <th class="tg-amwm" rowspan="2">Almacén</th>
+            <th @click="sortByColumn(row, 'third_party_available')" class="tg-amwm" rowspan="2">Existencias de terceros<span :class="showSortIndicator('third_party_available')"></span></th>
+            <th class="tg-amwm" colspan="3">Existencias propias</th>
+            <th @click="sortByColumn(row, 'total_available')" class="tg-amwm" rowspan="2">Disponible para venta<span :class="showSortIndicator('total_available')"></th>
+          </tr>
+          <tr>
+            <th @click="sortByColumn(row, 'self_blocked')" class="tg-lqy6">Bloqueadas<span :class="showSortIndicator('self_blocked')"></span></th>
+            <th @click="sortByColumn(row, 'self_available')" class="tg-lqy6">Disponibles<span :class="showSortIndicator('self_available')"></th>
+            <th @click="sortByColumn(row, 'self_total')" class="tg-lqy6">Totales<span :class="showSortIndicator('self_total')"></th>
+          </tr>
+          <tr v-for="qty in row.object.quantities">
+            <td class="tg-yw4l">${ qty.name }</td>
+            <td class="tg-lqy6">${ qty.third_party_available }</td>
+            <td class="tg-lqy6">${ qty.self_blocked }</td>
+            <td class="tg-lqy6">${ qty.self_available }</td>
+            <td class="tg-lqy6">${ qty.self_total }</td>
+            <td class="tg-lqy6">${ qty.total_available }</td>
+          </tr>
+          <tr class="row-borderless">
+              <td class="tg-yw4l"><strong>Totales</strong></td>
+              <td class="tg-lqy6">${ row.object.third_party_sum }</td>
+              <td class="tg-lqy6">${ row.object.self_blocked_sum }</td>
+              <td class="tg-lqy6">${ row.object.self_available_sum }</td>
+              <td class="tg-lqy6">${ row.object.self_total_sum }</td>
+              <td class="tg-lqy6"><strong>${ row.object.total_available_sum }</strong></td>
+          </tr>
+        </table>
+    </div>
+    <div v-else>
+        Cantidades no disponibles
+    </div>
+
+</template>

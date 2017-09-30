@@ -1,0 +1,38 @@
+<section>
+	<div id="indexFiscalRegime">
+		<div class="header-buttons">
+			<div class="btn-group main-buttons">
+				<a id="btnFiscalRegime"
+					role="button"
+					class="btn btn-success"
+					data-action="openLateral"
+                    data-panelsize="sm"
+					data-route="nominas/regimenes/nuevo"
+					@click="addFiscalRegime">
+					<i class="fa fa-plus " aria-hidden="true"></i> Agregar Régimen Fiscal
+				</a>
+			</div>
+		</div>
+		<div class="panel-content">
+			<div class="row">
+				<div class="col-md-12 ">
+					<div class="table-responsive">
+						{% include '/HumanResources/Partials/catalog-table.twig' %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+	uiVars['title'] = '{{title}}';
+    init.length = 0;
+	init = [ {
+        title: uiVars['title'],
+		file: 'Payroll/FiscalRegimes/list.js',
+		functions: [ {
+			name: 'initFiscalRegimeList',
+			args: []
+		} ]
+	} ];
+</script>

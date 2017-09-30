@@ -1,0 +1,402 @@
+{% block content %}
+    <section>
+        <style>
+            #containerAdditionalTag {
+                height: 242px;
+                overflow: auto;
+            }
+
+        </style>
+        <div class="row" id="addCompanyLT">
+            <!-- %CONTENT% -->
+            <!-- basic product data -->
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos Básicos de la Empresa</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Logo</label>
+                                    <input
+                                        id="logo-simage"
+                                        name="products_images[]"
+                                        onchange="onFileSelected(event)"
+                                        type="file"
+                                        accept="image/gif, image/jpeg, image/png"
+                                        multiple/>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Nombre</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="products_name"
+                                        id="products_name"
+                                        placeholder="Nombre"
+                                        v-model="coname">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Razon Social</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="products_id_or_code"
+                                        id="products_id_or_code"
+                                        placeholder="Razon Social"
+                                        v-model="corsocial">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">RFC</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="products_id_or_code"
+                                        id="products_id_or_code"
+                                        placeholder="RFC"
+                                        v-model="corfc">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Giro</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="products_id_or_code"
+                                        id="products_id_or_code"
+                                        placeholder="Giro"
+                                        v-model="cgiro">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">Direccion</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="products_id_or_code"
+                                        id="products_id_or_code"
+                                        placeholder="Direccion"
+                                        v-model="coaddress">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="products_description">Descripción</label>
+                                    <textarea
+                                        type="text"
+                                        class="form-control"
+                                        id="description"
+                                        name="product_description"
+                                        placeholder="Descripción del producto"
+                                        v-model="codescription"></textarea>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / basic product data -->
+            <!-- additionalTags -->
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Informacion de Contacto</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Telefono</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="products_id_or_code"
+                                    id="products_id_or_code"
+                                    placeholder="Telefono"
+                                    v-model="cophone">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">E-mail</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="products_id_or_code"
+                                    id="products_id_or_code"
+                                    placeholder="E-mail"
+                                    v-model="comail">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Fax</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="products_id_or_code"
+                                    id="products_id_or_code"
+                                    placeholder="Fax"
+                                    v-model="cofax">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Paquete</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="">Paquete</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="products_id_or_code"
+                                    id="products_id_or_code"
+                                    placeholder="Paquete"
+                                    v-model="copacket">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- / additionalTags -->
+            <div class="col-md-12">
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Resumen de Registro</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <h4>Datos Basicos</h4>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="logo-image">
+                                <img src="" id="logoimg" height="118px" width="118px">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Empresa:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="coname"
+                                    placeholder="N/A"
+                                    v-bind:value="coname"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Razon Social:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corsocial"
+                                    placeholder="N/A"
+                                    v-bind:value="corsocial"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">RFC:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="corfc"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Giro:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="cgiro"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Direccion:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="corfc"
+                                    placeholder="N/A"
+                                    v-bind:value="coaddress"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="">Descripcion:</label>
+                                <textarea
+                                    name="name"
+                                    class="result-input"
+                                    v-bind:value="codescription"
+                                    disabled></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4>Datos Contacto</h4>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Telefono:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="cophone"
+                                    placeholder="N/A"
+                                    v-bind:value="cophone"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">E-mail:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="comail"
+                                    placeholder="N/A"
+                                    v-bind:value="comail"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Fax:</label>
+                                <input
+                                    type="text"
+                                    class="form-control result-input"
+                                    name="cofax"
+                                    placeholder="N/A"
+                                    v-bind:value="cofax"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <h4>Datos Paquete</h4>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Nombre</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="products_name"
+                                    id="products_name"
+                                    placeholder="Nombre">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Nombre</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="products_name"
+                                    id="products_name"
+                                    placeholder="Nombre">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Nombre</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="products_name"
+                                    id="products_name"
+                                    placeholder="Nombre">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="">Nombre</label>
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    name="products_name"
+                                    id="products_name"
+                                    placeholder="Nombre">
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <button class="btn btn-primary" type="button" name="button">Registrar Empresa</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /%CONTENT% -->
+
+    </section>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+
+        // $(document).on('change', '#logo-simage', function(){   var _img =
+        // document.getElementById('logoimg');   var newImg = new Image;   newImg.onload
+        // = function() {       _img.src = this.src;   }   newImg.src = $(this).val();
+        // })
+
+        function onFileSelected( event ) {
+            var selectedFile = event.target.files[0];
+            var reader = new FileReader( );
+
+            var imgtag = document.getElementById( "logoimg" );
+            imgtag.title = selectedFile.name;
+
+            reader.onload = function( event ) {
+                imgtag.src = event.target.result;
+            };
+
+            reader.readAsDataURL( selectedFile );
+        }
+
+        new Vue({
+            el: "#addCompanyLT",
+            data: {
+                coname: "",
+                corfc: "",
+                corsocial: "",
+                cgiro: "",
+                coaddress: "",
+                codescription: "",
+                cophone: "",
+                comail: "",
+                cofax: "",
+                copacket: ""
+            },
+            delimiters: [ '${', '}' ]
+        })
+    </script>
+{% endblock %}

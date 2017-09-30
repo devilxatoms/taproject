@@ -1,0 +1,152 @@
+{# LINK #}
+<template slot="serial-numbers-link" scope="row">
+    <div v-if="row.object.register_serial_numbers">
+        <span v-if="row.object.totalSerialNumbers == 0 && row.object.totalStock == 0" class="alert-danger" style="font-size:0.8em">
+            Sin registros
+        </span>
+        <el-tag :close-transition="true" :type="row.object.totalSerialNumbers != row.object.totalStock ? 'danger' : 'success'">
+            ${ row.object.totalSerialNumbers } / ${ row.object.totalStock }
+        </el-tag>
+    </div>
+</template>
+
+{# EXPANDED ROW #}
+<template slot="serial-numbers" scope="row">
+    <div class="col-md-10">
+
+        <idp-title-subtitle
+            title="Números de serie"
+            subtitle="Detalles por almacén"
+        >
+        </idp-title-subtitle>
+
+        <template>
+            <div class="col-sm-12" style="text-align:center">
+                <el-radio-group
+                    v-model="row.object.serialNumberSlot.viewMode"
+                    v-on:change="$store.dispatch('saveInventoryProductUserOption', {product_id: 1, key: 'viewMode', value: row.object.serialNumberSlot.viewMode})"
+                >
+                    <el-radio-button label="Cards"></el-radio-button>
+                    <el-radio-button label="Tabla"></el-radio-button>
+                </el-radio-group>
+
+
+            </div>
+
+            <template v-if="row.object.serialNumberSlot.viewMode == 'Cards'">
+                <div class="col-sm-8">Mostrando ${ row.object.visibleWarehouses.length } de ${ row.object.quantities.length } almacenes</div>
+                <div class="col-sm-4" style="text-align:right;">
+                    {# OPCIONES DE VISUALIZACION #}
+                        <el-popover
+                            ref="popover5"
+                            placement="left-start"
+                            width="350">
+                            <p>Opciones de visualización de almacenes</p>
+                            <div>
+                                <h5>Almacenes visibles</h5>
+                                <el-select
+                                    v-model="row.object.visibleWarehouses"
+                                    filterable
+                                    multiple
+
+                                >
+                                    <el-option
+                                        v-for="warehouse in row.object.quantities"
+                                        :value="warehouse.id"
+                                        :key="warehouse.id"
+                                        :label="warehouse.name"
+                                    >
+
+                                    </el-option>
+                                </el-select>
+                            </div>
+                            <hr>
+                            <div>
+                                <div style="text-align: right; margin: 0">
+                                    <el-button
+                                        type="text"
+                                        size="mini"
+                                        @click="expandAll('serialNumbersBox_', row.object.quantities)">
+                                        Expandir todos
+                                    </el-button>
+                                    <el-button
+                                        type="text"
+                                        size="mini"
+                                        @click="collapseAll('serialNumbersBox_', row.object.quantities)">
+                                        Colapsar todos
+                                    </el-button>
+                                    <hr>
+                                    <el-button
+                                        type="text"
+                                        size="mini"
+                                        @click="row.object.visibleWarehouses = $showAll(row.object.quantities, 'id')">
+                                        Mostrar todos
+                                    </el-button>
+                                    <el-button
+                                        type="text"
+                                        size="mini"
+                                        @click="row.object.visibleWarehouses = []">
+                                        Ocultar todos
+                                    </el-button>
+                                </div>
+                            </div>
+                        </el-popover>
+                        <el-button size="mini" v-popover:popover5><i class="glyphicon glyphicon-eye-close"></i></el-button>
+                    {#  #}
+
+                    <el-tag
+                      :closable="true"
+                      :type="'warning'"
+                    >
+                    Vista Filtrada
+                    </el-tag>
+
+                </div>
+
+                <template v-for="warehouse in row.object.quantities">
+                        {# ${ row.object.visibleWarehouses } #}
+                        <idp-warehouse-serial-numbers
+                            v-show="row.object.visibleWarehouses.indexOf(warehouse.id) > -1"
+                            :ref="'serialNumbersBox_' + warehouse.id"
+                            :warehouse-data="warehouse"
+                            v-on:save-serial-number="saveSerialNumber"
+                        >
+                        </idp-warehouse-serial-numbers>
+                </template>
+            </template>
+            <template v-else>
+                <div>
+                    <vue-dynamic-table-rbc
+                        class-name="table table-bordered"
+                        sort-indicator-asc-class="fa fa-caret-down"
+                        sort-indicator-desc-class="fa fa-caret-up"
+                        :filter-enabled="true"
+                        :expandable-row="true"
+                        :source-columns="$getDefaultSettings('serialNumbersColumns')"
+                        :data-model="serialNumbersList(row.object.quantities)">
+                    </vue-dynamic-table-rbc>
+                </div>
+            </template>
+        </template>
+
+
+
+
+
+
+    </div>
+
+    <div class="col-md-2" style="background-color:white;height:100%;">
+        <label for="serial">Buscar número de serie</label><br>
+        <el-input
+            size="mini"
+            placeholder="Número de serie"
+            icon="search"
+            v-model="row.object.snFilterText">
+        </el-input>
+        <label for="show_only_matches">Mostrar sólo coincidencias</label>
+        <input name="show_only_matches" v-model="showOnlyMatches" type="checkbox">
+        {# <button type="button" v-on:click="showImportCsvModal" class="btn btn-primary btn-sm btn-block">Importar CSV</button> #}
+    </div>
+
+</template>

@@ -1,0 +1,125 @@
+<section>
+  <div id="formFiscalRegime">
+    <div class="header-buttons">
+      <div class="btn-group main-buttons">
+        <button
+            class="btn btn-success"
+            @click="fiscalRegimeValidate">
+            <span class="glyphicon glyphicon-ok"></span>
+            Guardar
+        </button>
+        <button
+            class="btn btn-danger"
+            data-action="closeTab">
+            <span class="glyphicon glyphicon-remove"></span>
+            Cancelar
+        </button>
+      </div>
+    </div>
+    <div class="panel-content">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Datos del régimen fiscal</h3>
+        </div>
+        <form v-on:submit.prevent="fiscalRegimeValidate('formFiscalRegime')" id="">
+          <div class="panel-body">
+            <input type="hidden" name="id" v-model="fiscalRegime.id">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label for="contractType" class="">Régimen Fiscal:</label>
+                    <input v-model="fiscalRegime.c_RegimenFiscal" type="text" name="" @keypress="clearFiscalRegimeValidatorError('c_RegimenFiscal')">
+                    <span v-if="fiscalRegimeValidatorErrors != null" class="cRed">
+                        ${ fiscalRegimeValidatorErrors.first('c_RegimenFiscal') }
+                    </span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label for="contract_description" class="">Descripción:</label>
+                    <input v-model="fiscalRegime.description" class="form-control" type="text" name="" @keypress="clearFiscalRegimeValidatorError('Descripción')">
+                    <span v-if="fiscalRegimeValidatorErrors != null" class="cRed">
+                         ${ fiscalRegimeValidatorErrors.first('Descripción') }
+                    </span>
+                </div>
+              </div>
+              <div class="clear clearfix"></div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="naturalPerson" class="">Persona Física:</label>
+                  <vue-selectize-js
+                    ref="fiscalRegime.naturalPerson"
+                    selectizeType="select"
+                    v-bind:selectize-settings="naturalPersonSelectize.settings"
+                    v-bind:selectize-options="naturalPersonSelectize.options"
+                    v-bind:selectize-enabled="naturalPersonSelectize.enabled"
+                    v-model="fiscalRegime.natural_person"
+                    @change="clearFiscalRegimeValidatorError('Persona_Física')">
+                  </vue-selectize-js>
+                  <span v-if="fiscalRegimeValidatorErrors != null" class="cRed">
+                    ${ fiscalRegimeValidatorErrors.first('Persona_Física') }
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="legalEntity" class="">Persona Moral:</label>
+                  <vue-selectize-js
+                      ref="fiscalRegime.legalEntity"
+                      selectizeType="select"
+                      v-bind:selectize-settings="LegalEntitySelectize.settings"
+                      v-bind:selectize-options="LegalEntitySelectize.options"
+                      v-bind:selectize-enabled="LegalEntitySelectize.enabled"
+                      v-model="fiscalRegime.legal_entity"
+                      @change="clearFiscalRegimeValidatorError('Persona_Moral')">
+                  </vue-selectize-js>
+                  <span v-if="fiscalRegimeValidatorErrors != null" class="cRed">
+                    ${ fiscalRegimeValidatorErrors.first('Persona_Moral') }
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="" for="">Fecha de inicio de vigencia:</label>
+                  <vue-datetimepicker
+                    class-name="form-control"
+                    v-bind:format="datePicker.format"
+                    v-bind:time-picker="datePicker.timePicker"
+                    v-model="validity_start_date">
+                  </vue-datetimepicker>
+                  <span v-if="fiscalRegimeValidatorErrors != null" class="cRed">
+                    ${ fiscalRegimeValidatorErrors.first('Vigencia Inicio') }
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="" for="">Fecha de fin de vigencia:</label>
+                  <vue-datetimepicker
+                    class-name="form-control"
+                    v-bind:format="datePicker.format"
+                    v-bind:time-picker="datePicker.timePicker"
+                    v-model="validity_end_date">
+                  </vue-datetimepicker>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+ uiVars['title'] = '{{title}}';
+ uiVars['view'] = {{view}};
+ uiVars['data']   = {{data|json_encode|raw}};
+ init.lenght = 0;
+ init = [ {
+  title: uiVars['title'],
+  file: 'Payroll/FiscalRegimes/form.js',
+  functions: [ {
+    name: 'initPayrollsFormFiscalRegime',
+    args: [ uiVars['data'], uiVars['view']]
+  } ]
+} ];
+</script>

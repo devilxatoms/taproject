@@ -1,0 +1,51 @@
+{% block body %}
+<section>
+    <div id="tableRevisionList">
+        <div class="header-buttons">
+        </div>
+        <div class="panel-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <vue-dynamic-table-rbc
+                    box-classes="box box-primary full-height"
+                    class-name="table table-bordered table-hover"
+                    :remote-method="ajaxAssigmentSearch"
+                    :source-columns="assigmentSourceColumns"
+                    :select-options="catalogs"
+                    :data-model="assigmentList"
+                    :total-results="assigmentResults"
+                    >
+                    <template slot="employee" scope="row">
+                        ${row.object.employee.name} ${row.object.employee.father_surname}
+                        ${row.object.employee.mother_surname}
+                    </template>
+                    <template slot="actions" scope="row">
+                        <div class="ui-button bg-Light-Blue overflowInherit">
+                            <div class="secondary">
+                                <a class="btn align-right"  v-on:click="onRemoveClick(row.object.id)">
+                                    <span class="glyphicon glyphicon-trash"></span> Eliminar
+                                </a>
+                            </div>
+                        </div>
+                    </template>
+                </vue-dynamic-table-rbc>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+var catalogs = {{ catalogs|json_encode|raw }};
+init.length = 0;
+init = [ {
+    title: 'Revisiones',
+    file:  'HumanResources/PerformanceAssessment/list.js',
+    functions: [ {
+        name: 'initRevisionList',
+        args: [catalogs]
+    } ]
+} ];
+</script>
+{% endblock %}

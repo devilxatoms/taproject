@@ -1,0 +1,70 @@
+<section>
+    <div id="formPayPer">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="paymentPeriodValidate">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Guardar
+                </button>
+                <button
+                    class="btn btn-danger"
+                    data-action="closeTab">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Datos de la periodicidad</h3>
+                </div>
+                <form v-on:submit.prevent="paymentPeriodValidate('formPayPer')" id="">
+                    <div class="panel-body">
+                        <input type="hidden" name="id" v-model="payper.id">
+                        <div>
+                            <div class="form-group">
+                                <label for="paymentPeriodType">Periodicidad del Pago:</label>
+                                <input
+                                    v-model="payper.c_PeriodicidadPago"
+                                    class="form-control"
+                                    type="text"
+                                    @keypress="clearPaymentPeriodValidatorError('c_PeriodicidadPago')"
+                                    name="">
+                                <span v-if="payperValidatorErrors != null" class="cRed">
+                                    ${ payperValidatorErrors.first('c_PeriodicidadPago') }
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <label for="paymentPeriod_description">Descripción:</label>
+                                <input v-model="payper.description" class="form-control" type="text" name="" @keypress="clearPaymentPeriodValidatorError('Descripción')">
+                                <span v-if="payperValidatorErrors != null" class="cRed">
+                                    ${ payperValidatorErrors.first('Descripción') }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script id="scriptContainer" type="text/javascript">
+    uiVars['title'] = '{{title}}';
+    uiVars['view'] = {{view}};
+    uiVars['data']   = {{data|json_encode|raw}};
+    init.lenght = 0;
+    init = [ {
+        title: uiVars['title'],
+        file: 'Payroll/PaymentPeriods/form.js',
+        functions: [ {
+            name: 'initHumanResourcesFormPaymentPeriods',
+            args: [ uiVars['data'], uiVars['view']]
+        } ]
+    } ];
+</script>

@@ -1,0 +1,18 @@
+<template slot="payments" scope="row">
+    <div class="ui-button bgGreen overflowInherit">
+        <div class="secondary">
+            <a class="has-tooltip btn align-right" role="button" data-tooltip="Ver documentos de pago" data-action="openLateral" data-module="pagos" data-panelsize="xl" :data-route="'pagos/proveedores/'+row.object.provider_id">
+                <i class="fa fa-file-text" aria-hidden="true"></i> Ver Pagos
+            </a>
+        </div>
+    </div>
+</template>
+<template slot="movements" scope="row">
+    <div class="ui-button bgBlue overflowInherit">
+        <div class="secondary">
+            <a class="has-tooltip btn align-right" role="button" data-tooltip="Ver movimientos bancarios" data-action="openLateral" data-module="bancos" data-panelsize="xl" :data-route="'bancos/movimientos/proveedores/'+row.object.provider_id">
+                <i class="fa fa-book" aria-hidden="true"></i> Ver Movimientos
+            </a>
+        </div>
+    </div>
+</template>

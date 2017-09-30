@@ -1,0 +1,305 @@
+{% block body %}
+    <section>
+        <style>
+            .greenIcon{
+                color: #26B353;
+            }
+            .grayIcon{
+                color: #7b7b7b;
+            }
+            .lightGreenIcon{
+                color: #5BC0DE;
+            }
+            .orangeIcon{
+                color: #F0AD4E;
+            }
+            .greenTab li a
+            {
+                color: white !important;
+                background-color: #26B353 !important;
+                border-color: #1F9344 !important;
+            }
+            .greenTab li a:hover {
+                color: #fff !important;
+                background-color: #1F9344 !important;
+                border-color: #1F9344 !important;
+            }
+
+            .greenTab .active a
+            {
+                color: black !important;
+                background-color: #ABACAE !important;
+                border-color: white !important;
+            }
+            .greenTab li.active a:hover {
+                color: black !important;
+                background-color: #ABACAE !important;
+                border-color: white !important;
+            }
+            .btn-green {
+                color: white !important;
+                background-color: #26B353 !important;
+                border-color: #1F9344 !important;
+            }
+            .btn-green:hover {
+                color: #fff !important;
+                background-color: #1F9344 !important;
+                border-color: #1F9344 !important;
+            }
+        </style>
+        <div id="view-price-list">
+            <div class="header-buttons">
+                <div class="btn-group main-buttons">
+                    <button class="btn btn-warning" @click="onEdit"><span class="glyphicon glyphicon-floppy-disk"></span><strong> Editar</strong></button>
+                    <button class="btn btn-danger" @click="onDelete"><span class="glyphicon glyphicon-floppy-disk"></span><strong> Eliminar</strong></button>
+                </div>
+            </div>
+            <div class="panel-content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Nombre</label>
+                                    <input
+                                        type="text"
+                                        name="listName"
+                                        v-model="listName" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Moneda</label>
+                                    <input
+                                        type="text"
+                                        name="listName"
+                                        v-model="listCoin" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input
+                                        class="checkbox"
+                                        type="checkbox"
+                                        v-model="listECommerce" disabled>
+                                    <label
+                                        class="checkbox-label">
+                                        Disponible en E-Commerce
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Descripción</label>
+                                    <textarea v-model="listDescription" disabled></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="block">
+                                        <div class="has-tooltip" data-tooltip="Tipo de calculo">
+                                            <span class="glyphicon glyphicon-info-sign cGreen"></span>
+                                        </div>
+                                        Tipo
+                                    </label>
+                                    <select
+                                        name="listType"
+                                        v-model="listType"
+                                        class="block" disabled>
+                                            <option value="1">Porcentaje</option>
+                                            <option value="2">Fijo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="block">
+                                        <div class="has-tooltip" data-tooltip="Utilidad deseada en las ventas">
+                                            <span class="glyphicon glyphicon-info-sign cGreen"></span>
+                                        </div>
+                                        Valor en %
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="listValue"
+                                        v-model="listValue"
+                                        class="block" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="block">
+                                            <div class="has-tooltip" data-tooltip="Descuento máximo posible">
+                                                <span class="glyphicon glyphicon-info-sign cGreen"></span>
+                                            </div>
+                                            Tope Descuento %
+                                            <div class="has-tooltip" data-tooltip="Si pasas el maximo vendes debajo del costo">
+                                                <span class="glyphicon glyphicon-info-sign cGreen"></span>
+                                            </div>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="listMaxDisscount"
+                                        v-model="listMaxDisscount"
+                                        class="block" disabled>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="block">
+                                        <div class="has-tooltip" data-tooltip="Descuento máximo posible en excepcion">
+                                            <span class="glyphicon glyphicon-info-sign cGreen"></span>
+                                        </div>
+                                        Tope Descuento Excepciones %
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="listMaxDisscountExceptions"
+                                        v-model="listMaxDisscountExceptions"
+                                        class="block" disabled>
+                                </div>
+                            </div>
+                        </div><br>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input
+                                        class="radio"
+                                        type="radio"
+                                        v-model="listDateOption"
+                                        value="1" disabled>
+                                    <label class="radio-label" >
+                                        <div class="has-tooltip" data-tooltip="Lista siempre disponible">
+                                            <span class="glyphicon glyphicon-info-sign cGreen"></span>
+                                        </div>
+                                        Por tiempo indefinido
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input
+                                        class="radio"
+                                        type="radio"
+                                        v-model="listDateOption"
+                                        value="2" disabled>
+                                    <label class="radio-label">
+                                        <div class="has-tooltip" data-tooltip="Lista disponible solo hasta">
+                                            <span class="glyphicon glyphicon-info-sign cGreen"></span>
+                                        </div>
+                                        Agregar fecha de validez
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div>
+                                    <input
+                                        v-model="listDate"
+                                        class="block" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="background-color: #DDDBDC;">
+                                <ul class="nav nav-pills greenTab">
+                                    <li class="active"><a href="#1a" data-toggle="tab">Excepciones de Productos</a></li>
+                                    <li><a href="#2a" data-toggle="tab">Exclusiones de Sucursales</a></li>
+                                    <!--<li><a href="#4a" data-toggle="tab">Exclusiones de Proveedores</a></li>-->
+                                    <li><a href="#5a" data-toggle="tab">Exclusiones de Clientes</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="tab-content clearfix">
+                                    <div class="tab-pane active" id="1a">
+                                        <vue-dynamic-table
+                                            class-name="table table-bordered"
+                                            :columns="sourceColumnsProducts"
+                                            :data-model="chunksListProducts()[paginationOptionsProducts.currentPage - 1]"
+                                            :filter-enabled="filterEnabled"
+                                            :pagination-options="paginationOptionsProducts"
+                                            @go-to-page="goToPageProducts">
+                                            <template slot="no-rows-found">
+                                                <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> Sin Excepciones de Productos</h4>
+                                            </template>
+                                        </vue-dynamic-table>
+                                    </div>
+                                    <div class="tab-pane" id="2a">
+                                        <vue-dynamic-table
+                                            class-name="table table-bordered"
+                                            :columns="sourceColumnsProducts"
+                                            :data-model="chunksListProducts()[paginationOptionsProducts.currentPage - 1]"
+                                            :filter-enabled="filterEnabled"
+                                            :pagination-options="paginationOptionsProducts"
+                                            @go-to-page="goToPageProducts">
+                                            <template slot="no-rows-found">
+                                                <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> Sin Excepciones de Productos</h4>
+                                            </template>
+                                        </vue-dynamic-table>
+                                    </div>
+                                    <div class="tab-pane" id="2a">
+                                        <vue-dynamic-table
+                                            class-name="table table-bordered"
+                                            :columns="sourceColumnsSubsidiaries"
+                                            :filter-enabled="filterEnabled"
+                                            :data-model="chunksListSubsidiaries()[paginationOptionsSubsidiaries.currentPage - 1]"
+                                            :filter-enabled="filterEnabled"
+                                            :pagination-options="paginationOptionsSubsidiaries"
+                                            @go-to-page="goToPageCustomers">
+                                            <template slot="no-rows-found">
+                                                <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> Sin Exclusiones de Sucursales</h4>
+                                            </template>
+                                        </vue-dynamic-table>
+                                    </div>
+                                    <div class="tab-pane" id="4a">
+                                        <vue-dynamic-table
+                                            class-name="table table-bordered"
+                                            :columns="sourceColumnsProviders"
+                                            :filter-enabled="filterEnabled"
+                                            :data-model="chunksListProviders()[paginationOptionsProviders.currentPage - 1]"
+                                            :filter-enabled="filterEnabled"
+                                            :pagination-options="paginationOptionsProviders"
+                                            @go-to-page="goToPageProviders">
+                                            <template slot="no-rows-found">
+                                                <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> Sin Exclusiones de Proveedores</h4>
+                                            </template>
+                                        </vue-dynamic-table>
+                                    </div>
+                                    <div class="tab-pane" id="5a">
+                                        <vue-dynamic-table
+                                            class-name="table table-bordered"
+                                            :columns="sourceColumnsCustomers"
+                                            :filter-enabled="filterEnabled"
+                                            :data-model="chunksListCustomers()[paginationOptionsCustomers.currentPage - 1]"
+                                            :filter-enabled="filterEnabled"
+                                            :pagination-options="paginationOptionsCustomers"
+                                            @go-to-page="goToPageCustomers">
+                                            <template slot="no-rows-found">
+                                                <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> Sin Exclusiones de Clientes</h4>
+                                            </template>
+                                        </vue-dynamic-table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        listPrice = {{ listPrice|json_encode|raw }};
+        init.lenght = 0;
+        init = [ {
+            title: "Lista de Precios " + uiVars['listPrice'].name,
+            file: 'Prices/viewPriceList.js',
+            functions: [ {
+                name: 'iniciarModuloViewPriceList',
+                args: [ uiVars['listPrice'] ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% block body %}
+<section>
+    <div id="catalog-tags">
+        <vue-dynamic-table-rbc
+            :extra-buttons="extraButtons"
+            box-classes="box box-primary full-height"
+            class-name="table table-bordered table-hover"
+
+            :source-columns="sourceColumns"
+            :data-model="listTags"
+            :total-results="totalResults"
+            :remote-method="remoteMethod"
+            >
+                <template slot="actions" scope="row">
+                    <div class="ui-button bg-Light-Blue overflowInherit">
+                        <div class="secondary">
+                            <a
+                                data-route="javascript:void(0);"
+                                class="has-tooltip btn align-right"
+                                role="button"
+                                data-tooltip="Editar"
+                                @click="editTag(row.object)">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <a
+                                class="has-tooltip btn align-right"
+                                role="button"
+                                data-tooltip="Eliminar"
+                                data-route="javascript:void(0);"
+                                @click="deleteTag(row.object)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+
+                <template slot="no-rows-found">
+                    <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span> No se encontraron resultados</h4>
+                </template>
+        </vue-dynamic-table-rbc>
+
+        <!-- Modal -->
+        <div
+            id="createTagModal"
+            ref="createTagModal"
+            class="modal fade"
+            tabindex="-1"
+            role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button
+                            type="button"
+                            class="close"
+                            data-dismiss="modal"
+                            aria-label="Close"
+                            v-on:click="resetForm">
+                                <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 v-if="tagObj.tagId == 0">Añadir Etiqueta</h3>
+                        <h3 v-if="tagObj.tagId != 0">Edición de Etiqueta: ${ tagObj.tagNameOrginal }</h3>
+                    </div>
+                    <div class="modal-body">
+						<div class="form-group">
+                            <label>Código:</label>
+                            <input
+                                type="text"
+                                maxlength="100"
+                                v-model="tagObj.tagCode"
+                                name="tagCode"
+                                data-vv-as="Código"
+                                :class="{'validate': errors.has('tagCode') }">
+                            <span v-show="errors.has('tagCode')" class="cRed">${ errors.first('tagCode') }</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Etiqueta:</label>
+                            <input
+                                type="text"
+                                maxlength="100"
+                                v-model="tagObj.tagName"
+                                name="tagName"
+                                v-validate="'required'"
+                                data-vv-as="Nombre"
+                                :class="{'validate': errors.has('tagName') }">
+                            <span v-show="errors.has('tagName')" class="cRed">${ errors.first('tagName') }</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripcion:</label>
+                            <textarea
+                                class="form-control"
+                                rows="3"
+                                maxlength="255"
+                                style="resize: none;"
+                                v-model="tagObj.tagDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-default"
+                            data-dismiss="modal"
+                            v-on:click="resetForm">Cancelar</button>
+                        <button
+                            ref="catalogTagSubmit"
+                            class="btn btn-success"
+                            v-on:click="createOrUpdate">GUARDAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+
+        <!-- Modal Pregunta-->
+        <div
+            id="questionModal"
+            ref="questionModal"
+            class="modal fade"
+            tabindex="-1"
+            role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3>¿Estás seguro que deseas eliminar?</h3>
+                    </div>
+                    <div class="modal-body">
+						<div class="form-group">
+                            <label>Código:</label>
+                            <h4>${tagToDelete.tagCode}</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <h4>${tagToDelete.name}</h4>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripcion:</label>
+                            <h4>${tagToDelete.description}</h4>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        <button
+                            class="btn btn-danger"
+                            v-on:click="deleteTag">ELIMINAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Pregunta -->
+
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Etiquetas',
+            file: 'Warehouse/Tags/TagsCatalog.js',
+            functions: [ {
+                name: 'iniciarModuloTagsCatalog',
+                args: []
+            } ]
+        } ];
+    </script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% block body %}
+<section>
+    <div id="attendance-module">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons ">
+                <input type="file" id="reportPHP" class="inputfile btn btn-default">
+                <a class="btn btn-default" @click="importFile()">
+                    <span class="fa fa-upload" aria-hidden="true"></span> Importar PHP
+                </a>
+                <input type="file" id="reportExcel" class="inputfile btn btn-default">
+                <a class="btn btn-default" @click="importExcel()">
+                    <span class="fa fa-upload" aria-hidden="true"></span> Importar Excel
+                </a>
+                <a role="button" id="btnNewBankMovement" v-on:click="exportModal" class="btn btn  btn-success ">
+                    <i class="fa fa-plus " aria-hidden="true"></i>
+                    Exportar Registros
+                </a>
+                <a role="button" id="btnNewBankMovement" v-on:click="exportTemplate" class="btn btn  btn-success ">
+                    <i class="fa fa-plus " aria-hidden="true"></i>
+                    Plantilla de exportación
+                </a>
+            </div>
+        </div>
+        <div class="panel-content">
+            {% include '/Payrolls/Attendance/exportModal.twig' %}
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :remote-method="ajaxAttendanceSearch"
+                :source-columns="attendanceSourceColumns"
+                :select-options="catalogs"
+                :data-model="attendanceList"
+                :total-results="attendanceResults">
+                <template slot="name" scope="row">
+                    ${getName(row.object)}
+                </template>
+                <template slot="actions" scope="row">
+                    <div class="ui-button bg-Light-Blue overflowInherit">
+                        <div class="secondary">
+                            <a
+                                role="button"
+                                class="has-tooltip btn align-right"
+                                data-tooltip="Editar"
+                                v-on:click="onEditClick(row.object.id)">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <a
+                                class="has-tooltip btn align-right"
+                                data-tooltip="Eliminar"
+                                role="button"
+                                v-on:click="onRemoveClick(row)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+var catalogs = {{ catalogs|json_encode|raw }};
+init.length = 0;
+init = [ {
+    title: 'Listado de Asistencia',
+    file:  'Payroll/Attendance/list.js',
+    functions: [ {
+        name: 'initAttendance',
+        args: [catalogs]
+    } ]
+} ];
+</script>
+{% endblock %}

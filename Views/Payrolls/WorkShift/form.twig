@@ -1,0 +1,39 @@
+<section>
+    <div id="create-shift">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="saveShift">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                    Guardar
+                </button>
+                <button
+                    class="btn btn-danger"
+                    data-action="closeTab">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="row">
+            {% include '/Payrolls/WorkShift/shift.twig' %}
+            </div>
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+uiVars['title'] = '{{title}}';
+uiVars['view'] = {{view}};
+uiVars['data'] = {{data|json_encode|raw}} ;
+    init.lenght = 0;
+    init = [ {
+        title: uiVars['title'],
+            file: 'Payroll/Workshift/form.js',
+            functions: [ {
+                name: 'initWorkShift',
+                args: [ uiVars['data'], uiVars['view'], uiVars['view']]
+        } ]
+    }];
+</script>

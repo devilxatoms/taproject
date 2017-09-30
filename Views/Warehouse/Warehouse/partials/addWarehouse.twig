@@ -1,0 +1,122 @@
+<div class="col-md-12 modalRemoveIds">
+   <h1>Nuevo Almacén</h1>
+   <hr/>
+</div>
+<div class="col-md-12">
+   <div class="alert alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span></button>
+      <p>
+         Etsy sustainable try-hard selfies lo-fi
+         polaroid sriracha butcher PBR&B, artisan man
+         bun glossier. Health goth snackwave microdosing
+         synth dreamcatcher, brunch cronut crucifix.
+         Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+         Etsy sustainable try-hard selfies lo-fi
+         polaroid sriracha butcher PBR&B, artisan man
+         bun glossier. Health goth snackwave microdosing
+         synth dreamcatcher, brunch cronut crucifix.
+         Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+         Etsy sustainable try-hard selfies lo-fi
+         polaroid sriracha butcher PBR&B, artisan man
+         bun glossier. Health goth snackwave microdosing
+         synth dreamcatcher, brunch cronut crucifix.
+         Everyday carry pour-over meh, etsy marfa deep v health goth 90's
+      </p>
+   </div>
+</div>
+<div class="col-md-6">
+   <label style="color: #002a80" for="">Datos generales</label>
+   <div class="req form-group">
+      <label for="name">Nombre de almacén: </label>
+      <input type="text" class="form-control"  name="name"  id="name">
+   </div>
+   <div class="form-group">
+      <label for="description">Descripción de almacén: </label>
+      <textarea class="form-control"  name="description"  id="description"></textarea>
+   </div>
+   <div class="form-group">
+      <label for="manager_id">Responsable: </label>
+      <select  id="manager_id"  name="manager_id">
+         {% for user in users %}
+         <option value="{{ user.id }}">{{ user.name }}</option>
+         {% endfor %}
+      </select>
+   </div>
+   <div class="form-group">
+      <label for="email">Email: </label>
+      <input type="text" class="form-control"  name="email"  id="email">
+   </div>
+   <div class="form-group">
+      <label for="phone">Teléfono: </label>
+      <input type="text"  name="phone" class="form-control"  id="phone">
+   </div>
+</div>
+<div class="col-md-6">
+   <label style="color: #002a80" for="">Dirección</label>
+         <div id="google_autocomplete" class="form-group">
+          <vue-google-autocomplete
+                        id="map"
+                        type="regions"
+                        classname="input"
+                        placeholder="Buscar su Direccion"
+                        v-on:placechanged="getAddressData"
+                        country="mx">
+                   </vue-google-autocomplete>
+          </div>
+   <div class="form-group">
+      <label for="street">Calle</label>
+      <input type="text"  name="street" class="form-control"  id="street">
+   </div>
+   <div class="form-group">
+      <label for="suburb">Colonia</label>
+      <input type="text"  name="suburb" class="form-control"  id="suburb">
+   </div>
+   <div class="form-group">
+      <label for="external_number">Número exterior</label>
+      <input type="text" class="form-control"  id="external_number">
+   </div>
+   <div class="form-group">
+      <label for="internal_number">Número interno</label>
+      <input type="text"  name="internal_number"
+         class="form-control"  id="internal_number">
+   </div>
+</div>
+<div class="col-md-12">
+   <button type="button" id="moreDataAddressButton"
+      class="btn btn-default block" data-toggle="collapse"
+      data-target="#moreDataAddressContainer">Ver/Ocultar datos
+   </button>
+   <div id="moreDataAddressContainer" class="collapse">
+      <div class="form-group">
+         <label for="postal_code">Código Postal</label>
+         <input  name="postal_code" type="text" class="form-control"  id="postal_code">
+      </div>
+      <div class="form-group">
+         <label for="municipality">Municipio</label>
+         <input  name="municipality" type="text" class="form-control"  id="municipality">
+      </div>
+      <div class="form-group">
+         <label for="town">Localidad</label>
+         <input  name="town" type="text" class="form-control"  id="town">
+      </div>
+      <div class="form-group">
+         <label for="state">Estado</label>
+         <input  name="state" type="text" class="form-control"  id="state">
+      </div>
+      {#
+      <div class="form-group">
+         <label for="latitude">Latitud</label>
+         <input  name="latitude" type="text" class="form-control"  id="latitude">
+      </div>
+      <div class="form-group">
+         <label for="longitude">Longitud</label>
+         <input  name="longitude" type="text" class="form-control"  id="longitude">
+      </div>
+      #}
+      <div class="form-group">
+         <label for="reference">Referencia</label>
+         <input  name="reference" type="text" class="form-control"  id="reference">
+      </div>
+   </div>
+</div>

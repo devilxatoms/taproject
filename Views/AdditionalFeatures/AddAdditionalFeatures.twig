@@ -1,0 +1,150 @@
+{% block content %}
+<section id="additionalFeaturesForm">
+    <div class="box box-default">
+        <div class="box-header">
+            <h3 class="box-title">DATOS PARA AGREGAR NUEVA CARACTERISTICA</h3>
+            <div class="box-tools pull-right">
+
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <input type="hidden" id="id">
+                    <div class="req form-group">
+                        <label>Nombre </label>
+                        <input
+                            v-model="additionalFeature.name"
+                            type="text"
+                            class="form-control"
+                            placeholder="Nombre">
+                        <div style="text-align: right; font-size: 0.8em; color: red;">
+                            <span v-if="$v.additionalFeature.name.$dirty && !$v.additionalFeature.name.required">
+                                El campo nombre es obligatorio
+                            </span>
+                            <span v-if="!$v.additionalFeature.name.minLength">
+                                El campo nombre debe tener ${$v.additionalFeature.name.$params.minLength.min} letras como mínimo.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button
+                    class="btn btn-success"
+                    @click="createAdditionalFeature"
+                    :disabled="$v.$invalid"
+                    >
+                    Guardar
+                </button>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div class="box box-default">
+        <div class="box-header">
+            <h3 class="box-title">Tabla de Caracteristicas</h3>
+            <div class="box-tools pull-right">
+
+            </div>
+        </div>
+
+        <div class="box-body">
+
+            <div id="tableAdditionalFeatures">
+
+                <vue-dynamic-table-rbc
+                    box-classes="box box-primary full-height"
+                    class-name="table table-bordered table-hover"
+
+                    :remote-method="remoteMethod"
+                    :total-results="totalResults"
+                    :loading-from-server="isLoading"
+
+                    hide-import-export
+                    :source-columns="sourceColumns"
+                    :data-model="listAdditionalFeatures"
+                    @expand-row="onExpandRow($event)"
+                    :pagination-options="{pageSizes: [5, 10], pageSize: 5}"
+                >
+
+
+
+                    <template slot="actions" scope="row">
+                        {# BOTÓN EDITAR #}
+                        <a href="javascript:void(0);" class="has-tooltip" data-tooltip="Editar" v-on:click="onEditClick(row.object)">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+
+                        {# BOTÓN ELIMINAR #}
+                        <a class="has-tooltip" data-tooltip="Eliminar" href="javascript:void(0);" v-on:click="onRemoveClick(row.object)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </template>
+
+                </vue-dynamic-table-rbc>
+
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="modal fade" id="AddValue" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">AÑADIR VALOR A CARACTERISTICA</h4>
+                </div>
+                <div class="modal-body">
+                   <form method="POST" id="addValue">
+                    <input type="hidden" id="id">
+                    <div class="form-group">
+                        <label for="">Valor</label>
+                        <input type="text" class="form-control" maxlength="255" name="value" id="value" placeholder="Valor">
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" data-dismiss="modal" id="buttonSave">Guardar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    </div>
+
+</section>
+
+
+
+
+
+{% endblock %} {% block loadScripts %}
+
+<script id="scriptContainer" type="text/javascript">
+    init.lenght = 0;
+    init = [{
+
+        title: 'Caracteristicas adicionales',
+        file: 'AdditionalFeatures/AdditionalFeatures.js',
+        functions: [{
+            name: 'initList',
+            args: ['{{ tableName }}']
+        }]
+    }];
+
+</script>
+
+{% endblock %}

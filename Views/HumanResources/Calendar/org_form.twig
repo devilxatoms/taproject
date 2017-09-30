@@ -1,0 +1,91 @@
+<section>
+    <div class="window container-fluid" id="formCalendar">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Nuevo día de asueto</h3>
+                    </div>
+
+                    <form v-on:submit.prevent="calendarValidate('formCalendar')" id="">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="concept">Día</label>
+                                    <div class="form-group">
+                                        <el-date-picker
+                                        v-model="date_rest2"
+                                        type="date"
+                                        :picker-options='dateAvailablePickerOptions'
+                                        placeholder="Seleccione el día">
+                                    </el-date-picker>
+                                    <span v-if="calendarValidatorErrors != null" class="cRed">
+                                        ${ calendarValidatorErrors.first('Día') }
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="suggested_days">Asueto</label>
+                                <div class="form-group">
+                                    <input
+                                    v-model="calendar.concept"
+                                    class="form-control"
+                                    type="text"
+                                    @keypress="clearCalendarValidatorErrors('Asueto')"
+                                    name="suggested_days">
+                                    <span v-if="calendarValidatorErrors != null" class="cRed">
+                                        ${ calendarValidatorErrors.first('Asueto') }
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row" v-if="see === false">
+        <div class="row col-md-12 ">
+            <div class="block centered h100 ">
+                <div class="content contentMiddle text-center">
+                    <a class="btn btn-success" @click="calendarValidate"><i class="glyphicon glyphicon-ok"></i> Guardar</a>
+                    <a class="btn btn-danger" data-action="closeTab"><i class="glyphicon glyphicon-remove"></i> Cancelar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+{% if id %}
+uiVars['see'] = false;
+uiVars['id']   = {{id}};
+uiVars['data']   = {{data|json_encode|raw}};
+{% if uiVars['see'] %}
+uiVars['title'] = "Ver Calendario";
+uiVars['see'] = true;
+{% else %}
+uiVars['title'] = "Editar Calendario";
+{% endif %}
+init.lenght = 0;
+init = [ {
+    title: uiVars['title'],
+    file: 'HumanResources/Permissions/Types/form.js',
+    functions: [ {
+        name: 'initFormCalendars',
+        args: [ uiVars['id'], uiVars['data'], uiVars['see']]
+    } ]
+} ];
+{% else %}
+uiVars['title'] = "Nueva Fecha";
+init.lenght = 0;
+init = [ {
+    title: uiVars['title'],
+    file: 'HumanResources/Calendar/form.js',
+    functions: [ {
+        name: 'formCalendar',
+        args: []
+    } ]
+} ];
+{% endif %}
+</script>

@@ -1,0 +1,38 @@
+<template slot="attributes" scope="row">
+    <div class="expand">
+        <span v-for="item in row.object.attributes" class="item-badge"> ${ item.name } </span>
+    </div>
+</template>
+<template slot="markets" scope="row">
+    <div class="expand">
+        <span v-for="item in row.object.markets" class="item-badge"> ${ item.name } </span>&nbsp;
+    </div>
+</template>
+<template slot="description" scope="row">
+    <div class="expand">
+        ${ row.object.group_description }
+    </div>
+</template>
+<template slot="actions" scope="row">
+    <div class="ui-button bg-Light-Blue overflowInherit">
+        <div class="secondary">
+            <a
+                class="has-tooltip btn align-right"
+                data-tooltip="Editar grupo"
+                role="button"
+                v-on:click="onEditClick(row.object)">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a
+                class="has-tooltip btn align-right"
+                data-tooltip="Eliminar grupo"
+                role="button"
+                v-on:click="onRemoveClick(row.object)">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </div>
+    </div>
+</template>
+<template slot="no-rows-found">
+    <span>No se encontraron resultados</span>
+</template>

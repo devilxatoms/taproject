@@ -1,0 +1,16 @@
+{# LINK #}
+<template slot="ubications-link" scope="row">
+    <template v-if="row.object.quantities.length">
+        ${ $getObjectByIndex(row.object.quantities, 'id', 67).name }
+        <el-tag type="gray">${ parseInt(row.object.quantities.length - 1) } almacenes más</el-tag>
+    </template>
+</template>
+
+{# EXPANDED ROW #}
+<template slot="ubications" scope="row">
+    <template v-if="row.object.quantities.length">
+        <div v-for="warehouse in row.object.quantities">
+            ${ warehouse.name }
+        </div>
+    </template>
+</template>

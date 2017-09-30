@@ -1,0 +1,456 @@
+{% block main_customer %}
+<section>
+    <div class="container-fluid">
+      <div class="row">
+        <div id="rfActions" class="col-md-12">
+          <ul class="nav nav-tabs">
+            <li id="roles-tab" class="tabs active"><a href="#"><i class="fa fa-sitemap" aria-hidden="true"></i> Roles</a></li>
+            <li id="faculrol-tab" class="tabs"><a href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> Facultades por Rol</a></li>
+            <li id="facultades-tab" class="tabs"><a href="#"><i class="fa fa-pencil" aria-hidden="true"></i> Facultades</a></li>
+            <li id="faculpag-tab" class="tabs"><a href="#"><i class="fa fa-pencil" aria-hidden="true"></i> Facultades por Pagina</a></li>
+            <li id="pages-tab" class="tabs"><a href="#"><i class="fa fa-file-text" aria-hidden="true"></i> Paginas</a></li>
+            <li id="module-tab" class="tabs"><a href="#"><i class="fa fa-file-text" aria-hidden="true"></i> Modulos</a></li>
+          </ul>
+          <div class="container-fluid" id="tabs-container">
+            <div class="row" id="roles-container">
+              <div class="col-md-3">
+                <h4><i class="fa fa-pencil" aria-hidden="true"></i> Registro</h4>
+                <form id="regRolForm">
+                    <addrolesform></addrolesform>
+                </form>
+              </div>
+              <div class="col-md-9">
+                <div id="adminroles-module">
+                    <h4><i class="fa fa-id-card" aria-hidden="true"></i> Tabla Roles</h4>
+                    <!-- Dynamic Table -->
+                    <vue-dynamic-table
+                        class-name="table table-bordered table-hover"
+                        v-bind:filter-enabled="true"
+                        v-bind:expandable-row="true"
+                        v-bind:columns="sourceColumns"
+                        v-bind:data-model="listRoles"
+                        v-on:go-to-page="goToPage"
+                        v-bind:pagination-options="PaginationOptions">
+                        <template slot="actions" scope="row">
+                            <div class="ui-button">
+                                <div class="secondary">
+
+                                    <a role="button"
+                                    class="btn bgGreen"
+                                    v-on:click="onEditClick(row.object)">
+                                      <i class="glyphicon glyphicon-edit"  aria-hidden="true"></i>
+                                    </a>
+
+                                    <a role="button"
+                                    class="btn bgRed"
+                                    v-on:click="onRemoveClick(row.object)">
+                                      <i class="glyphicon glyphicon-trash"  aria-hidden="true"></i>
+                                    </a>
+
+                                    <a role="button"
+                                    class="btn bgBlue"
+                                    v-on:click="onFacultiesClick(row.object)">
+                                      <i class="glyphicon glyphicon-list-alt"  aria-hidden="true"></i>
+                                    </a>
+
+                                </div>
+                            </div>
+
+                      </template>
+                    </vue-dynamic-table>
+                    <!-- Dynamic Table -->
+                </div>
+              </div>
+            </div>
+            <div class="row" id="faculties-container">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-12 top-actions" >
+                    <button type="button" id="saveFaculties" name="button" class="btn btn-primary" disabled><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <h4><i class="fa fa-id-card-o" aria-hidden="true"></i> Listado de Roles </h4>
+                <ul id="rolselect-list" class="list-group">
+                  <template v-for="item in roles">
+                        <li class="list-group-item small" ><input type="checkbox" v-bind:name="item.name" v-bind:value="item.id" style="display: none"><span><i class="fa fa-circle icon-red" aria-hidden="true"></i></span> ${item.name}</li>
+                  </template>
+                </ul>
+              </div>
+
+              <div class="col-md-3 faculties-panel">
+                <h4><i class="fa fa-cubes" aria-hidden="true"></i> Modulos</h4>
+
+                <ul id="module-list" class="list-group">
+
+                  <template  v-for="item in modulos" >
+                      <div class="module-li">
+                      <li href="#" class="list-group-item"  data-toggle="collapse" v-bind:data-target="'#'+item.module"><input type="hidden" v-bind:value="item.id_modulo" v-bind:name="item.module" /><i class="fa fa-cube" aria-hidden="true"></i> ${item.module}</li>
+                      <ul v-bind:id="item.module" class="sublinks collapse">
+                        <li v-for="(value,key) in item.pages" class="list-group-item small">
+                          <input type="checkbox" v-bind:name="value" v-bind:value="key" ><span><i class="fa fa-chevron-circle-right icon-yellow" aria-hidden="true"></i></span> ${value} <span class="fCount"><i class="fa fa-caret-right" aria-hidden="true"></i> 0</span>
+                        </li>
+                      </ul>
+                      </div>
+                  </template>
+                  <div id="clearFc">
+                    <span><i class="fa fa-times" aria-hidden="true"></i> Vaciar Listado</span>
+                  </div>
+              </div>
+              <div class="col-md-3 faculties-panel">
+                <h4><i class="fa fa-eye" aria-hidden="true"></i> Facultades <button type="button"  class="btn btn-head "name="button" id="addAllFaculties"><i class="fa fa-plus-circle" aria-hidden="true"></i> Agregar todo</button></h4>
+                  <ul id="faculty-list" class="list-group">
+
+                    <template v-if="render.length === 0" v-for="(facultad, id) in facultades">
+                        <div class="faculty-li">
+                          <li class="list-group-item small" ><input type="checkbox" v-bind:name="facultad" v-bind:value="id"><span><i class="fa fa-times-circle" aria-hidden="true"></i></span> ${facultad}</li>
+                        </div>
+                    </template>
+
+                    <template  v-if="render.length !== 0"v-for="(value, key) in render">
+                        <div class="faculty-li">
+                          <li class="list-group-item small" v-if="value.check == 1"><input type="checkbox" v-bind:name="value.name" v-bind:value="value.id" :checked="state" /><span><i class="fa fa-check-circle" aria-hidden="true"></i></span> ${value.name} </li>
+                          <li class="list-group-item small" v-else><input type="checkbox" v-bind:name="value.name" v-bind:value="value.id"  :checked="!state" /><span><i class="fa fa-times-circle" aria-hidden="true"></i></span> ${value.name}</li>
+                        </div>
+                    </template>
+                  </ul>
+              </div>
+              <div class="col-md-3 faculties-panel">
+                <div id="adminroles-module">
+                    <h4><i class="fa fa-th-list" aria-hidden="true"></i> Asignados </h4>
+                    <ul id="result-list" class="list-group">
+                      <template v-for="(value, key) in json.modulos">
+                        <li href="#" class="list-group-item "><i class="fa fa-cube" aria-hidden="true"></i>${value.name}</li>
+                        <ul v-for="(paginav, paginak) in value.paginas">
+                          <li class="list-group-item small Rfirtsch"><i class="fa fa-file" aria-hidden="true"></i> ${paginav.name}</li>
+                          <ul v-for="(facultadv, facultadk) in paginav.facultades">
+                            <li class="list-group-item small Rsecondch"><i class="fa fa-check" aria-hidden="true"></i> ${facultadv.name}</li>
+                          </ul>
+                        </ul>
+                      </template>
+                    </ul>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row" id="faculty-register">
+              <div class="col-md-3">
+                <h4><i class="fa fa-pencil" aria-hidden="true"></i> Registro</h4>
+                <form id="regFacultyForm">
+                    <addfacultiesform></addfacultiesform>
+                </form>
+
+              </div>
+              <div class="col-md-9">
+                <div id="adminfaculty-module">
+                    <h4><i class="fa fa-eye" aria-hidden="true"></i> Tabla Facultades</h4>
+                    <!-- Dynamic Table -->
+                    <vue-dynamic-table
+                        class-name="table table-bordered table-hover"
+                        v-bind:filter-enabled="true"
+                        v-bind:expandable-row="true"
+                        v-bind:columns="sourceColumns"
+                        v-bind:data-model="listFaculties"
+                        v-on:go-to-page="goToPage"
+                        v-bind:pagination-options="PaginationOptions">
+                        <template slot="actions" scope="row">
+                              <div class="ui-button">
+                                  <div class="secondary">
+
+                                      <a role="button"
+                                      class="btn bgGreen"
+                                      v-on:click="onEditClick(row.object)">
+                                        <i class="glyphicon glyphicon-edit"  aria-hidden="true"></i>
+                                      </a>
+
+                                      <a role="button"
+                                      class="btn bgRed"
+                                      v-on:click="onRemoveClick(row.object)">
+                                        <i class="glyphicon glyphicon-trash"  aria-hidden="true"></i>
+                                      </a>
+
+                                  </div>
+                              </div>
+                        </template>
+
+                    </vue-dynamic-table>
+                    <!-- Dynamic Table -->
+
+                </div>
+              </div>
+            </div>
+
+          <div class="row" id="page-assignement">
+              <div class="col-md-12">
+                <h4><i class="fa fa-exchange" aria-hidden="true"></i> Asignar facultades por pagina</h4>
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-12 top-actions" >
+                      <button type="button" id="saveFPAssign" name="button" class="btn btn-primary" disabled><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar</button>
+                      <button type="button" id="clearFPAssign" name="button" class="btn btn-red"><i class="fa fa-trash" aria-hidden="true"></i> Vaciar</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <h5><i class="fa fa-file" aria-hidden="true"></i> Pagina</h5>
+                      <ul class="page-item" id="pages-list">
+                        <template v-for="pagina in paginas">
+                            <li v-on:click="getFacultiesByPage" class="list-group-item list-page"> <i class="fa fa-circle" aria-hidden="true"></i> <input type="checkbox" name="" v-bind:value="pagina.id"> ${pagina.name}</li>
+                        </template>
+                      </ul>
+                    </div>
+                    <div class="col-md-8">
+                      <h5><i class="fa fa-eye" aria-hidden="true"></i> Faultades</h5>
+                      <ul class="checkbox-grid" id="faulty-listing">
+                        <template v-for="facultad in facultades">
+                          <li><input  v-on:click="adFByPage" type="checkbox" v-bind:id="facultad.id+facultad.name" name="" v-bind:value="facultad.id"><label v-bind:for="facultad.id+facultad.name"> ${facultad.name}</label></li>
+                        </template>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" id="page-container">
+              <div class="col-md-3">
+                <h4><i class="fa fa-pencil" aria-hidden="true"></i> Registro</h4>
+                <form id="regPageForm" >
+                    <!-- <addpageform></addpageform> -->
+                    <div class="form-group">
+                      <label for="name">Pagina <i class="fa fa-asterisk icon-red" aria-hidden="true"></i></label>
+                      <input  type="text" name="name" id="pagename" v-validate="'required'">
+                      <span class="cRed" v-show="errors.has('name')">Campo Nombre Es Obligatorio</span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="name">Path <i class="fa fa-asterisk icon-red" aria-hidden="true"></i></label>
+                      <input type="text" name="path" id="pagepath" v-validate="'required'">
+                      <span class="cRed" v-show="errors.has('path')">Campo Path es obligatorio</span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="modulos">Modulo<i class="fa fa-asterisk icon-red" aria-hidden="true"></i></label>
+                      <select id="page-module" name="modulos" v-validate="'required'">
+                        <option value="">Seleccionar Modulo</option>
+                        <template v-for="mod in modList">
+                          <option v-bind:value="mod.id">${mod.name}</option>
+                        </template>
+                      <select>
+                        <span class="cRed" v-show="errors.has('modulos')">Este compo es obligatorio</span>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="description">Descripcion</label>
+                      <textarea name="description" id="pagedesc"  rows="8" cols="80"></textarea>
+                    </div>
+                    <button id="registerPage" v-on:click="registerPage" type="button" class="btn btn-lg block btn-dblue" >Registrar</button>
+
+                </form>
+
+              </div>
+              <div class="col-md-9">
+                <div id="adminpage-module">
+                    <h4><i class="fa fa-file" aria-hidden="true"></i> Tabla Paginas</h4>
+                    <!-- Dynamic Table -->
+                    <vue-dynamic-table
+                        class-name="table table-bordered table-hover"
+                        v-bind:filter-enabled="true"
+                        v-bind:expandable-row="true"
+                        v-bind:columns="sourceColumns"
+                        v-bind:data-model="listPages"
+                        v-on:go-to-page="goToPage"
+                        v-bind:pagination-options="PaginationOptions">
+                      <template slot="actions" scope="row">
+                            <div class="ui-button">
+                                <div class="secondary">
+
+                                    <a role="button"
+                                    class="btn bgGreen"
+                                    v-on:click="onEditClick(row.object)">
+                                      <i class="glyphicon glyphicon-edit"  aria-hidden="true"></i>
+                                    </a>
+
+                                    <a role="button"
+                                    class="btn bgRed"
+                                    v-on:click="onRemoveClick(row.object)">
+                                      <i class="glyphicon glyphicon-trash"  aria-hidden="true"></i>
+                                    </a>
+
+                                </div>
+                            </div>
+                      </template>
+                    </vue-dynamic-table>
+                    <!-- Dynamic Table -->
+
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row" id="module-container">
+              <div class="col-md-3">
+                <h4><i class="fa fa-pencil" aria-hidden="true"></i> Registro</h4>
+                <form id="regModuleForm">
+                    <addmoduleform></addmoduleform>
+                </form>
+
+              </div>
+              <div class="col-md-9">
+                <div id="adminmodule-table">
+                    <h4><i class="fa fa-cubes" aria-hidden="true"></i> Tabla Modulos</h4>
+                    <!-- Dynamic Table -->
+                    <vue-dynamic-table
+                        class-name="table table-bordered table-hover"
+                        v-bind:filter-enabled="true"
+                        v-bind:expandable-row="true"
+                        v-bind:columns="sourceColumns"
+                        v-bind:data-model="listModules"
+                        v-on:go-to-page="goToPage"
+                        v-bind:pagination-options="PaginationOptions">
+                        <template slot="actions" scope="row">
+                              <div class="ui-button">
+                                  <div class="secondary">
+
+                                      <a role="button"
+                                      class="btn bgGreen"
+                                      v-on:click="onEditClick(row.object)">
+                                        <i class="glyphicon glyphicon-edit"  aria-hidden="true"></i>
+                                      </a>
+
+                                      <a role="button"
+                                      class="btn bgRed"
+                                      v-on:click="onRemoveClick(row.object)">
+                                        <i class="glyphicon glyphicon-trash"  aria-hidden="true"></i>
+                                      </a>
+
+                                  </div>
+                              </div>
+                        </template>
+                    </vue-dynamic-table>
+                    <!-- Dynamic Table -->
+
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modal-edit-rol" tabindex="-1" role="dialog"
+         aria-labelledby="modal-edit-rol">
+        <div class="modal-dialog modal-sm" role="document">
+            <form id="formModalEditRol" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal-title-edit-rol"><small></small></h4>
+                    </div>
+                    <div class="modal-body row">
+                        {% include ('/Admin/User/partials/editRol.twig') %}
+                    </div>
+                    <div class="modal-footer" id="modal-edit-rol-footer">
+                      <template v-for="(facultad, id) in facultades">
+                        <div class="faculty-li">
+                          <li v-if="facultad" class="list-group-item small" ><input type="checkbox" v-bind:name="facultad" v-bind:value="id" ><span><i class="fa fa-times-circle" aria-hidden="true"></i></span> ${facultad}</li>
+                          <li v-else class="list-group-item"  >No</li>
+                        </div>
+                      </template>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-edit-faculty" tabindex="-1" role="dialog"
+         aria-labelledby="modal-edit-faculty">
+        <div class="modal-dialog modal-sm" role="document">
+            <form id="formModalEditFaculty" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal-title-edit-faculty"><small></small></h4>
+                    </div>
+                    <div class="modal-body row">
+                        {% include ('/Admin/User/partials/editFaculty.twig') %}
+                    </div>
+                    <div class="modal-footer" id="modal-edit-faculty-footer">
+                      <template v-for="(facultad, id) in facultades">
+                        <div class="faculty-li">
+                          <li v-if="facultad" class="list-group-item small" ><input type="checkbox" v-bind:name="facultad" v-bind:value="id" ><span><i class="fa fa-times-circle" aria-hidden="true"></i></span> ${facultad}</li>
+                          <li v-else class="list-group-item"  >No</li>
+                        </div>
+                      </template>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-edit-page" tabindex="-1" role="dialog"
+         aria-labelledby="modal-edit-page">
+        <div class="modal-dialog modal-sm" role="document">
+            <form id="formModalEditPage" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal-title-edit-page"><small></small></h4>
+                    </div>
+                    <div class="modal-body row">
+                        {% include ('/Admin/User/partials/editPage.twig') %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modal-edit-module" tabindex="-1" role="dialog"
+         aria-labelledby="modal-edit-module">
+        <div class="modal-dialog modal-sm" role="document">
+            <form id="formModalEditModule" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="modal-title-edit-module"><small></small></h4>
+                    </div>
+                    <div class="modal-body row">
+                        {% include ('/Admin/User/partials/editModule.twig') %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+      init.lenght = 0;
+      init = [ {
+          title: 'Facultades y Roles',
+          file: 'Admin/Rol/list.js',
+          functions: [ {
+              name: 'initRolList',
+              args: []
+          } ]
+      } ];
+</script>
+{% endblock %}

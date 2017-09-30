@@ -1,0 +1,92 @@
+<script type="text/x-template" id="contacts-form">
+<div>
+	<div v-show="!editingContact">
+	    <div class="row">
+	        <div class="col-md-12">
+	            <button class="btn btn-success" @click="addNewContact">
+	                <span class="fa fa-plus"></span> Nuevo Contacto
+	            </button>
+	        </div>
+	    </div>
+	    <vue-dynamic-table
+	            class-name="table table-striped"
+
+	            :pagination-options="paginationOptions"
+	            @go-to-page="gotoPage"
+
+	            :data-model="getSubList()"
+	            :columns="columnsModel">
+	        <template slot="no-rows-found">
+	            Sin contactos
+	        </template>
+	        <template slot="actions" scope="row">
+	            <div class="text-right">
+	                <a role="button" @click="editContact(row.index)">
+	                    <span class="fa fa-pencil"></span></a>
+	                <a role="button" @click="askForDeleteContact(row.index)">
+	                    <span class="fa fa-remove"></span>
+	                </a>
+	            </div>
+	        </template>
+	    </vue-dynamic-table>
+	</div>
+	<div v-show="editingContact">
+	    <h4>Nuevo contacto</h4>
+	    <div class="form-group">
+	        <label>Nombre:</label>
+	        <input class="inputUnderline form-control" type="text" v-model="contact.name" @keypress="removeValidationError('name')">
+	        <span v-if="hasValidationError('name')" class="cRed">
+	        	${ validationErrors.name }
+	        </span>
+	    </div>
+	    <div class="form-group">
+	        <label>Area:</label>
+	        <input class="inputUnderline form-control" type="text" v-model="contact.workArea" @keypress="removeValidationError('workArea')">
+	        <span v-if="hasValidationError('workArea')" class="cRed">
+	        	${ validationErrors.workArea }
+	        </span>
+	    </div>
+	    <div class="form-group">
+	        <label>Contraseña:</label>
+	        <input class="inputUnderline form-control" type="text" v-model="contact.password" @keypress="removeValidationError('password')">
+	        <span v-if="hasValidationError('password')" class="cRed">
+	        	${ validationErrors.password }
+	        </span>
+	    </div>
+	    <!--
+	    <div class="row">
+	        <div class="col-md-6">
+	            <div class="form-group">
+	                <label for="phones">Telefono:</label>
+	                <vue-selectize-js
+	                        selectize-type="Tags"
+	                        :selectize-settings="selectizePhoneSettings"
+	                        v-model="contact.phones">
+	                </vue-selectize-js>
+	            </div>
+	        </div>
+	        <div class="col-md-6">
+	            <div class="form-group">
+	                <label for="emails">Email:</label>
+	                <vue-selectize-js
+	                        selectize-type="Tags"
+	                        :selectize-settings="selectizeEmailSettings"
+	                        v-model="contact.emails">
+	                </vue-selectize-js>
+	            </div>
+	        </div>
+	    </div>
+	    -->
+	    <div class="row">
+	        <div class="col-md-12">
+	            <button type="button" class="btn btn-primary" @click="saveContact()">
+	                <span class="fa fa-floppy-o"></span> Guardar
+	            </button>
+	            <button type="button" class="btn btn-warning" @click="cancel()">
+	                <span class="fa fa-ban"></span> Cancelar
+	            </button>
+	        </div>
+	    </div>
+	</div>
+</div>
+</script>

@@ -1,0 +1,33 @@
+{# LINK #}
+<template slot="reorder-points-link" scope="row">
+    <idp-template-finder debug-info="{{ _self.templateName }}"></idp-template-finder>
+    <el-tag :close-transition="true" v-if="reorderPointStats(row.object.quantities) > 0" type="danger">
+        ${ reorderPointStats(row.object.quantities) } ${ reorderPointStats(row.object.quantities) > 1 ? 'Bajos' : 'Bajo' }
+    </el-tag>
+    <el-tag :close-transition="true" v-if="reorderPointStats(row.object.quantities) > 0" type="success">
+        ${ reorderPointStats(row.object.quantities) } OK
+    </el-tag>
+    <el-tag :close-transition="true" v-if="reorderPointStats(row.object.quantities) > 0" type="warning">
+        ${ reorderPointStats(row.object.quantities) } Sin asignar
+    </el-tag>
+</template>
+
+{# EXPANDED ROW #}
+<template slot="reorder-points" scope="row">
+    <h4 style="text-align:center;">Puntos de reorden</h4>
+    <div style="padding:16px">
+        <vue-dynamic-table-rbc
+            box-classes="box box-lg box-centered"
+            class-name="table table-bordered table-centered"
+            {# :show-visibility-options="true" #}
+            sort-indicator-asc-class="fa fa-caret-down"
+            sort-indicator-desc-class="fa fa-caret-up"
+            :filter-enabled="true"
+            :expandable-row="true"
+            columns-var-name="reorderPointsColumns"
+            :source-columns="$getDefaultSettings('reorderPointsColumns')"
+            @columns-changed="saveColumnsConfig"
+            :data-model="filteredReorderPoints(row.object.quantities)">
+        </vue-dynamic-table-rbc>
+    </div>
+</template>

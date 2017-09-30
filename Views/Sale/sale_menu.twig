@@ -1,0 +1,93 @@
+{% block modulenav %}
+<div class="navbar-brand s15 h30 block centered noPadding menumodule" role="button">
+        <div class="content contentMiddle"onclick="toggleMenu()" aria-haspopup="true">
+            <span class="padd5 cWhite text-uppercase" >
+                {{ nombrem }}
+            </span>
+            <span class="caret hidde-this" ></span>
+        </div>
+    </div>
+    <ul class="noMargin nav navbar-nav hidde-menu">
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Acciones
+            <span class="caret"></span>
+        </a>
+        <!--<ul class="dropdown-menu">
+            <li>
+                <a role="button" data-action="openTab" data-route="/almacenes/proveedores/create">nuevo proveedor</a>
+            </li>
+            <li>
+                <a href="#">Another action</a>
+            </li>
+            <li>
+                <a href="#">Something else here</a>
+            </li>
+        </ul>-->
+    </li>
+
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Listados
+            <span class="caret"></span>
+        </a>
+        <!--<ul class="dropdown-menu">
+            <li>
+                <a href="#">Action</a>
+            </li>
+            <li>
+                <a href="#">Another action</a>
+            </li>
+            <li>
+                <a href="#">Something else here</a>
+            </li>
+        </ul>-->
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Catálogos
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+           <li>
+                <a role="button" data-action="openTab" module="sale"  data-route="punto-de-venta/cajas">Cajas</a>
+            </li>
+
+        </ul>
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Reportes
+            <span class="caret"></span>
+        </a>
+        <!--<ul class="dropdown-menu">
+            <li>
+                <a href="#">Action</a>
+            </li>
+            <li>
+                <a href="#">Another action</a>
+            </li>
+            <li>
+                <a href="#">Something else here</a>
+            </li>
+        </ul>-->
+    </li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Configuración
+            <span class="caret"></span>
+        </a>
+        <!--<ul class="dropdown-menu">
+            <li>
+                <a href="#">Action</a>
+            </li>
+            <li>
+                <a href="#">Another action</a>
+            </li>
+            <li>
+                <a href="#">Something else here</a>
+            </li>
+        </ul>-->
+    </li>
+</ul>
+{% endblock %}

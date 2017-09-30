@@ -1,0 +1,185 @@
+{% block content %}
+    <section>
+        <div id="forma-venta">
+            <sm-form-buttons
+                modulo="ventas"
+                :data="venta"
+                :id-proceso="0"
+                @cargar="value => { cargar(value) }"
+                @limpiar="limpiar()"
+                @importar="mostrarImportar()">
+            </sm-form-buttons>
+            <div class="panel-content">
+                <div class="row">
+                    <div class="col-md-3">
+                        <sm-form-salesman
+                            :folio="venta.folio"
+                            @folio="value => { venta.folio = value }"
+                            :vendedor="venta.responsibleId"
+                            @vendedor="value => { venta.responsibleId = value }"
+                            :sucursal="venta.subsidiaryId"
+                            @sucursal="value => { venta.subsidiaryId = value }"
+                            :almacen="venta.warehouseId"
+                            @almacen="value => { venta.warehouseId = value }"
+                            :creacion="venta.createdAt"
+                            @creacion="value => { venta.createdAt = value }"
+                            :vendedor-options="vendedorOptions"
+                            :sucursal-options="sucursalOptions"
+                            :muestra-sucursal="{{ render['subsidiary']|json_encode|raw }}"
+                            :muestra-almacen="{{ render['warehouse']|json_encode|raw }}">
+                        </sm-form-salesman>
+                        <sm-form-customer
+                            :id-cliente="venta.customerId"
+                            @id-cliente="value => { venta.customerId = value }"
+                            :nombre="venta.businessName"
+                            @nombre="value => { venta.businessName = value }"
+                            :nombre-legal="venta.legalName"
+                            @nombre-legal="value => { venta.legalName = value }"
+                            :rfc="venta.rfc"
+                            @rfc="value => { venta.rfc = value }"
+                            :moneda="venta.currency"
+                            @moneda="value => { venta.currency = value }"
+                            :lista-precio="venta.priceId"
+                            @lista-precio="value => { venta.priceId = value }"
+                            :moneda-options="monedaOptions"
+                            :id-proceso="venta.id">
+                        </sm-form-customer>
+                        {% include( 'Sale/Partials/form/formPaymentConditions.twig' ) %}
+                        
+                       {# {% include( 'Sale/Partials/form/formDelivery.twig' ) %}#}
+                    </div>
+                    <div class="col-md-9" style="">
+                        <div class="row" style="">
+                            <div class="col-md-12">
+                                <sm-table-products
+                                    :render="render"
+                                    :conceptos="venta.concepts"
+                                    :conceptos-eliminados="venta.delProducts"
+                                    :nuevos-conceptos="nuevosConceptos"
+                                    :inserta-productos="agregaConceptos"
+                                    @subtotal="value => { venta.subtotalAmount = value }"
+                                    @impuestos="value => { venta.taxes = value }"
+                                    @descuento="value => { venta.discountAmount = value }"
+                                    @total="value => { venta.totalAmount = value }"
+                                    @modal-impuestos="value => { mostrarImpuestos(value) }"
+                                    @modal-productos="mostrarBusquedaProd()"
+                                    id-cantidad="v-sm-cantidad">
+                                </sm-table-products>
+                            </div>
+                        </div>
+                        <div class="row" style="">
+                            <div class="col-md-9">
+                                <sm-form-comment
+                                    :comentario="venta.comment">
+                                </sm-form-comment>
+                            </div>
+                            <div class="col-md-3">
+                                <sm-form-sumarize
+                                    :subtotal="venta.subtotalAmount"
+                                    :impuestos="venta.taxes"
+                                    :descuento="venta.discountAmount"
+                                    :total="venta.totalAmount">
+                                </sm-form-sumarize>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {#<div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-group"
+                            role="tablist"
+                            aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label>Tipo de destinatario: </label>
+                                            {#<el-select v-model="pago.paymentWayId"
+                                                placeholder="Forma de pago"
+                                                filterable
+                                                allow-create>
+                                                <el-option
+                                                    v-for="formasOption in formasOptions"
+                                                    :key="formasOption"
+                                                    :label="formasOption.name"
+                                                    :value="formasOption">
+                                                </el-option>
+                                            </el-select># }
+                                        </div>
+                                    </div>
+                                    <vue-form-address-maps ref="mapComponent" :address-obj="direccion">
+                                    </vue-form-address-maps>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>#}
+            </div>
+            <sm-modal-products
+                id-modal="v-sm-busca-productos"
+                :lista-precio="venta.priceId"
+                :agregar="agregaConceptos"
+                @conceptos="value => { nuevosConceptos = value }"
+                @inserta-productos="value => { agregaConceptos = value }">
+            </sm-modal-products>
+            <sm-modal-taxes
+                id-modal="v-sm-taxes"
+                :taxes="taxes"
+                :indice="indice"
+                :render="render"
+                @renderizar="value => { render = value }">
+            </sm-modal-taxes>
+            <sm-modal-import
+                id-modal="v-sm-import"
+                modulo="ventas"
+                :tipo-options="tipoOptions"
+                @cargar="value => { cargar(value) }">
+            </sm-modal-import>
+           {# {% include( 'Sale/advance.twig' ) %}#}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['filtros'] = {{ filters|json_encode|raw }};
+
+        init.length = 0;
+        init = [
+            {
+                file: 'Sale/components/c_modalProducts.js',
+            },
+            {
+                file: 'Sale/components/c_modalTaxes.js',
+            },
+            {
+                file: 'Sale/components/modalImport.js',
+            },
+            {
+                file: 'Sale/components/c_formButtons.js',
+            },
+            {
+                file: 'Sale/components/c_formSalesman.js',
+            },
+            {
+                file: 'Sale/components/c_formCustomer.js',
+            },
+            {
+                file: 'Sale/components/c_tableProducts.js',
+            },
+            {
+                file: 'Sale/components/c_formComment.js',
+            },
+            {
+                file: 'Sale/components/c_formSumarize.js',
+            },
+            {
+                title: 'Venta',
+                file: 'Sale/sale.js',
+                functions: [{
+                    name: 'initModuleNewSale',
+                    args: [ uiVars['filtros'] ]
+                }]
+            },
+        ];
+    </script>
+{% endblock %}

@@ -1,0 +1,255 @@
+{% block content %}
+    <section id="formBankMovements">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button :disabled="(payment && amount > payment.balance) ? true : false"
+                    class="btn btn-success"
+                    @click="createBankMovement()">
+                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                    Guardar Movimiento</button>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        Datos del Movimiento Bancario
+                    </h3>
+                    <div class="box-tools pull-right" >
+                        <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target=".collapseBankMovements"
+                        aria-expanded="false" aria-controls="collapseBankMovements" data-toggle="tooltip" title="Instruccions">
+                        <i class="ui ui-help_outline"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="indication collapse collapseBankMovements">
+                    <div class="indication-content">
+                        <div class="indication-img">
+                            <span class="indication-icon ui ui-help"></span>
+                        </div>
+                        <div class="indication-text">
+                        Instrucciones: Agrega los datos necesarios para generar un movimiento
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group req">
+                                <label for="date">Fecha de Movimiento:</label>
+                                <el-date-picker
+                                    v-model="date"
+                                    format="dd/MM/yyyy"
+                                    type="date"
+                                    placeholder="Fecha en que realizó el movimiento">
+                                </el-date-picker>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group req">
+                                <label for="">Cuenta: </label>
+                                <el-select v-model="bankAccount" filterable placeholder="Selecciona cuenta bancaria">
+                                    <el-option
+                                        v-for="item in bankAccounts"
+                                        :key="item.id"
+                                        :label="item.account"
+                                        :value="item.id">
+                                        <span style="float: left">${ item.account }
+                                        </span>
+                                        <span style="float: right; color: #8492a6; font-size: 13px">${ item.description }
+                                        </span>
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group req">
+                                <label for="">Moneda: </label>
+                                <el-select v-model="currency" filterable placeholder="Selecciona Moneda">
+                                    <el-option
+                                    v-for="item in currencyArray"
+                                    :key="item.id"
+                                    :label="item.CFDIcode"
+                                    :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group req">
+                                <label>Tipo de Movimiento: </label>
+                                <el-select v-model="type" filterable placeholder="Selecciona el tipo de movimiento">
+                                    <el-option
+                                    v-for="item in types"
+                                    :key="item.value"
+                                    :label="item.name"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="account req">Forma de pago: </label>
+                                <el-select v-model="paymentWay" filterable placeholder="Selecciona una forma de pago">
+                                    <el-option
+                                    v-for="item in paymentWays"
+                                    :key="item.id"
+                                    :label="item.CFDIcode + ' | ' + item.name"
+                                    :value="item.id">
+                                    <span style="float: left">${ item.CFDIcode }</span>
+                                    <span style="float: right; color: #8492a6; font-size: 13px">${ item.name }</span>
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group req">
+                                <label>Referencia: </label>
+                                <el-input placeholder="Referencia" v-model="reference"></el-input>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Relacionar:</label>
+                                <el-select v-model="option" filterable clearable placeholder="Seleccionar...">
+                                    <el-option
+                                    v-for="item in options"
+                                    :key="item.value"
+                                    :label="item.name"
+                                    :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div v-if="option === 0" class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Proveedor</label>
+                                <el-select v-model="provider" filterable clearable placeholder="Selecciona un Proveedor">
+                                    <el-option
+                                    v-for="item in providers"
+                                    :key="item.id"
+                                    :label="item.label"
+                                    :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div v-if="option === 1" class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Cliente</label>
+                                <el-select v-model="customer" filterable clearable placeholder="Selecciona un Cliente">
+                                    <el-option
+                                    v-for="item in customers"
+                                    :key="item.id"
+                                    :label="item.business_name"
+                                    :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div v-if="option === 2" class="col-md-4">
+                            <div class="form-group">
+                                <label>Cajas Chicas: </label>
+                                <el-select v-model="pettyCash" filterable clearable placeholder="Seleccionar Caja Chica">
+                                    <el-option
+                                    v-for="item in pettyCashArray"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-md-offset-8">
+                            <div v-if="option === 1" class="form-group">
+                                <label>Cuenta Ext.: </label>
+                                <el-select v-model="extAccount" filterable clearable placeholder="Cuenta Externa">
+                                    <el-option
+                                    v-for="item in extAccounts"
+                                    :key="item.id"
+                                    :label="item.account"
+                                    :value="item.id">
+                                    <span style="float: left">${ item.account }</span>
+                                    <span style="float: right; color: #8492a6; font-size: 13px">${ item.shortname }</span>
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div v-if="option === 0 && type === 0" class="col-md-4">
+                            <div class="form-group">
+                                <label>Retiro a Pago: </label>
+                                <el-select v-model="payment" :filter-method="searchPayment" filterable clearable placeholder="Selecciona un Pago">
+                                    <el-option
+                                    v-for="item in filteredPayments"
+                                    :key="item.id"
+                                    :label="item.id"
+                                    :value="item.id">
+                                    <span style="float: left">${ item.id }</span>
+                                    <span style="float: right; color: #8492a6; font-size: 13px">Factura: ${ item.folio }</span>
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                        <div v-if="option === 1  && type === 1" class="col-md-4">
+                            <div class="form-group">
+                                <label for="account">Deposito de Cobro: </label>
+                                <el-select clearable v-model="charge" filterable clearable placeholder="Selecciona un Cobro">
+                                    <el-option
+                                    v-for="item in charges"
+                                    :key="item.id"
+                                    :label="item.id"
+                                    :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>Folio Bancario: </label>
+                                <el-input placeholder="Número de folio bancario" v-model="folio"></el-input>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <fieldset>
+                                <div v-if="payment" class="form-group">
+                                    <label for="">Importe de Pago: $ ${ parseFloat(balance).toLocaleString('es-MX') } <a @click="paymentAmountShortcut" role="button"><i class="fa fa-thumb-tack" aria-hidden="true"></i></a></label>
+                                </div>
+                                <div class="form-group req">
+                                    <label>Monto Total: <i class="fa fa-usd" aria-hidden="true"></i></label>
+                                    <el-input @blur="onChangeAmount" placeholder="Ingresa Monto" v-model="amount"></el-input>
+                                </div>
+                                <p v-if="payment && amount > payment.balance" class="text-danger">La cantidad excede el importe del pago</p>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+  <script id="scriptContainer">
+    init.length = 0;
+    uiVars['payment'] = {{ payment|json_encode|raw }};
+    uiVars['charge'] = {{ charge|json_encode|raw }};
+    init = [{
+        title: 'Nuevo Movimiento',
+        file: 'Bank/Movements/form.js',
+        functions: [ {
+            name: 'initFormBankMovements',
+            args: [ uiVars['payment'], uiVars['charge'] ]
+        } ]
+    }];
+  </script>
+{% endblock %}

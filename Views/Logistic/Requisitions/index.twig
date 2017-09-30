@@ -1,0 +1,62 @@
+{% block content %}
+    <section id="listDeliveryRequisitions">
+        <div class="header-buttons">
+           <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    class="btn btn  btn-success "
+                    data-action="openLateral"
+                    href="?tabs=logistica/requisiciones/nuevo"
+                    data-panelsize="md">
+                    <i class="fa fa-plus " aria-hidden="true"></i>
+                    Nueva Requisición De Envío</a>
+
+                {# <a
+                    role="button"
+                    class="btn btn  btn-success "
+                    data-action="openLateral"
+                    href="?tabs=logistica/requisiciones/nuevoOrigMovimientos"
+                    data-panelsize="sm">
+                    <i class="fa fa-plus " aria-hidden="true"></i>
+                    Nueva Requisición De Envío Desde Movimientos</a> #}
+            </div>
+        </div>
+        <div class="panel-content">
+            {% include '/Customer/AddressConfig/add.twig' %}
+            <div id="tableDeliveryRequisitions">
+                <vue-dynamic-table-rbc
+                    box-classes="box box-primary full-height"
+                    class-name="table table-bordered table-hover"
+                    :remote-method="remoteSearch"
+                    :source-columns="columns"
+                    :select-options="selectOptions"
+                    :data-model="datasource"
+                    :favorites="dynamicTableFavorites"
+                    @save-to-favorites="saveToFavorites"
+                    @loaded-favorite="loadedFavorite"
+                    :total-results="totalResults"
+                    :pagination-options="{pageSizes: [20, 50, 100], pageSize: 100}"
+                    hide-export
+                    hide-import
+                    template-file-name="Requisiciones de Envio">
+                    {% include '/Logistic/Requisitions/Templates/slots.twig' %}
+
+                </vue-dynamic-table-rbc>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer">
+        init.length = 0;
+        uiVars['userId'] = '{{ userId }}';
+        init = [{
+            title: 'Requisiciones De Envío',
+            file: 'Logistic/DeliveryRequisitons/deliveryRequisitions.js',
+            functions: [ {
+                name: 'initDeliveryRequisitions',
+                args: [ uiVars['userId'] ]
+            } ]
+        }];
+    </script>
+{% endblock %}

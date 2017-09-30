@@ -1,0 +1,50 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Datos del Empleado{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <a class="list-group-item">
+                <div v-if="employee.picture" class="pull-left contentMiddle">
+                    <img
+                    v-bind:src="'https://cdn.tuadmin.com/'+ employee.picture"
+                    class="img-circle h35"
+                    style="margin-right: 30px;"
+                    alt="logotipo">
+                </div>
+                <div class="h40">
+                    <strong class="card-title">${employee.name + ' ' + employee.father_surname +' '+ employee.mother_surname}</strong>
+                    <div class="card-content">${'Email: ' + employee.emails_work}</div>
+                    <div class="card-content">${'Telefono: ' + employee.phones_work}</div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="departments">Departamentos:</label>
+                <vue-selectize-js
+                selectize-type="select"
+                v-bind:selectize-settings="departmentsSelectize.settings"
+                v-bind:selectize-options="data.deparments"
+                v-bind:selectize-enabled="false"
+                v-model="employee.departments"
+                >
+            </vue-selectize-js>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label for="positions">Puestos:</label>
+            <vue-selectize-js
+            selectize-type="select"
+            v-bind:selectize-settings="positionsSelectize.settings"
+            v-bind:selectize-options="data.positions"
+            v-bind:selectize-enabled="false"
+            v-on:select-option="onSelectPositions($event)"
+            v-model="employee.positions">
+        </vue-selectize-js>
+    </div>
+</div>
+</div>
+</div>
+{% endblock %}

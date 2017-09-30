@@ -1,0 +1,55 @@
+<div class="modal fade"
+    id="{{ prefix }}-modal-cobros"
+    tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel"
+    data-backdrop="false">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" 
+                    class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Detalle de Cobros
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Fecha de cobro</th>
+                                <th>Monto</th>
+                                <th>Monto aplicado</th>
+                                <th>Forma de pago</th>
+                                <th>Responsable de cobro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="charge in listSaleCharges">
+                                <td> ${ charge.charge_date } </td>
+                                <td> $${ Number(charge.charge_amount).toFixed(2) } </td>
+                                <td> $${ Number(charge.mount_applied).toFixed(2) } </td>
+                                <td> ${ charge.payment_way } </td>
+                                <td> ${ charge.created_user } </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                    class="btn btn-default"
+                    data-dismiss="modal"
+                    v-on:click="closeModalSaleProducts">
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-list-alt"></span> Ir a Venta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

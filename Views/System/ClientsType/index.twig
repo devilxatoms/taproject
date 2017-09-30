@@ -1,0 +1,22 @@
+{% block body %}
+    <section>
+    
+        {% include( 'System/ClientsType/partials/buttonadd.twig' ) %}
+        <div class="panel-content">
+            {% include( 'System/ClientsType/partials/list.twig' ) %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.lenght = 0;
+        init = [ {
+            title: 'Tipo de Clientes',	
+            file: 'System/ClientsType/clientsType.js',
+            functions: [ {
+                name: 'initList',
+                args: []
+            } ]
+        } ];
+    </script>
+{% endblock %}

@@ -1,0 +1,272 @@
+{% block body %}
+<section>
+    <div id="create-inventory-module-productsTable-container">
+        <div class="header-buttons">
+            <el-row :gutter="16">
+                <el-col :span="4">
+                    {# SELECCIONAR ALMACEN #####################################################################}
+                        <div class="form-group">
+                            <strong id="labelWarehouse" :class="['inputLabel', selectedWarehouse ? 'completed' : 'required', 'inactive']">Almacén</strong>
+                            <span v-if="selectedWarehouse" class="glyphicon glyphicon-ok-circle" style="color:#BBB;font-size:0.8em;"></span><br>
+
+                            <el-select
+                                ref="warehousesEl"
+                                v-model="selectedWarehouse"
+                                filterable
+                                placeholder="Selecciona un almacén"
+                                @change="focusNext('warehousesEl')"
+                                @visible-change="visibleChange($event, 'labelWarehouse')">
+                                <el-option
+                                    v-for="item in $store.getters.dataForSelect('warehouses').options"
+                                    :label="item.name"
+                                    :key="item.id"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                            <div v-if="warehouseManager" class="warehouse_manager">Encargado: ${ warehouseManager.name }</div>
+                        </div>
+                    {##########################################################################################}
+
+
+                    {# SELECCIONAR USUARIO ####################################################################}
+                        <div class="form-group">
+                            <strong id="labelUser" :class="['inputLabel', selectedUser ? 'completed' : 'required', 'inactive']">Usuario</strong>
+                            <span v-if="selectedUser" class="glyphicon glyphicon-ok-circle" style="color:#BBB;font-size:0.8em;"></span><br>
+
+                            <el-select
+                                ref="usersEl"
+                                v-model="selectedUser"
+                                filterable
+                                placeholder="Selecciona un usuario"
+                                @change="focusNext('usersEl')"
+                                @visible-change="visibleChange($event, 'labelUser')">
+                                <el-option
+                                    v-for="item in $store.getters.dataForSelect('users').options"
+                                    :label="item.name"
+                                    :key="item.id"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </div>
+                    {##########################################################################################}
+                </el-col>
+
+                <el-col :span="6">
+                    {# TIPO DE INVENTARIO #}
+                    <div class="form-group">
+                        <strong id="labelInventoryType" :class="['inputLabel', inventoryTypeCompleted ? 'completed' : 'required', 'inactive']">Conteo de</strong>
+                        <span v-if="inventoryTypeCompleted" class="glyphicon glyphicon-ok-circle" style="color:#BBB;font-size:0.8em;"></span><br>
+
+                        <el-select
+                            ref="inventoryType"
+                            v-model="inventoryType"
+                            filterable
+                            placeholder="Selecciona un tipo de inventario"
+                            @change="focusNext('inventoryType')"
+                            @visible-change="visibleChange($event, 'labelInventoryType')">
+                            <el-option
+                                v-for="item in $store.getters.dataForSelect('inventoryTypes').options"
+                                :label="item.name"
+                                :key="item.id"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </div>
+
+                    <div style="margin-top: 14px">
+                        <div v-show="inventoryType == 1 || inventoryType == 5" class="form-group">
+                            <el-cascader
+                                class="full-width"
+                                placeholder="Selecciona Categoría / Subcategoría"
+                                ref="categorySubcategoryEl"
+                                change-on-select
+                                clearable
+                                filterable
+                                :options="$store.getters.dataForSelect('subcategories').options"
+                                v-model="selectedCategories">
+                            </el-cascader>
+                        </div>
+
+                        <div v-show="inventoryType == 2">
+                            <idp-popover-with-select
+                                ref="selectorProducts"
+                                v-model="selectedProducts"
+                                :options="filteredProducts"
+                            >
+                            </idp-popover-with-select>
+                        </div>
+
+                        {# POR UBICACION #}
+                        <div v-show="inventoryType == 3" class="form-group">
+                            <el-select
+                                ref="ubicationsEl"
+                                v-model="selectedUbications"
+                                filterable
+                                placeholder="Selecciona la ubicación"
+                                @change="focusNext('providersEl')"
+                            >
+                                <el-option
+                                    label="Todo el Almacén"
+                                    key="0"
+                                    value="0"
+                                >
+                                </el-option>
+                                <el-option-group
+                                    key="ubications"
+                                    label="Ubicaciones"
+                                >
+                                    <el-option
+                                        v-for="item in warehouseUbications"
+                                        :label="item.name"
+                                        :key="item.id"
+                                        :value="item.id">
+                                        <span style="float: left">${ item.name }</span>
+                                        <span style="font-size:0.8em;float: right">Anaquel</span>
+                                    </el-option>
+                                </el-option-group>
+
+                            </el-select>
+                        </div>
+
+                        <div v-show="inventoryType == 4" class="form-group">
+                            {# SELECT PROVEEDOR #}
+                            <el-select
+                                ref="providersEl"
+                                v-model="selectedProviders"
+                                filterable
+                                placeholder="Selecciona el proveedor"
+                                @change="focusNext('providersEl')"
+                            >
+                                <el-option
+                                    v-for="item in $store.getters.dataForSelect('providers').options"
+                                    :label="item.business_name"
+                                    :key="item.id"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </div>
+                    </div>
+                </el-col>
+
+                <el-col :span="6">
+                    {# FECHA RECUENTO #}
+                    <div class="form-group">
+                        <strong :class="['inputLabel', date ? 'completed' : 'required', 'inactive']">Fecha recuento</strong><br>
+                        <el-date-picker
+                            v-model="date"
+                            type="date"
+                            placeholder="Selecciona una fecha"
+                            format="dd MMM yyyy"
+                            align="right">
+                        </el-date-picker>
+
+                    </div>
+                    <div class="form-group">
+                        <strong class="">Clave (opcional)</strong>
+                        <el-input></el-input>
+                    </div>
+                </el-col>
+
+                <el-col :span="6">
+                    <div class="form-group">
+                        <strong ref="labelInventoryTitle" class="inputLabel inactive" :class="title !== '' ? 'completed' : 'required'">Título</strong><br>
+                        <el-input placeholder="Nombre del inventario" v-model="title" @change="validateField($event, 'inventoryTitle')"></el-input>
+                        {# <input v-model="inventoryTitle" class="form-control" type="text" id="titulo" name="titulo"> #}
+                    </div>
+
+                    <strong style="font-size:0.8em;">Observaciones</strong><br>
+                    <div class="form-group">
+                        <textarea
+                            v-model="comments"
+                            id="observaciones"
+                            cols="30"
+                            rows="2">
+                        </textarea>
+                    </div>
+                </el-col>
+
+                <el-col :span="2">
+                    <button
+                        class="btn btn-primary btn-block btn-sm"
+                        type="button"
+                        @click="clearInputs">
+                        Reiniciar
+                    </button>
+
+                    <button
+                        class="btn btn-success btn-block btn-sm"
+                        type="button"
+                        :disabled="scheduleBtnDisabled"
+                        @click="scheduleInventory">
+                        Programar
+                    </button>
+                </el-col>
+
+                {# <div class="col-xs-2" style="border-left:1px solid #DDD">
+                    {% include 'warehouse/Inventory/inventories_topButtons.twig' with {actual: 'programacion'} %}
+                </div> #}
+            </el-row>
+        </div>
+        <div class="panel-content" style="top:142px;">
+
+            {# TABLA #}
+
+                <vue-dynamic-table-rbc
+                    box-classes="box box-primary fullHeight"
+                    :loading-from-server="resultsData.loading"
+                    :show-filter-stats="true"
+                    table-id="invNewTable"
+                    class-name="table table-bordered table-hover table-centered"
+
+
+
+                    {# :remote-method="remoteSearch" #}
+
+
+                    :show-numeration="true"
+                    :show-visibility-options="true"
+                    sort-indicator-asc-class="fa fa-caret-down"
+                    sort-indicator-desc-class="fa fa-caret-up"
+                    {# :filter-enabled="true" #}
+                    :expandable-row="true"
+                    :columns-var-name="'inventoriesActualColumns'"
+                    :source-columns="$getDefaultSettings('inventoriesActualColumns')"
+                    @columns-changed="saveColumnsConfig"
+                    :data-model="tableProductsData"
+                    :total-results="resultsData.totalResults"
+
+                    @expand-row="expandRowHandler"
+                >
+                    <template slot="undefined-slot" scope="row">
+                        No hay información disponible
+                    </template>
+
+                    {% include 'Warehouse/Inventory/templates/productCategory-slot.twig' %}
+                    {% include 'Warehouse/Inventory/templates/serial-numbers-slots.twig' %}
+                    {% include 'Warehouse/Inventory/templates/physical-count-slots.twig' %}
+                    {% include 'Warehouse/Inventory/templates/product-quantities-slots.twig' %}
+                    {% include 'Warehouse/Inventory/templates/reorder-points-slots.twig' %}
+                    {% include 'Warehouse/Inventory/templates/warehouses-slots.twig' %}
+                    {% include 'Warehouse/Inventory/templates/product-costs-slots.twig' %}
+                </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['newInventoryModuleData'] = {
+            inventoryTypes: {{ inventoryTypes|json_encode|raw }}
+        };
+        init.length = 0;
+        init = [ {
+            title: 'Nuevo conteo físico',
+            file: 'Warehouse/Inventories/inventories_new.js',
+            functions: [ {
+                name: 'inventoriesNewInit',
+                args: [ uiVars['newInventoryModuleData'] ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

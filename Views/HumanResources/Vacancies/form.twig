@@ -1,0 +1,105 @@
+<section>
+    <div id="formVacancies">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="vacantValidate">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                    Guardar
+                </button>
+                <button
+                    class="btn btn-danger"
+                    data-action="closeTab">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Datos de la Vacante</h3>
+                </div>
+                <div class="panel-body">
+                    <form v-on:submit.prevent="positionValidate('formVacancies')" id="formVacancies" >
+                        <input type="hidden" name="id" v-model="vacant.id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="contract_id">Puesto:</label>
+                                <div class="form-group">
+                                    <vue-selectize-js
+                                        ref="vacant.position_id"
+                                        selectize-type="select"
+                                        class="form-group"
+                                        v-bind:selectize-settings="positionsSelectize.settings"
+                                        v-bind:selectize-options="data.positions"
+                                        v-bind:selectize-enabled="positionsSelectize.enabled"
+                                        v-model="vacant.position_id">
+                                    </vue-selectize-js>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="salary">Salario</label>
+                                <div class="form-group mTop15">
+                                    <input v-model="vacant.salary" class="form-control" name="salary">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="schedule">Turno</label>
+                                <div class="form-group">
+                                    <input v-model="vacant.schedule" class="form-control" name="schedule">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="type_contract">Tipo de Contrato:</label>
+                                <div class="form-group">
+                                    <input v-model="vacant.type_contract" class="form-control" name="type_contract">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="activities">Actividades:</label>
+                                <div class="form-group">
+                                    <input v-model="vacant.activities" class="form-control" name="activities">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="vacant">No de Vacantes:</label>
+                                <div class="form-group">
+                                    <input type="number" v-model="vacant.vacancies" class="form-control" name="vacant">
+                                </div>
+                            </div>
+                        </div>   
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="candidate_profile">Perfil del candidato:</label>
+                                <div class="form-group">
+                                    <input v-model="vacant.candidate_profile" class="form-control" name="candidate_profile">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+uiVars['title'] = '{{title}}';
+uiVars['view'] = {{view}};
+uiVars['data'] = {{data|json_encode|raw}};
+uiVars['info']   = {{info|json_encode|raw}};
+init.lenght = 0 ;
+init = [ {
+    title: uiVars['title'],
+    file: 'HumanResources/Vacancies/form.js',
+    functions: [ {
+        name: 'formVacancies',
+        args: [ uiVars['data'], uiVars['info']]
+    } ]
+} ];
+</script>

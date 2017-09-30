@@ -1,0 +1,23 @@
+{% block content %}
+    <section>
+        <div class="header-buttons">
+            <div class="btn-group main-buttons"></div>
+        </div>
+        <div class="panel-content" id="paymentMethod">
+            {% include '/system/payments/methods/table.twig' %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Métodos de pago',
+            file: 'System/Payments/methods.js',
+            functions: [ {
+                name: 'initPaymentMethods',
+                args: [ ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

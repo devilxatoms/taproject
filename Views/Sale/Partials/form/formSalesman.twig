@@ -1,0 +1,97 @@
+<div class="panel panel-default">
+	<div class="panel-body">
+		<div class="row" id="{{ prefix }}-forma-vendedor">
+			
+				<div class="pull-right col-md-2 col-sm-3"
+					v-if="folio">
+					<div class="form-group">
+						<label>Folio: </label>
+						<input class="form-control" type="text" v-model="folio" disabled>
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-6 col-xs-12">
+					<div class="req form-group">
+						<label>Vendedor:</label>
+						<el-select v-model="vendedor"
+							placeholder="Vendedor"
+							filterable
+							allow-create>
+							<el-option
+								v-for="vendedorOption in vendedorOptions"
+								:key="vendedorOption.id"
+								:label="vendedorOption.name"
+								:value="vendedorOption.id">
+							</el-option>
+						</el-select>
+					</div>
+				</div>
+				<div class="col-md-2 col-sm-6">
+					<div class="req form-group">
+						<label>Creación: </label>
+						<vue-datetimepicker
+							class-name="form-control"
+							format="d/M/Y"
+							v-model="creacion">
+						</vue-datetimepicker>
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+				{% if render['effectiveDate'] is defined %}
+				<div class="col-md-2 col-sm-6">
+					<div class="req form-group">
+						<label>Vigencia: </label>
+						<vue-datetimepicker
+							class-name="form-control"
+							format="d/M/Y"
+							v-model="vigencia">
+						</vue-datetimepicker>
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-calendar"></span>
+						</span>
+					</div>
+				</div>
+				{% endif %}
+				{% if render['subsidiary'] is defined %}
+				<div class="col-md-3 col-sm-6">
+					<div class="req form-group">
+						<label>Sucursal:</label>
+						<el-select v-model="sucursal"
+							placeholder="Sucursal"
+							@change="loadAlmacenes($event)"
+							filterable
+							allow-create>
+							<el-option
+								v-for="sucursalOption in sucursalOptions"
+								:key="sucursalOption.id"
+								:label="sucursalOption.name"
+								:value="sucursalOption.id">
+							</el-option>
+						</el-select>
+					</div>
+				</div>
+				{% endif %}
+				{% if render['warehouse'] is defined %}
+				<div class="col-md-2 col-sm-6">
+					<div class="req form-group">
+						<label>Almacén:</label>
+						<el-select v-model="almacen"
+							placeholder="Almacén"
+							@change="actualizaStock($event)"
+							filterable
+							allow-create>
+							<el-option
+								v-for="almacenOption in almacenOptions"
+								:key="almacenOption.id"
+								:label="almacenOption.name"
+								:value="almacenOption.id">
+							</el-option>
+						</el-select>
+					</div>
+				</div>
+				{% endif %}
+			
+		</div>
+	</div>
+</div>

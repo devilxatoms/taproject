@@ -1,0 +1,70 @@
+<div id="modalFormBanco" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Agregar Banco</h4>
+            </div>
+            <div id="formBanks">
+                <div class="modal-body">
+                    <input type="hidden" name="id" v-model="id">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="code">Clave:
+                                </label>
+                                <!--<input maxlength="3" v-model="code" class="form-control" type="text" name="code"  required>-->
+                                <input
+                                    type="text"
+                                    v-model="code"
+                                    name="code"
+                                    v-validate="'required|numeric|min:3'"
+                                    data-vv-as="Clave"
+                                    :class="{'validate': errors.has('code') }" maxlength="3"
+                                    autocomplete="off">
+                                <!--<span v-show="errors.has('code')" class="cRed">${ errors.first('code') }</span>-->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="shortname">Nombre Corto:
+                                </label>
+                                <!--<input maxlength="50" v-model="shortname" class="form-control" type="text" name="shortname">-->
+                                <input
+                                    type="text"
+                                    v-model="shortname"
+                                    name="shortname"
+                                    v-validate="'required'"
+                                    data-vv-as="Nombre Corto"
+                                    :class="{'validate': errors.has('shortname') }">
+                                <!--<span v-show="errors.has('shortname')" class="cRed">${ errors.first('shortname') }</span>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reference">Razón Social:
+                        </label>
+                        <!--<input maxlength="120" v-model="reference" class="form-control" type="text" name="reference">-->
+                        <input
+                            type="text"
+                            v-model="reference"
+                            name="reference"
+                            v-validate="'required'"
+                            data-vv-as="Razón Social"
+                            :class="{'validate': errors.has('reference') }">
+                        <!--<span v-show="errors.has('reference')" class="cRed">${ errors.first('reference') }</span>-->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" v-on:click="onSubmit" class="btn btn-success">Guardar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

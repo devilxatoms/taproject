@@ -1,0 +1,99 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Referencias{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="box-form">
+            <div class="form-group">
+                <label for="">Parentesco:</label>
+                <el-select
+                    @change="clearPersonalReferenceError('Parentesco')"
+                    v-model="personalReference.relationship_id"
+                    placeholder="Selecciona un Parentesco">
+                    <el-option
+                        v-for="item in data.relationships"
+                        :key="item.id"
+                        :label="item.relationship"
+                        :value="item.id">
+                    </el-option>
+                </el-select>
+                <span class="error-validate" :class="personalReferenceErrorsClass" v-if="personalReferenceValidatorErrors != null">${ personalReferenceValidatorErrors.first('Parentesco') }</span>
+            </div>
+            <div class="form-group">
+                <label for="">Nombre:</label>
+                <input type="text" v-model="personalReference.name" @keypress="clearPersonalReferenceError('Nombre')">
+                <span class="error-validate" :class="personalReferenceErrorsClass" v-if="personalReferenceValidatorErrors != null">${ personalReferenceValidatorErrors.first('Nombre') }</span>
+            </div>
+            <div class="form-group">
+                <label for="">Apellido Paterno:</label>
+                <input type="text" v-model="personalReference.father_surname" @keypress="clearPersonalReferenceError('Apellido Paterno')">
+                <span class="error-validate" :class="personalReferenceErrorsClass" v-if="personalReferenceValidatorErrors != null">${ personalReferenceValidatorErrors.first('Apellido Paterno') }</span>
+            </div>
+            <div class="form-group">
+                <label for="">Apellido Materno:</label>
+                <input type="text" v-model="personalReference.mother_surname" @keypress="clearPersonalReferenceError('Apellido Materno')">
+                <span class="error-validate" :class="personalReferenceErrorsClass" v-if="personalReferenceValidatorErrors != null">${ personalReferenceValidatorErrors.first('Apellido Materno') }</span>
+            </div>
+            <div class="form-group">
+                <label for="">Fecha de Nacimiento:</label>
+                <el-date-picker
+                    v-model="personalReference.birthday"
+                    type="date"
+                    @change="clearPersonalReferenceError('Fecha de Nacimiento')"
+                    :picker-options="birthdayDatePickerOptions"
+                    placeholder="Selecciona una fecha">
+                </el-date-picker>
+                <span  class="error-validate" :class="personalReferenceErrorsClass" v-if="personalReferenceValidatorErrors != null">${ personalReferenceValidatorErrors.first('Fecha de Nacimiento') }</span>
+            </div>
+            <div class="form-group">
+                <label for="phones" >Teléfonos de Referencia:</label>
+                <vue-selectize-js
+                    selectize-type="Tags"
+                    v-bind:selectize-settings="phonesReferenceSelectize.settings"
+                    v-bind:selectize-enabled="phonesReferenceSelectize.enabled"
+                    v-model="personalReference.phonesCan"
+                ></vue-selectize-js>
+                <span  class="error-validate" :class="personalReferenceErrorsClass" v-if="personalReferenceValidatorErrors != null">${ personalReferenceValidatorErrors.first('Teléfonos de Referencia') }</span>
+            </div>
+        </div>
+        <div class="box-btn">
+            <div class="row noMargin">
+               <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 noPadding">
+                    <button class="btn btn-primary block" @click="personalReferenceValidate()">
+                        <span class="fa fa-floppy-o"></span> Agregar
+                    </button>
+                </div> 
+                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 noPadding">
+                    <button class="btn btn-warning block" @click="cancelPersonalReference">
+                        <span class="fa fa-ban"></span> Cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>   
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <div class="box-table">
+            <vue-dynamic-table
+                class-name="table table-striped"
+                :pagination-options="personalReferencesTablePageOptions"
+                @go-to-page="goToPagePersonalReferencesTable"
+                :data-model="chunksListPersonalReferences()[personalReferencesTablePageOptions.currentPage - 1]"
+                :columns="personalReferencesTableColumnsModel">
+                <template slot="no-rows-found">
+                    No hay Referencias Personales
+                </template>
+                <template slot="actions" scope="row">
+                    <div class="text-right">
+                        <a role="button" @click="editPersonalReference(row.index)">
+                            <span class="fa fa-pencil"></span>
+                        </a>
+                        <a role="button" @click="askForDeletePersonalReference(row.index)">
+                            <span class="fa fa-remove"></span>
+                        </a>
+                    </div>
+                </template>
+            </vue-dynamic-table> 
+        </div>        
+    </div>
+</div>
+{% endblock %}

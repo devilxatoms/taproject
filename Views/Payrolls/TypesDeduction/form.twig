@@ -1,0 +1,60 @@
+<section>
+    <div id="formTypeDeduction">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="typeDeductionValidate">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Guardar
+                </button>
+                <button
+                    class="btn btn-danger"
+                    data-action="closeTab">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Datos del tipo de deducción</h3>
+                </div>
+                <form v-on:submit.prevent="typeDeductionValidate('formTypeDeduction')" id="">
+                    <div class="panel-body">
+                        <input type="hidden" name="id" v-model="typeDeduction.id">
+                        <div class="form-group">
+                            <label for="contractType" class="">Tipo de Deduccion:</label>
+                            <input v-model="typeDeduction.c_TipoDeduccion" class="form-control" type="text" name="" @keypress="clearDeductionValidatorError('c_TipoDeduccion')">
+                            <span v-if="typeDeductionValidatorErrors != null" class="cRed">
+                                ${ typeDeductionValidatorErrors.first('c_TipoDeduccion') }
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label for="contract_description" class="">Descripción:</label>
+                            <input v-model="typeDeduction.description" class="form-control" type="text" name="" @keypress="clearDeductionValidatorError('Descripción')">
+                            <span v-if="typeDeductionValidatorErrors != null" class="cRed">
+                                ${ typeDeductionValidatorErrors.first('Descripción') }
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+    uiVars['title'] = '{{title}}';
+    uiVars['view'] = {{view}};
+    uiVars['data']   = {{data|json_encode|raw}};
+    init.lenght = 0;
+    init = [ {
+        title: uiVars['title'],
+        file: 'Payroll/TypesDeduction/form.js',
+        functions: [ {
+            name: 'initPayrollFormTypeDeduction',
+            args: [ uiVars['data'], uiVars['view']]
+        } ]
+    } ];
+</script>

@@ -1,0 +1,382 @@
+{% block body %}
+
+<style>
+    table.tableMain > tbody > tr {
+        background-color: white;
+    }
+</style>
+
+<section>
+    <div id="invoice-module">
+
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    class="btn">
+                    <span class="glyphicon glyphicon-plus-sign"></span>
+                    Nuevo Comprobante
+                </a>
+            </div>
+        </div>
+
+        <div class="panel-content">
+            <div class="row">
+                <div class="col-md-12"
+                    v-loading="loading"
+                    :element-loading-text="loadingText">
+                    <vue-dynamic-table-rbc
+                        box-classes="box box-primary full-height"
+                        class-name="table table-bordered table-hover"
+                        :remote-method="ajaxInvoicesSearch"
+                        :source-columns="invoiceSourceColumns"
+                        :select-options="catalogs"
+                        :data-model="invoiceList"
+                        :total-results="invoiceResults"
+                    >
+                        <template slot="version" scope="row">
+                            ${row.object.version.version}
+                        </template>
+                        <template slot="invoiceType" scope="row">
+                            ${row.object.invoice_type_code + ' ' + row.object.invoice_type_name}
+                        </template>
+                        <template slot="received" scope="row">
+                            ${row.object.received ? 'Recibido' : 'Emitido'}
+                        </template>
+                        <template slot="invoiceStatus" scope="row">
+                            ${row.object.invoice_status.name}
+                        </template>
+                        <template slot="stampUUID" scope="row">
+                            <template v-if="row.object.stamp_UUID">
+                                <a role="button">${row.object.stamp_UUID}</a>
+                            </template>
+                            <template v-else>
+                                Sin timbrar
+                            </template>
+                        </template>
+                        <template slot="toggle-stampUUID" scope="row" >
+                            <template v-if="row.object.stamp_UUID">
+                                <div class="form-group">
+                                    <label>Folio Fiscal - UUID: </label>
+                                    <input type="text" :value="row.object.stamp_UUID" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>No. de serie del CSD: </label>
+                                    <input type="text" :value="row.object.certificate_number" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Sello digital del CFDI: </label>
+                                    <p style="width: 500px; word-break: break-all;" disabled>
+                                        ${row.object.stamp}
+                                    </p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Sello digital del SAT: </label>
+                                    <p style="width: 500px; word-break: break-all;" disabled>
+                                        ${row.object.stamp_SAT}
+                                    </p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Cadena Original del complemento de certificación digital del SAT: </label>
+                                    <p style="width: 500px; word-break: break-all;" disabled>
+                                        ${row.object.stamp_original_chain}
+                                    </p>
+                                </div>
+                                <div class="form-group">
+                                    <label>No. de serie del certificado SAT </label>
+                                    <input type="text" :value="row.object.stamp_certificate_number" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha y hora de certificación: </label>
+                                    <input type="text" :value="formatedDate(row.object.stamp_date)" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label>RFC del proveedor de certificación: </label>
+                                    <input type="text" :value="row.object.stamp_rfc_provider" disabled>
+                                </div>
+                                <img v-if="row.object.stamp_qr"
+                                    :src="'data:image/jpeg;base64,' + row.object.stamp_qr"
+                                    height="200"
+                                    width="200">
+                            </template>
+                            <template v-else>
+                                <label>Cuando la factura sea timbrada aquí aparecerán los datos del mismo</label>
+                            </template>
+                        </template>
+                        <template slot="currency" scope="row">
+                            <a role="button">${row.object.currency_code + ' ' + row.object.currency_name}</a>
+                        </template>
+                        <template slot="toggle-currency" scope="row">
+                            <div class="form-group">
+                                <label>Tipo de cambio: </label>
+                                <input v-if="row.object.exchange_rate"
+                                    type="text"
+                                    v-model="row.object.exchange_rate" disabled>
+                                <input v-else
+                                    type="text"
+                                    value="No Aplica" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Código confirmación de tipo de cambio: </label>
+                                <input v-if="row.object.exchange_confirmation"
+                                    type="text"
+                                    v-model="row.object.exchange_confirmation" disabled>
+                                <input v-else
+                                    type="text"
+                                    value="No Aplica" disabled>
+                            </div>
+                        </template>
+                        <template slot="address" scope="row">
+                            <a role="button">${row.object.name}</a>
+                        </template>
+                        <template slot="toggle-address" scope="row">
+                            <div class="form-group">
+                                <label>Correos: </label>
+                                <input type="text" v-model="row.object.mails" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfonos: </label>
+                                <input type="text" v-model="row.object.phones" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Calle: </label>
+                                <input type="text" v-model="row.object.street" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Número: </label>
+                                <input type="text" v-model="row.object.external_number" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Número Exterior: </label>
+                                <input type="text" v-model="row.object.internal_number" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Referencias: </label>
+                                <input type="text" v-model="row.object.reference" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Colonia: </label>
+                                <input type="text" v-model="row.object.suburb" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Ciudad: </label>
+                                <input type="text" v-model="row.object.town" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Municipio: </label>
+                                <input type="text" v-model="row.object.municipality" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Código Postal: </label>
+                                <input type="text" v-model="row.object.postal_code" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Estado: </label>
+                                <input type="text" v-model="row.object.state" disabled>
+                            </div>
+                        </template>
+                        <template slot="taxRegime" scope="row">
+                            ${row.object.invoice_tax_regime_code + ' ' + row.object.invoice_tax_regime_name}
+                        </template>
+                        <template slot="receiverAddress" scope="row">
+                            <a role="button">${row.object.receiver_name}</a>
+                        </template>
+                        <template slot="toggle-receiverAddress" scope="row">
+                            <div class="form-group">
+                                <label>Residencia Fiscal: </label>
+                                <input type="text"
+                                    :value="row.object.receiver_country_code + ' ' + row.object.receiver_country_name" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Número de Registro de Identidad Fiscal: </label>
+                                <input type="text"
+                                    :value="row.object.receiver_noRegIdTrib" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Correos: </label>
+                                <input type="text" :value="row.object.receiver_mails" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfonos: </label>
+                                <input type="text" :value="row.object.receiver_phones" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Calle: </label>
+                                <input type="text" :value="row.object.receiver_street" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Número: </label>
+                                <input type="text" :value="row.object.receiver_external_number" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Número Exterior: </label>
+                                <input type="text" :value="row.object.receiver_internal_number" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Referencias: </label>
+                                <input type="text" :value="row.object.receiver_reference" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Colonia: </label>
+                                <input type="text" :value="row.object.receiver_suburb" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Ciudad: </label>
+                                <input type="text" :value="row.object.receiver_town" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Municipio: </label>
+                                <input type="text" :value="row.object.receiver_municipality" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Código Postal: </label>
+                                <input type="text" :value="row.object.receiver_postal_code" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Estado: </label>
+                                <input type="text" :value="row.object.receiver_state" disabled>
+                            </div>
+                        </template>
+                        <template slot="invoiceUse" scope="row">
+                            ${row.object.receiver_invoice_use_code + ' ' + row.object.receiver_invoice_use_name}
+                        </template>
+                        <template slot="invoice-concepts" scope="row">
+                            <a
+                                role="button"
+                                data-tooltip="Ver conceptos"
+                                class="has-tooltip align-right">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                ${row.object.concepts.length}
+                            </a>
+                        </template>
+                        <template slot="toggle-invoice-concepts" scope="row">
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-1">
+                                    <vue-dynamic-table-rbc
+                                        box-classes="box box-primary"
+                                        class-name="table table-bordered table-hover"
+                                        :source-columns="invoiceConceptSourceColumns"
+                                        :data-model="row.object.concepts"
+                                        hide-main-bar
+                                        hide-filters-stats
+                                        hide-visibility-columns
+                                        hide-filters
+                                    >
+                                        <template slot="unit" scope="row">
+                                            ${row.object.unit_code + ' ' + row.object.unit_name}
+                                        </template>
+                                        <template slot="toggle-taxes1" scope="row">
+                                            <vue-dynamic-table-rbc
+                                                box-classes="box box-primary"
+                                                class-name="table table-bordered table-hover"
+                                                :source-columns="invoiceConceptTaxesSourceColumns"
+                                                :data-model="row.object.taxes"
+                                                hide-main-bar
+                                                hide-filters-stats
+                                                hide-visibility-columns
+                                                hide-filters
+                                                hide-numeration-column
+                                            >
+                                                <template slot="invoice-concept-taxes" scope="row">
+                                                    ${row.object.tax_type_code + ' ' + row.object.tax_type_name}
+                                                </template>
+                                            </vue-dynamic-table-rbc>
+                                        </template>
+                                        <template slot="toggle-taxes2" scope="row">
+                                            <vue-dynamic-table-rbc
+                                                box-classes="box box-primary"
+                                                class-name="table table-bordered table-hover"
+                                                :source-columns="invoiceConceptTaxesSourceColumns"
+                                                :data-model="row.object.taxes_withholding"
+                                                hide-main-bar
+                                                hide-filters-stats
+                                                hide-visibility-columns
+                                                hide-filters
+                                                hide-numeration-column
+                                            >
+                                                <template slot="invoice-concept-taxes" scope="row">
+                                                    ${row.object.tax_type_code + ' ' + row.object.tax_type_name}
+                                                </template>
+                                            </vue-dynamic-table-rbc>
+                                        </template>
+                                    </vue-dynamic-table-rbc>
+                                </div>
+                            </div>
+                        </template>
+                        <template slot="paymentWay" scope="row">
+                            ${row.object.payment_way_code + ' ' + row.object.payment_way_name}
+                        </template>
+                        <template slot="paymentMethod" scope="row">
+                            ${row.object.payment_method_code + ' ' + row.object.payment_method_name}
+                        </template>
+                        <template slot="actions" scope="row">
+                            <div class="ui-button bg-Light-Blue">
+                                <div class="secondary">
+                                    <a v-if="row.object.stamp_UUID" class="btn" disabled>
+                                        Timbrada
+                                    </a>
+                                    <a v-else @click="ajaxStampInvoice(row.object)" class="btn">
+                                        Timbrar
+                                        <span class="glyphicon glyphicon-qrcode" style="margin-left: 5px;"></span>
+                                    </a>
+                                    <a v-if="row.object.invoice_status.id == 3 || !row.object.stamp_UUID"
+                                       class="btn bgBlue"
+                                       disabled>
+                                        XML
+                                    </a>
+                                    <a v-else
+                                        class="btn bgBlue"
+                                        @click="downloadInvoiceXml(row.object)">
+                                        XML
+                                    </a>
+                                    <a v-if="row.object.invoice_status.id == 3 || !row.object.stamp_UUID"
+                                       class="btn bgBlue"
+                                       disabled>
+                                        PDF
+                                    </a>
+                                    <a v-else
+                                        class="btn bgBlue"
+                                        @click="downloadInvoicePdf(row.object)">
+                                        PDF
+                                    </a>
+                                    <a v-if="row.object.invoice_status.id == 3 && row.object.stamp_cancel"
+                                       class="btn bgRed"
+                                       @click="downloadCancelPDF(row.object)">
+                                        ACUSE
+                                    </a>
+                                    <a v-else-if="row.object.invoice_status.id == 3 || !row.object.stamp_UUID"
+                                       class="btn bgRed"
+                                       disabled>
+                                        <span class="fa fa-times"></span>
+                                    </a>
+                                    <a v-else
+                                        class="btn bgRed"
+                                        @click="ajaxInvoiceCancel(row.object)">
+                                        <span class="fa fa-times"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </template>
+                    </vue-dynamic-table-rbc>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        var catalogs = {{ catalogs|json_encode|raw }};
+        init.length = 0;
+        init = [ {
+            title: 'Listado Comprobantes',
+            file:  'Invoices/invoiceList.js',
+            functions: [ {
+                name: 'initInvoiceListModule',
+                args: [catalogs]
+            } ]
+        } ];
+    </script>
+{% endblock %}

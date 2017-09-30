@@ -9,6 +9,8 @@ RUN apt-get update && \
 
 RUN curl --silent --show-error https://getcomposer.org/installer | php
 
+ADD composer.json /var/www/html
+
 WORKDIR /var/www/html
 RUN composer install
 

@@ -1,0 +1,30 @@
+<div id="tableTags">
+    <vue-dynamic-table
+        class-name="table table-bordered table-responsive"
+        v-bind:class="{ fullHeight }"
+        v-bind:filter-enabled="true"
+        v-bind:expandable-row="true"
+        v-bind:columns="sourceColumns"
+        v-bind:data-model="listTags"
+        v-on:go-to-page="goToPage"
+        v-bind:pagination-options="pageOptions">
+            <template slot="color" scope="row">
+                <label for="">${row.object.color}</label>
+                    <div class="btn" v-bind:style="'background-color:' + row.object.color">
+                    </div>
+            </template>
+            <template slot="actions" scope="row">
+                <div  class="ui-button bg-Light-Blue overflowInherit">
+                    <div class="secondary">
+                        <a class="btn btn-info align-right has-tooltip" data-tooltip="Editar"  v-on:click="onEditClick(row.object)">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+
+                        <a class="btn align-right has-tooltip" data-tooltip="Eliminar"  v-on:click="onRemoveClick(row.object)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </div>
+                </div>
+            </template>
+    </vue-dynamic-table>
+</div>

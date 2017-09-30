@@ -1,0 +1,966 @@
+{% block content %}
+<!--Nuevo cliente-->
+<section>
+    <style>
+        ul.paginator li {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        img#img-customer-logo {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+    <div class="container-fluid" id="create-customer-module">
+        <div class="form-purchase">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="col-md-5">
+                        <button class="btn btn-info" v-on:click="customerValidate"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar Cliente</button>
+                        <button class="btn btn-warning" v-on:click="CancelarOperacion"><span class="glyphicon glyphicon-remove"></span> cancelar</button>
+                    </div>
+                    <div class="cold-md-4">
+                        <h4> DATOS PARA {% if Editar == 1 %} EDITAR {% else %} REGISTRAR {% endif %} UN CLIENTE</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos Generales</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div>
+                            <vue-image-picker v-model="logoFile" class-name="center-block" :url="logoFile" :placeholder="logoFile" width="200" height="200"
+                                text="Subir imagen" :show-input="true">
+                            </vue-image-picker>
+                        </div>
+                        <div class="form-group">
+                            <label for="legal_name">Razon Social:</label>
+                            <input id="legal_name" name="legal_name" v-model="customer.RazonSocial" @keypress="clearCustomerError('legalName')">
+                            <span v-if="customerValidatorErrors != null" class="cRed">
+                                    ${ customerValidatorErrors.first('legalName') }
+                                </span>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="rfc">RFC:</label>
+                            <input id="rfc" name="rfc" v-model="customer.rfc" @keypress="clearCustomerError('rfc')">
+                            <span class="cRed" v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('rfc') }</span>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="code">Codigo:</label>
+                            <input id="code" name="code" v-model="customer.code" @keypress="clearCustomerError('code')">
+                            <span class="cRed" v-if="customerValidatorErrors != null">${ customerValidatorErrors.first('code') }</span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="business_name">Nombre Comercial:</label>
+                                    <input id="business_name" name="business_name" v-model="customer.business_name" @keypress="clearCustomerError('businessName')">
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('businessName') }</span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="business_activity">Giro:</label>
+
+                                    <el-select @change="clearCustomerError('businessTypeId')" v-model="customer.businessTypeId">
+                                        <el-option v-for="item in listBusinessTypes" :key="item.id" :label="item.name" :value="item.id">
+                                        </el-option>
+                                    </el-select>
+
+                                    <!-- <vue-selectize-js :selectize-options="listBusinessTypes" :selectize-settings="selectizeBusinessTypeSettings"
+                                    @change="clearCustomerError('businessTypeId')" v-model="customer.businessTypeId">
+                                    </vue-selectize-js> -->
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('businessTypeId') }</span>
+                                </div>
+                            </div>
+                        </div>
+                        <h4>Direccion Fiscal</h4>
+                        <div class="form-group">
+                            <vue-google-autocomplete id="addressfiscal" type="regions" classname="input" placeholder="Buscar su Direccion" v-on:placechanged="getAddressData"
+                                country="mx">
+                            </vue-google-autocomplete>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="street">Calle:</label>
+                            <input id="street" name="street" v-model="customer.fiscalAddressStreet" @keypress="clearCustomerError('street')">
+                            <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('street') }</span>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="external_number">No Ext.*</label>
+                                    <input id="external_number" name="external_number" class="form-control" v-model="customer.externalNumber" @keypress="clearCustomerError('externalNumber')">
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('externalNumber') }</span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="internal_number">No Int.*</label>
+                                    <input id="internal_number" name="internal_number" class="form-control" v-model="customer.internalNumber" @keypress="clearCustomerError('internalNumber')">
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('internalNumber') }</span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="postal_code">CP</label>
+                                    <input id="postal_code" name="postal_code" class="form-control" v-model="customer.postalCode" @keypress="clearCustomerError('postalCode')">
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('postalCode') }</span>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="suburb">Colonia*</label>
+                                    <input id="suburb" name="suburb" class="form-control" v-model="customer.suburn" @keypress="clearCustomerError('suburb')">
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('suburb') }</span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="municipality">Municipio*</label>
+                                    <input id="municipality" name="municipality" class="form-control" v-model="customer.municipality" @keypress="clearCustomerError('municipality')">
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('municipality') }</span>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="town">Ciudad*</label>
+                                    <input id="town" name="town" class="form-control" v-model="customer.town" @keypress="clearCustomerError('town')">
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('town') }</span>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="state">Estado*</label>
+                                    <input id="state" name="state" class="form-control" v-model="customer.state" @keypress="clearCustomerError('state')">
+                                    <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('state') }</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="country">País*</label>
+                            <input id="country" name="country" class="form-control" v-model="customer.country" @keypress="clearCustomerError('country')">
+                            <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('country') }</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="reference">Referencias</label>
+                            <input id="reference" name="reference" class="form-control" v-model="customer.references" @keypress="clearCustomerError('reference')">
+                            <span v-if="customerValidatorErrors != null" class="cRed">${ customerValidatorErrors.first('reference') }</span>
+
+                        </div>
+                        <div class="row">
+
+                            <div class="form-group">
+                                <label for="phones">Telefono:</label>
+                                <el-select v-model="customer.phones" {% if Editar==1 %} @change="editPhone(customer.phones)"{% else %} multiple {% endif %} filterable allow-create placeholder="Escriba el numero"
+                                    size="10" >
+                                    <el-option v-for="item in PhonesList" :key="item" :label="item.phone" :value="item">
+                                    </el-option>
+                                </el-select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="emails">Email:</label>
+                                <el-select v-model="customer.emails" {% if Editar==1 %} @change="editEmails(customer.emails)" {% else %} multiple {% endif %} filterable allow-create placeholder="escriba el correo electronico">
+                                    <el-option
+                                        v-for="item in EmailList"
+                                        :key="item" :label="item.email" :value="item">
+                                        </el-option>
+                                </el-select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="emails">Asegurado</label>
+                                    <input id="si" type="radio" name="customer.asegurado" value="Si" v-model="customer.asegurado">
+                                    <label for="Si">Si</label>
+                                    <input id="no" type="radio" name="customer.asegurado" value="No" v-model="customer.asegurado">
+                                    <label for="No">No</label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Detalles contables</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div v-show="panelSupplementaryData">
+
+                        </div>
+                        <div>
+                            <h3>Detalles contables</h3>
+
+                            <div class="form-group">
+                                <label for="">Cuenta cliente:</label>
+                                <a value="1" id="cuentaCliente" v-on:click="openPanelAccount($event)" style="font-size:20px" data-toggle="tooltip" title="click para editar">Agregar Cuenta</a>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Cuenta anticipos:</label>
+                                <a value="2" role="button" id="cuentaAnticipos" v-on:click="openPanelAccount($event)" style="font-size:20px" data-toggle="tooltip"
+                                    title="click para editar">Agregar Cuenta</a>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Cuenta deudor:</label>
+                                <a value="3" id="cuentaDeudor" v-on:click="openPanelAccount($event)" style="font-size:20px" data-toggle="tooltip" title="click para editar">Agregra Cuenta</a>
+                            </div>
+                        </div>
+
+
+                        <div id="panel-accountFather" style="display: none;">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4>Seleccione una cuenta </h4>
+                                </div>
+                                <div class="form-group">
+                                    <div class="panel-body">
+                                        <label>Cuenta padre</label>
+
+                                        <vue-selectize-js @select-option="onSelectAccount($event)" v-model="fatherAccount" :selectize-options="listAccountings" :selectize-settings="selectizeAccountingListSettings">
+                                        </vue-selectize-js>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Cuenta sugerida:</label>
+                                    <input maxlength="5" type="text" name="sugerida" v-model="suggestAccount">
+                                </div>
+
+                                <div class="form-group">
+                                    <button v-on:click="saveAccount" class="btn btn-success">Guardar</button>
+                                    <button v-on:click="hidePanelAccount" class="btn btn-default">Cancelar</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Sucursales / Establecimiento</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div v-show="!panelSubsidiaryVisible">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button type="button" class="btn btn-success" @click="addNewSubsidiary()">
+                                            <span class="fa fa-plus"></span> Nueva Sucursal
+                                        </button>
+                                </div>
+                            </div>
+                            <vue-dynamic-table class-name="table table-striped" :pagination-options="subsidiariesTablePageOptions" @go-to-page="goToPageSubsidiariesTable"
+                                :data-model="getSublistSubsidiaries()" :columns="subsidiariesTableColumnsModel">
+                                <template slot="no-rows-found">
+                                    Sin sucursales
+                                </template>
+                                <template slot="actions" scope="row">
+                                    <div class="text-right">
+                                        <a role="button" @click="editSubsidiary(row.index)">
+                                                <span class="fa fa-pencil"></span>
+                                            </a>
+                                        <a role="button" @click="askForDeleteSubsidiary(row.index)">
+                                                <span class="fa fa-remove"></span>
+                                            </a>
+                                    </div>
+                                </template>
+                            </vue-dynamic-table>
+                        </div>
+                        <div v-show="panelSubsidiaryVisible">
+                            <h3>Nueva Sucursal</h3>
+                            <div class="form-group">
+                                <label for="street">Nombre:</label>
+                                <input id="name" name="name" v-model="subsidiary.name" @keypress="clearSubsidiaryError('name')">
+                                <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('name') }</span>
+
+                            </div>
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active"><a href="#address" aria-controls="address" role="tab" data-toggle="tab">Direccion</a></li>
+                                <li role="presentation"><a href="#contacts" aria-controls="contacts" role="tab" data-toggle="tab">Contactos</a></li>
+                                <li role="presentation"><a href="#consignees" aria-controls="consignees" role="tab" data-toggle="tab">Consignatarios</a></li>
+                            </ul>
+
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="address">
+
+                                    <div class="form-group">
+                                        <vue-google-autocomplete id="<addressC></addressC>" type="regions" classname="input" placeholder="Buscar su Direccion" v-on:placechanged="getAddressDataBranchOffice"
+                                            country="mx">
+                                        </vue-google-autocomplete>
+
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="sub-street">Calle:</label>
+                                        <input id="sub-street" name="street" v-model="subsidiary.address.street" @keypress="clearSubsidiaryError('street')">
+                                        <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('street') }</span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="sub-external-number">No Ext.*</label>
+                                                <input id="sub-external-number" name="external_number" class="form-control" v-model="subsidiary.address.externalNumber" @keypress="clearSubsidiaryError('externalNumber')">
+                                                <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('externalNumber') }</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="sub-internal-number">No Int.*</label>
+                                                <input id="sub-internal-number" name="internal_number" class="form-control" v-model="subsidiary.address.internalNumber" @keypress="clearSubsidiaryError('internalNumber')">
+                                                <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('internalNumber') }</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="sub-postal-code">CP</label>
+                                                <input id="sub-postal-code" name="postal_code" class="form-control" v-model="subsidiary.address.postalCode" @keypress="clearSubsidiaryError('postalCode')">
+                                                <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('postalCode') }</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="sub-suburb">Colonia*</label>
+                                                <input id="sub-suburb" name="suburb" class="form-control" v-model="subsidiary.address.suburb" @keypress="clearSubsidiaryError('suburb')">
+                                                <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('suburb') }</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="sub-municipality">Municipio*</label>
+                                                <input id="sub-municipality" name="municipality" class="form-control" v-model="subsidiary.address.municipality" @keypress="clearSubsidiaryError('municipality')">
+                                                <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('municipality') }</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="sub-town">Ciudad*</label>
+                                                <input id="sub-town" name="town" class="form-control" v-model="subsidiary.address.town" @keypress="clearSubsidiaryError('town')">
+                                                <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('town') }</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="sub-state">Estado*</label>
+                                                <input id="sub-state" name="state" class="form-control" v-model="subsidiary.address.state" @keypress="clearSubsidiaryError('state')">
+                                                <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('state') }</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sub-country">País*</label>
+                                        <input id="sub-country" name="country" class="form-control" v-model="subsidiary.address.country" @keypress="clearSubsidiaryError('country')">
+                                        <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('country') }</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="sub-reference">Referencias</label>
+                                        <input id="sub-reference" name="reference" class="form-control" v-model="subsidiary.address.reference" @keypress="clearSubsidiaryError('reference')">
+                                        <span class="cRed" v-if="subsidiaryValidatorErrors != null" class="cRed">${ subsidiaryValidatorErrors.first('reference') }</span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-primary" @click="subsidiaryValidate()">
+                                            <span class="fa fa-floppy-o"></span> Guardar
+                                        </button>
+                                            <button type="button" class="btn btn-warning" @click="cancelSubsidiary()">
+                                            <span class="fa fa-ban"></span> Cancelar
+                                        </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div role="tabpanel" class="tab-pane" id="contacts">
+
+                                    <div v-show="!panelContactVisible">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button class="btn btn-success" @click="addNewContact">
+                                                        <span class="fa fa-plus"></span> Nuevo Contacto
+                                                    </button>
+                                            </div>
+                                        </div>
+                                        <vue-dynamic-table class-name="table table-striped" :pagination-options="contactsTablePageOptions" @go-to-page="goToPageContactsTable"
+                                            :columns="contactsTableColumnsModel" :data-model="chunksListContacts()[contactsTablePageOptions.currentPage -1]">
+                                            <template slot="no-rows-found">
+                                                Sin contactos
+                                            </template>
+                                            <template slot="actions" scope="row">
+                                                <div class="text-right">
+                                                    <a role="button" @click="editContact(row.index)">
+                                                            <span class="fa fa-pencil"></span></a>
+                                                    <a role="button" @click="askForDeleteContact(row.index)">
+                                                            <span class="fa fa-remove"></span>
+                                                        </a>
+                                                </div>
+                                            </template>
+                                        </vue-dynamic-table>
+                                    </div>
+
+                                    <div v-show="panelContactVisible">
+                                        <h4>Nuevo contacto</h4>
+                                        <div class="form-group">
+                                            <label>Nombre:</label>
+                                            <input class="inputUnderline form-control" type="text" v-model="contact.name" @keypress="clearContactError('name')">
+                                            <span class="cRed" v-if="contactValidatorErrors != null" class="cRed">${ contactValidatorErrors.first('name') }</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Area:</label>
+                                            <input class="inputUnderline form-control" type="text" v-model="contact.workArea" @keypress="clearContactError('workArea')">
+                                            <span class="cRed" v-if="contactValidatorErrors != null" class="cRed">${ contactValidatorErrors.first('workArea') }</span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="phones">Telefono:</label>
+                                                    <el-select v-model="contact.phones" multiple filterable allow-create placeholder="Escriba el numero">
+                                                        <!--<el-option
+                                                    v-for="item in PhonesList">
+                                                    </el-option>-->
+                                                    </el-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="emails">Email:</label>
+                                                    <el-select v-model="contact.emails" multiple filterable allow-create placeholder="escriba el correo electronico" maxlength="10">
+                                                        <!--<el-option
+                                                        v-for="item in PhonesList">
+                                                        </el-option>-->
+                                                    </el-select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button type="button" class="btn btn-primary" @click="contactValidate()">
+                                                        <span class="fa fa-floppy-o"></span> Guardar
+                                                    </button>
+                                                <button type="button" class="btn btn-warning" @click="cancelContact()">
+                                                        <span class="fa fa-ban"></span> Cancelar
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="consignees">
+                                    <div v-show="!panelConsigneeVisible">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button class="btn btn-success" @click="addNewConsignee">
+                                                        <span class="fa fa-plus"></span> Nuevo Consignatorio
+                                                    </button>
+                                            </div>
+                                        </div>
+                                        <vue-dynamic-table class-name="table table-striped" @go-to-page="goToPageConsigneesTable" :pagination-options="consigneesTablePageOptions"
+                                            :columns="consigneesTableColumnsModel" :data-model="chunksListConsignees()[consigneesTablePageOptions.currentPage - 1]">
+                                            <template slot="no-rows-found">
+                                                Sin Consignatarios
+                                            </template>
+                                            <template slot="actions" scope="row">
+                                                <div class="text-right">
+                                                    <a role="button" @click="editConsignee(row.index)">
+                                                            <span class="fa fa-pencil"></span>
+                                                        </a>
+                                                    <a role="button" @click="askForDeleteConsignee(row.index)">
+                                                            <span class="fa fa-remove"></span>
+                                                        </a>
+                                                </div>
+                                            </template>
+                                        </vue-dynamic-table>
+                                    </div>
+                                    <div v-show="panelConsigneeVisible">
+                                        <h4>Nuevo consignatario</h4>
+                                        <div class="form-group">
+                                            <label for="sub-street">Nombre:</label>
+                                            <input id="sub-street" name="street" v-model="consignee.name" @keypress="clearConsigneeError('name')" @keypress="clearConsigneeError('name')">
+                                            <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('name') }</span>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <vue-google-autocomplete id="addressConsignatario" type="regions" classname="input" placeholder="Buscar su Direccion" v-on:placechanged="getAddressDataConsignatario"
+                                                country="mx">
+                                            </vue-google-autocomplete>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sub- street">Calle:</label>
+                                            <input id="consignee-sub-street" name="street" v-model="consignee.address.street" @keypress="clearConsigneeError('street')"
+                                                @keypress="clearConsigneeError('street')">
+                                            <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('street') }</span>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="sub-external-number">No Ext.*</label>
+                                                    <input id="consignee-sub-external-number" name="external_number" class="form-control" v-model="consignee.address.externalNumber"
+                                                        @keypress="clearConsigneeError('externalNumber')">
+                                                    <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('externalNumber') }</span>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="sub-internal-number">No Int.*</label>
+                                                    <input id="consignee-sub-internal-number" name="internal_number" class="form-control" v-model="consignee.address.internalNumber"
+                                                        @keypress="clearConsigneeError('internalNumber')">
+                                                    <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('internalNumber') }</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="sub-postal-code">CP</label>
+                                                    <input id="consignee-sub-postal-code" name="postal_code" class="form-control" v-model="consignee.address.postalCode" @keypress="clearConsigneeError('postalCode')">
+                                                    <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('postalCode') }</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sub-suburb">Colonia*</label>
+                                                    <input id="consignee-sub-suburb" name="suburb" class="form-control" v-model="consignee.address.suburb" @keypress="clearConsigneeError('suburb')">
+                                                    <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('suburb') }</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sub-municipality">Municipio*</label>
+                                                    <input id="consignee-sub-municipality" name="municipality" class="form-control" v-model="consignee.address.municipality"
+                                                        @keypress="clearConsigneeError('municipality')">
+                                                    <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('municipality') }</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sub-town">Ciudad*</label>
+                                                    <input id="consignee-sub-town" name="town" class="form-control" v-model="consignee.address.town" @keypress="clearConsigneeError('town')">
+                                                    <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('town') }</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sub-state">Estado*</label>
+                                                    <input id="consignee-sub-state" name="state" class="form-control" v-model="consignee.address.state" @keypress="clearConsigneeError('state')">
+                                                    <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('state') }</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sub-country">País*</label>
+                                            <input id="consignee-sub-country" name="country" class="form-control" v-model="consignee.address.country" @keypress="clearConsigneeError('country')">
+                                            <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('country') }</span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="sub-reference">Referencias</label>
+                                            <input id="sub-reference" name="reference" class="form-control" v-model="consignee.address.reference" @keypress="clearConsigneeError('reference')">
+                                            <span class="cRed" v-if="consigneeValidatorErrors != null" class="cRed">${ consigneeValidatorErrors.first('reference') }</span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="phones">Telefono:</label>
+                                                    <el-select v-model="consignee.phones" multiple filterable allow-create placeholder="Escriba el numero">
+                                                        <!--<el-option
+                                                    v-for="item in PhonesList">
+                                                    </el-option>-->
+                                                    </el-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="emails">Email:</label>
+                                                    <el-select v-model="consignee.emails" multiple filterable allow-create placeholder="escriba el correo electronico" maxlength="10">
+                                                        <!--<el-option
+                                                        v-for="item in PhonesList">
+                                                        </el-option>-->
+                                                    </el-select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <button type="button" class="btn btn-primary" @click="consigneeValidate()">
+                                                        <span class="fa fa-floppy-o"></span> Guardar
+                                                    </button>
+                                                <button type="button" class="btn btn-warning hola" @click="cancelConsignee()">
+                                                        <span class="fa fa-ban"></span> Cancelar
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos Complementarios</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div v-show="panelSupplementaryData">
+                            <div class="row">
+                                <div class="col-md-12">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div>
+                            <h3>Datos complementarios</h3>
+                            <div class="form-group">
+                                <label for="">Pagina Web:</label>
+                                <input type="text" v-model="supplementaryData.webpage">
+                                <span class="cRed" class="cRed"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Redes Sociales:</label>
+                                <template>
+                                    <el-select v-model="supplementaryData.newSocialNetwork" placeholder="Seleccione una red social">
+                                        <el-option v-for="social in listSocilaNetworks" :key="social.id" :label="social.name" :value="social.id">
+                                        </el-option>
+                                    </el-select>
+                                </template>
+                                <span class="cRed" class="cRed"></span>
+                                <div class="box-body table-responsive">
+                                    <div class="table-head">
+                                        <div class="table table-striped">
+                                            <thead>
+                                                <th>Enlaces</th>
+                                            </thead>
+                                        </div>
+                                    </div>
+                                    <div class="table-body">
+                                        <div class="table table-striped">
+                                            <tbody>
+                                                <template v-for="network in customer.networks">
+                                                    <tr>
+                                                        <td><a v-bind:href=network.url>${network.url}</a></td>
+                                                        <td>
+                                                            <a role="button">
+                                                                <span class="fa fa-pencil"></span>
+                                                            </a>
+                                                        </td>
+                                                        <td>
+                                                            <a v-bind:id=network.id role="button" v-on:click="deleteNet($event)">
+                                                                <span class="fa fa-remove"></span>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </div>
+                                    </div>
+                                    <div class="table-body">
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos Bancarios</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div v-show="!panelBankAccountVisible">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-success" @click="addNewBankAccount">
+                                            <span class="fa fa-plus"></span> Nueva Cuenta Bancaria
+                                        </button>
+                                </div>
+                            </div>
+                            <vue-dynamic-table class-name="table table-striped" :pagination-options="bankAccountsTablePageOptions" @go-to-page="goToPageBankAccountsTable"
+                                :data-model="chunksListBankAccounts()[bankAccountsTablePageOptions.currentPage - 1]" :columns="bankAccountsTableColumnsModel">
+                                <template slot="no-rows-found">
+                                    No se encontraron cuentas
+                                </template>
+                                <template slot="actions" scope="row">
+                                    <div class="text-right">
+                                        <a role="button" @click="editBankAccount(row.index)">
+                                                <span class="fa fa-pencil"></span>
+                                            </a>
+                                        <a role="button" @click="askForDeleteBankAccount(row.index)">
+                                                <span class="fa fa-remove"></span>
+                                            </a>
+                                    </div>
+                                </template>
+                            </vue-dynamic-table>
+                        </div>
+                        <div v-show="panelBankAccountVisible">
+                            <h3>Nueva Cuenta Bancaria</h3>
+                            <div class="form-group">
+                                <label for="">Cuenta:</label>
+                                <input type="text" v-model="BankAccount.account" @keypress="clearBankAccountError('account')">
+                                <span class="cRed" v-if="bankAccountValidatorErrors != null" class="cRed">${ bankAccountValidatorErrors.first('account') }</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Clabe:</label>
+                                <input type="text" v-model="BankAccount.clabe" @keypress="clearBankAccountError('clabe')">
+                                <span class="cRed" v-if="bankAccountValidatorErrors != null" class="cRed">${ bankAccountValidatorErrors.first('clabe') }</span>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="">Banco:</label>
+
+                                <el-select @select-option="onSelectBankOption($event)" @change="clearBankAccountError('bankId')" v-model="BankAccount.bankId">
+                                    <el-option v-for="item in listBanks" :key="item.id" :label="item.shortname" :value="item.id">
+                                    </el-option>
+                                </el-select>
+                                <span class="cRed" v-if="bankAccountValidatorErrors != null" class="cRed">${ bankAccountValidatorErrors.first('bankId') }</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-primary" @click="bankAccountValidate()">
+                                            <span class="fa fa-floppy-o"></span> Guardar
+                                        </button>
+                                    <button class="btn btn-warning" @click="cancelBankAccount">
+                                            <span class="fa fa-ban"></span> Cancelar
+                                        </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Relación comercial</h3>
+                    </div>
+                    <div class="panel-body">
+
+                        <div v-show="panelSupplementaryData">
+                            <div class="row">
+                                <div class="col-md-4">
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                        <div>
+                            <h3>Relacion comercial</h3>
+                            <div class="form-group">
+                                <label for="">Sucursal</label>
+
+                                <el-select @change="onSelectSubsidiaryOption()" v-model="bussinessRelationData.subsidiaryId">
+                                    <el-option v-for="item in listSubsis" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+                                <span class="cRed" class="cRed"></span>
+
+                            </div>
+                            <div class="form-group">
+
+                                <label for="">Almacen:</label>
+                                <el-select v-model="bussinessRelationData.warehouseId">
+                                    <el-option v-for="item in listWares" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+                                <span class="cRed" class="cRed"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Vendedor:</label>
+                                <input type="text" name="" v-model="bussinessRelationData.sellerId">
+                                <span class="cRed" class="cRed"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="">Lista de precios:</label>
+                                <el-select no-data-text="seleccione una sucursal para ver estas opciones" v-model="bussinessRelationData.listPricesId">
+                                    <el-option v-for="item in listsPrices" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="">Moneda:</label>
+
+                                <el-select v-model="bussinessRelationData.currency">
+                                    <el-option v-for="item in listCurrency" :key="item.id" :label="item.name" :value="item.id">
+                                    </el-option>
+                                </el-select>
+
+                                <span class="cRed" class="cRed"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Dias de credito:</label>
+                            <input type="text" v-model="bussinessRelationData.creditdays">
+                            <span class="cRed" class="cRed"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Monto:</label>
+                            <input type="decimal" v-model="bussinessRelationData.amountBR">
+                            <span class="cRed" class="cRed"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Antiguedad:</label>
+                            <input type="text" v-model="bussinessRelationData.antiquityBR">
+                            <span class="cRed" class="cRed"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+
+        </div>
+        <div id="ModalPhones" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">EDITRA NUMERO TELEFONICO</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="id">
+                        <div class="form-group">
+                            <label for="">Numero</label>
+                            <input type="number" id="telefono">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" v-on:click="deletePhone()" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Eliminar Numero</button>
+                        <button type="button" class="btn btn-success" v-on:click="saveChangePhone()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar cambios</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="ModalEmail" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">EDITRA EMAIL</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="index" name="" value="">
+                        <input type="hidden" id="idemail">
+                        <div class="form-group">
+                            <label for="">Email</label>
+                            <input type="email" id="Email">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" v-on:click="deleteEmail()" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Eliminar Numero</button>
+                        <button type="button" class="btn btn-success" v-on:click="saveChangeEmails()" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk"></span> Guardar cambios</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</section>
+{% endblock %} {% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+    init.length = 0;
+    uiVars['banks'] = {{ banks | json_encode | raw }};
+    uiVars['businessTypes'] = {{ businessTypes | json_encode | raw }};
+    uiVars['subsis'] = {{ subsis | json_encode | raw }};
+    uiVars['warehouses'] = {{ warehouses | json_encode | raw }};
+    uiVars['sellers'] = null;
+    uiVars['currencies'] = {{ currencies | json_encode | raw }};
+    uiVars['accounts'] = {{ accounts | json_encode | raw }};
+    uiVars['socialsNetwork'] = {{ socialsNetwork | json_encode | raw }};
+    uiVars['relacion'] = {{ relacion | json_encode | raw }};
+    uiVars['BankAccount'] = {{ BankAccount | json_encode | raw }};
+    uiVars['Subsidiaries'] = {{ Subsidiaries | json_encode | raw }};
+    uiVars['Editar'] = {{ Editar | json_encode | raw }};
+
+    {% if customer %}
+    uiVars['customer'] = {{ customer | json_encode | raw }};
+    {% else %}
+    uiVars['customer'] = null;
+    {% endif %}
+    var titleText;
+    {% if Editar == 1 %} titleText = "Editar Cliente" {% else %} titleText = "Nuevo Cliente"  {% endif %}
+
+    init = [{
+        title: titleText,
+        file: 'System/Customer2/addCustomer.js',
+        functions: [{
+            name: 'saveCustomer',
+            args: [uiVars['businessTypes'],
+            uiVars['banks'],
+            uiVars['customer'],
+            uiVars['subsis'],
+            uiVars['warehouses'],
+            uiVars['sellers'],
+            uiVars['currencies'],
+            uiVars['accounts'],
+            uiVars['socialsNetwork'],
+            uiVars['relacion'],
+            uiVars['BankAccount'],
+            uiVars['Subsidiaries'],
+            uiVars['Editar']
+            ]
+        }]
+    }];
+
+</script>
+{% endblock %}

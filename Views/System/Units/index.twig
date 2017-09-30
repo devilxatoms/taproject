@@ -1,0 +1,68 @@
+{% block content  %}
+    <section>
+        <div id="units">
+            <div class="header-buttons">
+                <div class="btn-group main-buttons"></div>
+            </div>
+            <div class="panel-content">
+                <vue-dynamic-table-rbc
+                    box-classes="box box-primary full-height"
+                    class-name="table table-bordered table-hover"
+
+                    :remote-method="remoteSearch"
+                    :total-results="listUnits.total"
+                    :loading-from-server="isLoading"
+
+                    {# FAVORITOS #}
+                    :favorites="dynamicTableFavorites"
+                    @save-to-favorites="saveToFavorites"
+                    @loaded-favorite="loadedFavorite"
+
+                    :source-columns="sourceColumns"
+                    :data-model="listUnits.data">
+                    <template slot="no-rows-found">
+                        <span>No se encontraron resultados</span>
+                    </template>
+                    <template slot="description" scope="row">
+                        <div class="expand">
+                            ${ row.object.description }
+                        </div>
+                    </template>
+                    <template slot="note" scope="row">
+                        <div class="expand">
+                            ${ row.object.note }
+                        </div>
+                    </template>
+                    <template slot="customMeasurement" scope="row">
+                        <div class="form-group">
+                            <input type="checkbox" @click="changeMeasurement(row.object)" v-model="row.object.scalar">
+                            <label for="checkbox">Utilizar numeros naturales</label>
+                        </div>
+                    </template>
+                    <template slot="customActivation" scope="row">
+                        <button v-if="row.object.deleted_at !== null" type="button" @click="activateUnit(row.object)"
+                         class="btn btn-success btn-block">
+                            Activar
+                        </button>
+                        <button v-else type="button" @click="deactivateUnit(row.object)" class="btn btn-warning btn-block">
+                            Desactivar
+                        </button>
+                    </template>
+                </vue-dynamic-table-rbc>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Unidades de Medida',
+            file: 'System/Units/units.js',
+            functions: [ {
+                name: 'initUnits',
+                args: []
+            } ]
+        } ];
+    </script>
+{% endblock %}

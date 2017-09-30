@@ -1,0 +1,34 @@
+<div class="col-xs-12 col-md-6">
+    <div class="form-group">
+        <label>
+            Ejercicio
+        </label>
+        <el-select v-model="currentExercice"
+                   placeholder="Ejercicio contable"
+                   style="width: 100%"
+                   @change="ajaxAccountingPeriodSearch()">
+            <el-option v-for="exercice in accountingExerciceList"
+                       :key="exercice.id"
+                       :label="exercice.name"
+                       :value="exercice.id">
+            </el-option>
+        </el-select>
+    </div>
+</div>
+<div class="col-xs-12 col-md-6">
+    <div class="form-group">
+        <label>
+            Periodo contable
+        </label>
+        <el-select v-model="currentPeriod"
+                   placeholder="Periodo contable"
+                   style="width: 100%"
+                   @change="ajaxAccountsSearch()">
+            <el-option v-for="period in accountingPeriodList"
+                       :key="period.id"
+                       :label="period.name"
+                       :value="period.id">
+            </el-option>
+        </el-select>
+    </div>
+</div>

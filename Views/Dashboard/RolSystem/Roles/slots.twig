@@ -1,0 +1,22 @@
+<template slot="actions" scope="row">
+<div class="ui-button">
+               <div class="secondary Bluebg">
+                  <a role="button"
+                  class="btn"
+                  data-action="openLateral"
+                  data-route="roles/editar"
+                  v-on:click="onEditClick(row.object)"
+                  data-panelsize="sm">
+                    <i class="fa fa-pencil"></i>
+                  </a>
+                  <a role="button"
+                  class="btn"
+                  v-on:click="onRemoveClick(row.object)">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </div>
+           </div>
+</template>
+<template slot="no-rows-found">
+    <span>No se encontrarón resultados</span>
+</template>

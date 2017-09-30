@@ -1,0 +1,47 @@
+{% block content %}
+<section id="{{ 'paymentList' ~ id }}">
+    <div class="header-buttons">
+        <div class="btn-group main-buttons">
+            <a role="button" data-action="openLateral" class="btn btn-default"  data-panelsize="sm"  data-module="pagos" data-route="pagos/crear">
+                <span class="fa fa-plus"></span> Nuevo Pago
+            </a>
+        </div>
+    </div>
+    <div class="panel-content">
+        <div class="row">
+            <div class="col-md-12">
+                <vue-dynamic-table-rbc
+                    box-classes="box box-primary full-height"
+                    class-name="table table-bordered table-hover"                
+                    :pagination-options="{ pageSizes: [ 1, 50, 100 ], pageSize: 100 }"
+                    :source-columns="columns"
+                    :select-options="selectOptions"
+                    :data-model="datasource"
+                    @export="exportTable"
+                    :remote-method="remoteSearch"
+                    template-file-name="Requisiciones de Envio"
+                    :total-results="totalResults">
+                    {% include '/Payment/slots.twig' %}  
+                </vue-dynamic-table-rbc>
+                {% include '/Payment/Partials/paymentDetails.twig' %}
+                {% include '/Payment/Partials/bankMovement.twig' %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} {% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+    init.length = 0;
+    uiVars['id'] = {{ id | json_encode | raw }};
+    uiVars['providerId'] = {{ providerId | json_encode | raw }};
+    init = [{
+        title: 'Pagos',
+        file: "Payment/list.js",
+        functions: [{
+            name: 'initPaymentList',
+            args: [uiVars['id'], uiVars['providerId']]
+        }]
+    }];
+
+</script>
+{% endblock %}

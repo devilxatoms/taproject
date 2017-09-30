@@ -1,0 +1,312 @@
+{#
+Created by: Carlos Sifuentes
+Created at: 2017-08-11
+#}
+{% block content %}
+<section>
+    <div id="activity-form-container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">${detailsTitle}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-primary pull-left" @click="saveActivity">
+                                    <span class="fa fa-floppy-o"></span> Guardar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>*Titulo:</label>
+                                    <input type="text" v-model="activity.title" placeholder="Ingrese el titulo">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>*Categoría:</label>
+                                    <el-select filterable v-model="activity.category_id" placeholder="Seleccionar">
+                                        <el-option
+                                            v-for="item in activityCategories"
+                                            :key="item.id"
+                                            :label="item.name"
+                                            :value="item.id">
+                                            <span style="float: left">${item.name}</span>
+                                        </el-option>
+                                    </el-select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">{#empieza select de (relacionado) oportunidad, cliente o prospecto#}
+                                <div class="form-group">
+                                    <label>Relacionado a:</label>
+                                    <el-select
+                                        v-model="relatedValue"
+                                        filterable
+                                        remote
+                                        placeholder="Ingrese una oportunidad, cliente o prospecto"
+                                        :loading="relatedSelectLoading"
+                                        :remote-method="relatedRemoteSearch">
+                                        <el-option-group
+                                            v-for="group in relatedSelectGroups"
+                                            :key="group.value"
+                                            :label="group.options ? group.label : ''"
+                                            :value="group.value">
+                                            <el-option
+                                                v-for="item in group.options"
+                                                :key="item.value"
+                                                :label="item.label"
+                                                :value="group.value + ', ' + item.value">
+                                            </el-option>
+                                        </el-option-group>
+                                    </el-select>
+                                </div>
+                            </div>{#termina select de cliente, oportunidad, o prospecto#}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Descripción:</label>
+                                    <textarea placeholder="Ingrese una descripción" v-model="activity.description"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Inicia:</label>
+                                    <el-date-picker
+                                        v-model="activity.start_attention_date"
+                                        type="datetime"
+                                        :clearable="false"
+                                        :picker-options="{disabledDate: startAttentionDisabled}">
+                                    </el-date-picker>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Expira:</label>
+                                    <el-date-picker
+                                        v-model="activity.expiration_date"
+                                        type="datetime"
+                                        :clearable="false"
+                                        :disabled="!activity.start_attention_date"
+                                        :picker-options="{disabledDate: expirationDateDisabled}">
+                                    </el-date-picker>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Atendido:</label>
+                                    <el-date-picker
+                                        v-model="activity.attended_date"
+                                        type="datetime"
+                                        :clearable="false">
+                                    </el-date-picker>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">{#empieza área de (asignado) usuarios, empleados y equipos#}
+                            <div class="col-md-12">
+                                <el-select
+                                    v-model="assignedValues"
+                                    filterable
+                                    remote
+                                    multiple
+                                    placeholder="Ingrese un usuario, empleado o equipo"
+                                    :loading="assignedSelectLoading"
+                                    :remote-method="assignedRemoteSearch">
+                                    <el-option-group
+                                        v-for="group in assignedSelectGroups"
+                                        :key="group.value"
+                                        :label="group.options ? group.label : '' "
+                                        :value="group.value">
+                                        <el-option
+                                            v-for="item in group.options"
+                                            :key="item.value"
+                                            :label="item.label"
+                                            :value="group.value +', '+ item.value"
+                                            :disabled="contentAssigned(group.value, item.value)">
+                                            <div>${ item.label }</div>
+                                            <div style=" color: #8492a6; font-size: 10px">
+                                                ${item.optional}
+                                            </div>
+                                        </el-option>
+                                    </el-option-group>
+                                </el-select>
+                                <div v-if="activity.id" style="display: inline-block; margin-top: 20px">
+                                    <el-tooltip
+                                        class="item" 
+                                        effect="dark" 
+                                        content="Guardar seleccionados" 
+                                        placement="bottom-start">
+                                        <span 
+                                            role="button" 
+                                            class="btnIconBLue glyphicon glyphicon-floppy-disk" 
+                                            v-on:click="addAssigned">
+                                        </span>
+                                    </el-tooltip>
+                                </div>
+                            </div>
+                            {# empieza lista de empleados, usuarios y equipos asignados#}
+                            <div class="col-sm-4">
+                                <h4>Empleados</h4>
+                                <ul id="example-1" class="mh300 overflowAuto">
+                                    <li v-for="employee in activity.assigned_employees">
+                                        <a href="#" class="list-group-item padd5">
+                                            <div v-if ="(employee.picture !== '[none]')" class="pull-left contentMiddle">
+                                                <img 
+                                                    v-bind:src="'https://cdn.tuadmin.com/' + employee.picture"
+                                                    class="img-circle h35 mw35"
+                                                    style="margin-right: 10px;">
+                                            </div>
+                                            <div class="mih40 mh55">
+                                                <strong class="card-title">
+                                                    ${ employee ? 
+                                                    (employee.name + ' ' + 
+                                                    (employee.father_surname ? employee.father_surname : '') + ' ' + 
+                                                    (employee.mother_surname ? employee.mother_surname : '')) : 'S/A' }
+                                                </strong>
+                                                <div class="card-content">
+                                                    ${ employee.user ?
+                                                    employee.user.nickname : ''}
+                                                    <div class="card-date" style="margin-top: 10px;">
+                                                        ${returnDate(employee.pivot.created_at)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <el-tooltip 
+                                                class="item" 
+                                                effect="dark" 
+                                                content="Quitar este empleado de la oportunidad" 
+                                                placement="bottom-start">
+                                                <span 
+                                                    role="button" 
+                                                    class="closeTab delMiddle20 fa fa-times" 
+                                                    v-on:click="onDelAsigned(employee, 'employee')">
+                                                </span>
+                                            </el-tooltip>
+                                        </a>
+                                    </li>    
+                                </ul>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>Usuarios</h4>
+                                <ul id="example-2" class="mh300 overflowAuto">
+                                    <li v-for="user in activity.assigned_users">
+                                        <a href="#" class="list-group-item padd5">
+                                            <div v-if="(user.picture !== '[none]')" class="pull-left contentMiddle">
+                                                <img 
+                                                    v-bind:src="'https://cdn.tuadmin.com/' + user.picture" 
+                                                    alt="User Image" 
+                                                    class="img-circle h35 mw35" 
+                                                    style="margin-right: 10px;">
+                                            </div>
+                                            <div class="mih40 mh55">
+                                                <strong class="card-title">                                             
+                                                    ${user.nickname}
+                                                </strong>
+                                                <div class="card-content">
+                                                    ${ user ?
+                                                    (user.name + ' '+
+                                                    (user.lastname ? user.lastname : '') + ' ' +
+                                                    (user.surname ? user.surname : '')) : 'S/A' }
+                                                    <div class="card-date">
+                                                        ${returnDate(user.pivot.created_at)}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <el-tooltip 
+                                                class="item" 
+                                                effect="dark" 
+                                                content="Quitar este usuario de la oportunidad" 
+                                                placement="bottom-start">
+                                                <span 
+                                                    role="button" 
+                                                    class="closeTab delMiddle20 fa fa-times"
+                                                    v-on:click="onDelAsigned(user, 'user')">
+                                                </span>
+                                            </el-tooltip>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>Equipos</h4>
+                                <ul id="example-3" class="mh300 overflowAuto">
+                                    <li v-for="team in activity.assigned_teams">
+                                        <a href="#" class="list-group-item padd5">
+                                            <div v-if="(team.picture !== '[none]')" class="pull-left contentMiddle">
+                                                <img 
+                                                    v-bind:src="'https://cdn.tuadmin.com/' + team.picture" 
+                                                    alt="Team Image" 
+                                                    class="img-circle h35 mw35" 
+                                                    style="margin-right: 10px;">
+                                            </div>
+                                            <div class="mih40 mh55">
+                                                <strong class="card-title">                                             
+                                                    ${team.name}
+                                                </strong>
+                                                <div class="card-content">
+                                                    ${'Equipo con ' + team.employee.length + ' integrante(s).'}
+                                                    <div class="card-date">
+                                                        ${returnDate(team.pivot.created_at)}
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            <el-tooltip 
+                                                class="item" 
+                                                effect="dark" 
+                                                content="Quitar este equipo de la oportunidad" 
+                                                placement="bottom-start">
+                                                <span 
+                                                    role="button" 
+                                                    class="closeTab delMiddle20 fa fa-times"
+                                                    v-on:click="onDelAsigned(team, 'team')">
+                                                </span>
+                                            </el-tooltip>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {# termina lista de empleados, usuarios y equipos asignados#}
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {##}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+{% if activity %}
+uiVars['activity'] = {{ activity | json_encode | raw }};
+uiVars['tabTitle'] = 'Editar Actividad';
+uiVars['detailsTitle'] = 'Editar datos de actividad';
+{% else %}
+uiVars['activity'] = null;
+uiVars['tabTitle'] = 'Crear Actividad';
+uiVars['detailsTitle'] = 'Crear nueva actividad';
+{% endif %}
+init=[{
+    title: uiVars['tabTitle'],
+    file: 'CrmJs/Activity/createActivity.js',
+    functions: [{
+      name: 'initActivityForm',
+      args: [uiVars['detailsTitle'], uiVars['activity']]
+    }]
+}];
+</script>
+{% endblock %}

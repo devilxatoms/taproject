@@ -1,0 +1,94 @@
+
+{# Columna 'Productos' (no_products) #}
+    {# CELL #}
+    <template slot="backorder-total-products" scope="row">
+        <div v-if="row.object">
+            <el-tag type="gray">${row.object.products_count} Producto${row.object.products_count > 1 ? 's' : null}</el-tag><br>
+            {# <div style="font-size: 0.8em;">${ row.object.productsBlocked } de ${ row.object.productsCount }</div> #}
+        </div>
+    </template>
+
+    {# EXPANDED #}
+    <template slot="backorder-products" scope="row">
+        {#<h4>Productos del backorder</h4>
+        <vue-dynamic-table-rbc
+            box-classes="box box-lg box-centered"
+            class-name="table table-bordered table-hover"
+
+            :show-numeration="true"
+            :show-visibility-options="true"
+
+            :source-columns="$getDefaultSettings('backorderProductsDetails')"
+            :data-model="row.object.products"
+            :filter-enabled="true"
+        >
+        </vue-dynamic-table-rbc> #}
+    </template>
+
+
+<template slot="signatureSlot" scope="row">
+    <idp-signature-button
+        :ref="'backorders_' + row.object.bo_id"
+        :key="row.object.bo_id"
+        :signed="checkUserSigned(row.object.signed_users, userId)"
+        :signature-count="row.object.signature_count"
+        @confirm-signature="saveSignature($event, 'backorders', row.object.bo_id, userId)"
+    >
+    </idp-signature-button>
+</template>
+
+{# Columna Progreso #}
+<template slot="progress-slot" scope="row">
+    <el-progress v-if="row.object.progress !== undefined" :text-inside="true" :stroke-width="12" :percentage="row.object.progress" :status="row.object.progress === 100 ? 'success' : null"></el-progress>
+    <span v-else class="noDataCell">
+        No disponible
+    </span>
+</template>
+
+
+{# Columna Acciones #}
+<template slot="actions-slot" scope="row">
+    <template v-if="row.object.bo_status === 1 || row.object.bo_status === 2">
+        <div class="ui-button bg-Light-Blue overflowInherit">
+            <div class="secondary">
+                <a
+                    class="has-tooltip btn align-right"
+                    role="button"
+                    data-tooltip="Editar"
+                    @click="onEditClick(row.object)">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </a>
+                <a
+                    class="has-tooltip btn align-right"
+                    role="button"
+                    data-tooltip="Cancelar"
+                    @click="$store.dispatch('cancelBackorder', {bo_id: row.object.bo_id, token: 'xdsfsfg4fghS67FGhj'})">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </a>
+            </div>
+        </div>
+    </template>
+    <template v-else>
+        <span class="noDataCell">
+            No disponible
+        </span>
+    </template>
+</template>
+
+
+<template slot="no-rows-found">
+    <span>No se encontraron resultados</span>
+</template>
+
+<template slot="backorder-status-tag" scope="row">
+    <div v-if="row.object" class="backorderStatus full-width" :class="row.object.status_slug">${ row.object.status_label }</div>
+</template>
+
+
+
+    <template slot="expanded-row" scope="row">
+        <table>
+            <tr v-for="(column, index) in (row.object.products)"></tr>
+            ${ row.object.products[0].name }
+        </table>
+    </template>

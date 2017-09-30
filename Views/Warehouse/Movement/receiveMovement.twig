@@ -1,0 +1,157 @@
+{% block body %}
+<section>
+    <div id="view-movement-module">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-primary cWhite"
+                    @click="onDo">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Realizar Movimiento
+                </button>
+            </div>
+        </div>
+
+
+        <div class="panel-content">
+            <div class="row">
+                {# Recuadro "DATOS DEL MOVIMIENTIO" #}
+                <div class="col-md-6">
+                    <div class="box box-default">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Datos del Movimiento <span v-cloak>No. ${movementId}</span></h3>
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"
+                                        data-toggle="tooltip" title="Minimizar">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="box-body">
+                            <div class="col-md-7">
+                                <idp-movement-basic-info
+                                    :movement-type="movementType"
+
+                                    :movement-origin-description="movementOriginDescription"
+                                    :movement-destiny-description="movementDestinyDescription"
+
+
+                                    :movement-type-description="movementTypeDescription"
+                                    :movement-status-description="movementStatusDescription"
+                                    :movement-status-extra-description="movementStatusExtraDescription"
+                                    >
+
+                                </idp-movement-basic-info>
+                            </div>
+
+                            <div v-if="movementType == 1" class="col-md-5">
+                                <div>
+                                    <strong>Folio Compra: </strong>
+                                    <span v-text="movementRef"></span>
+                                </div>
+                                <div>
+                                    <label>Folios Facturas:</label>
+                                    {# <el-select
+                                        v-model="invoices"
+                                        multiple
+                                        filterable
+                                        allow-create
+                                        placeholder="Folios"
+                                        disabled>
+                                        <el-option
+                                          v-for="item in listInvoices"
+                                          :key="item.id"
+                                          :label="item.folio"
+                                          :value="item.id">
+                                        </el-option>
+                                    </el-select> #}
+                                </div>
+                                <div>
+                                    <strong>Comentarios: </strong>
+                                    <span v-text="movementDescription"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel-group" role="tablist">
+                        <div class="panel panel-default">
+
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" href="#productsDetails" aria-expanded="true">
+                                        Productos <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="productsDetails" class="panel-collapse collapse in" role="tabpanel">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12 table-responsive">
+                                            <vue-dynamic-table
+                                                    class-name="table"
+                                                    :columns="sourceColumnsProducts"
+                                                    :data-model="listProducts">
+                                                        <template slot="no-rows-found">
+                                                            <h4 class="text-center"><span class="glyphicon glyphicon-zoom-in"></span>
+                                                                Sin Excepciones de Productos
+                                                            </h4>
+                                                        </template>
+                                                        <template slot="productUnit" scope="row">
+                                                            <template v-if="row.object.unit != null">
+                                                                ${row.object.unit.name}
+                                                            </template>
+                                                        </template>
+                                                        <template slot="productDescription" scope="row">
+                                                            <div class="expand">
+                                                                ${row.object.description}
+                                                            </div>
+                                                        </template>
+                                                        <template slot="productToReceive" scope="row">
+                                                            ${row.object.pivot.to_receive}
+                                                        </template>
+                                                        <template slot="productReceived" scope="row">
+                                                            ${row.object.pivot.quantity}
+                                                        </template>
+                                                        <template slot="productExtraData" scope="row">
+                                                            ${row.object.pivot.refQuantity}
+                                                        </template>
+                                                        <template slot="productNewQuantity" scope="row">
+                                                            <input type="text" v-model="row.object.pivot.newQuantity">
+                                                        </template>
+                                            </vue-dynamic-table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+
+        uiVars['movement'] = {{ movement|json_encode|raw }};
+        init.length = 0;
+        init = [ {
+            title: "Detalles de Movimiento No.: " + uiVars['movement'].id,
+            file: 'Warehouse/Movements/receiveMovement.js',
+            functions: [ {
+                name: 'iniciarModuloReceiveMovement',
+                args: [ uiVars['movement'] ]
+            } ]
+        } ];
+
+    </script>
+{% endblock %}

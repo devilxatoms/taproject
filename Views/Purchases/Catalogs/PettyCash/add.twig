@@ -1,0 +1,83 @@
+<div id="modalPettyCash" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+                <h4 class="modal-title">Guardar Registro</h4>
+            </div>
+            <div id="formExpense">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group req">
+                                <label for="name">Nombre:</label>
+                                <input type="text" v-model="name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group req">
+                                <label for="account">Responsable: </label>
+                                <el-select v-model="user" filterable placeholder="Selecciona Usuario">
+                                    <el-option
+                                        v-for="item in users"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group req">
+                                <label for="name">Descripción:</label>
+                                <input type="text" v-model="description">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group req">
+                                <label for="name">Valor Mínimo:</label>
+                                <input type="text" v-model="minValue" @change="onChangeAmount">
+                                <small>0 = Sin Límite</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group req">
+                                <label for="name">Valor Máximo:</label>
+                                <input type="text" v-model="maxValue" @change="onChangeAmount">
+                                <small>0 = Sin Límite</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group req">
+                                <label for="account">Cuenta Contable: </label>
+                                <el-select v-model="accountingAccount" filterable placeholder="Selecciona Cuenta">
+                                    <el-option
+                                        v-for="item in accountingAccounts"
+                                        :key="item.id"
+                                        :label="item.name"
+                                        :value="item.id">
+
+                                    </el-option>
+                                </el-select>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+                <div class="modal-footer">
+                    <button v-on:click="onSubmit" class="btn btn-success" name="button">Guardar</button>
+                    <button type="button" name="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

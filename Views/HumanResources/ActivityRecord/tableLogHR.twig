@@ -1,0 +1,68 @@
+{% block body %}
+<section>
+    <div id="log-general-module">
+        <div class="header-buttons">
+        </div>
+        <div class="panel-content">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :remote-method="ajaxLogGeneralSearch"
+                :source-columns="logGeneralSourceColumns"
+                :select-options="catalogs"
+                :data-model="logGeneralList"
+                :total-results="logGeneralResults"
+                >
+                <template slot="userId" scope="row">
+                    <div class="expand">
+                        <button type="button" v-on:click="userData($event)" class="el-tag el-tag--lblue has-tooltip" data-tooltip="Mostrar Detalles"><i class="fa fa-user" aria-hidden="true" ></i> ${row.object.name}</button>
+                        <div class="list-dt">
+                            <ul>
+                                <li> nickname: <span>${row.object.nickname}</span></li>
+                                <li> name: <span>${row.object.name}</span></li>
+                                <li> lastname: <span>${row.object.lastname}</span></li>
+                                <li> surname: <span>${row.object.surname}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </template>
+                <template slot="actions" scope="row">
+                    <div class="ui-button bg-Light-Blue overflowInherit">
+                        <div class="secondary">
+                            <a
+                                role="button"
+                                class="has-tooltip btn align-right"
+                                data-tooltip="Editar"
+                                v-on:click="onEditClick(row.object.id)">
+                                <span class="glyphicon glyphicon-edit"></span>
+
+                            </a>
+                            <a
+                                class="has-tooltip btn align-right"
+                                data-tooltip="Eliminar"
+                                role="button"
+                                v-on:click="onRemoveClick(row)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>                   
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+var catalogs = {{ catalogs|json_encode|raw }};
+init.length = 0;
+init = [ {
+    title: 'Listado Log General',
+    file:  'HumanResources/ActivityRecord/list.js',
+    functions: [ {
+        name: 'listLogHR',
+        args: [catalogs]
+    } ]
+} ];
+</script>
+{% endblock %}

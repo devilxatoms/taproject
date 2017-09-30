@@ -1,0 +1,102 @@
+<section>
+	<div class="header-buttons">
+		<div class="btn-group main-buttons">
+			<a role="button" onclick="getPDF()" class="btn btn-success">
+				<span class="glyphicon glyphicon-save-file"></span>
+				Descargar PDF
+			</a>
+		</div>
+	</div>
+	<div class="box box-default" id="income-statement-container">
+		<a role="button" @click="testJSON()" class="btn btn-success" style="width: 100%">
+			<span class="glyphicon glyphicon-flash"></span>
+			Probar JSON
+		</a>
+		{% include 'Accounting/Reports/ResultsState/Partials/table.twig' %}
+	</div>
+
+	<style>
+
+		#invoice-statement-container {
+			margin-top: 3em;
+		}
+		table {
+			color: #333333;
+			border-style: solid;
+			border-width: 1px;
+			border-color: #dfe6ec;
+			border-collapse: collapse;
+			color: black;
+		}
+		table th {
+			font-weight: bold;
+			border-width: 1px;
+			padding: 8px;
+			background-color: #eef1f6;
+			vertical-align: middle;
+		}
+		tbody tr:nth-child(odd) {
+			background-color: white;
+		}
+		tbody tr:hover {
+			background-color: #eef1f6;
+		}
+		tbody tr {
+			background-color: #fafafa;
+			page-break-inside: avoid;
+			page-break-after: auto;
+		}
+		table td {
+			border-width: 1px;
+			padding: 8px;
+			border-style: solid;
+			border-color: #dfe6ec;
+			text-align: right;
+			vertical-align: middle;
+		}
+		.account-description {
+			width: 36%;
+			text-indent: 1em;
+			text-align: left;
+		}
+		.regular-column {
+			width: 16%;
+			text-align: center;
+		}
+		td.negative {
+			color: #da766f;
+		}
+		td.account {
+			text-indent: 1em;
+			text-align: left;
+		}
+		td.account-header {
+			font-weight: bold;
+			text-indent: 3em;
+			text-align: left;
+		}
+		td.account-classification {
+			font-style: italic;
+			text-indent: 3em;
+			text-align: left;
+		}
+		td.heavy-underline {
+			border-bottom: solid;
+		}
+
+	</style>
+
+</section>
+
+<script id="scriptContainer" type="text/javascript">
+	var cn = {{ company_name|json_encode|raw }};
+	init.length = 0;
+	init = [{
+		title: 'Estado de resultados',
+		file: 'Accounting/Reports/ResultsState.js',
+		functions: [{
+			name: 'initResultsState',
+			args: [cn]
+		}]
+	}]
+</script>

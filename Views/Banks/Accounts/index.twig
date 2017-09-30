@@ -1,0 +1,58 @@
+{% block content %}
+<section>
+    <div id="vueBankAccounts">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a role="button" id="btnNewBankMovement" v-on:click="onClick" class="btn btn  btn-success ">
+                    <i class="fa fa-plus " aria-hidden="true"></i>
+                    Agregar Cuenta Bancaria
+                </a>
+            </div>
+        </div>
+        <div class="panel-content">
+            {% include '/Banks/Accounts/form.twig' %}
+            <div>
+                <vue-dynamic-table-rbc
+                    box-classes="box box-primary full-height"
+                    class-name="table table-bordered table-hover"
+                    :source-columns="columns"
+                    :select-options="selectOptions"
+                    :data-model="datasource"
+                    @export="exportTable"
+                    :remote-method="remoteSearch"
+                    template-file-name="Requisiciones de Compras"
+                    :total-results="totalResults">
+                    <template slot="test-custom-render" scope="row">
+                        <div class="ui-button bg-Light-Blue overflowInherit">
+                            <div class="secondary">
+                                <a data-tooltip="Editar" role="button" class="has-tooltip btn align-right" v-on:click="onEditClick(row.object)">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+                                <a data-tooltip="Eliminar" role="button" class="has-tooltip btn align-right" v-on:click="onRemoveClick(row.object)">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            </div>
+                        </div>
+                    </template>
+                    <template slot="no-rows-found">
+                        <span>No se encontrarón resultados</span>
+                    </template>
+                </vue-dynamic-table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %} {% block loadScripts %}
+<script id="scriptContainer">
+    init.length = 0;
+    init = [{
+        title: 'Cuentas Bancarias',
+        file: 'Bank/Accounts/list.js',
+        functions: [{
+            name: 'initBankAccounts',
+            args: []
+        }]
+    }];
+
+</script>
+{% endblock %}

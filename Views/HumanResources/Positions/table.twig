@@ -1,0 +1,69 @@
+{% block body %}
+<section>
+    <div id="positions-module">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a id="btnNewPositions"
+                    role="button"
+                    class="btn btn-success"
+                    data-action="openLateral"
+                    data-panelsize="md"
+                    data-route="recursosHumanos/puestos/nuevo">
+                    <i class="fa fa-plus " aria-hidden="true"></i> Agregar Puestos
+                </a>
+            </div>
+        </div>
+        <div class="panel-content">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :remote-method="ajaxPositionsSearch"
+                :source-columns="positionsSourceColumns"
+                :select-options="catalogs"
+                :data-model="positionsList"
+                :total-results="positionsResults"
+                >
+                <template slot="departmentName" scope="row">
+                    ${row.object.department.name}
+                </template>
+                <template slot="actions" scope="row">
+                    <div class="ui-button bg-Light-Blue overflowInherit">
+                        <div class="secondary">
+                            <a
+                                class="has-tooltip btn align-right"
+                                data-tooltip="Editar"
+                                v-on:click="onEditClick(row)"
+                                role="button"
+                                data-toggle="modal"
+                                data-target="#modalFormNewSocialNetwork">
+                                <span class="glyphicon glyphicon-edit"></span>
+                            </a>
+                            <a
+                            class="has-tooltip btn align-right"
+                            data-tooltip="Eliminar"
+                            role="button"
+                            v-on:click="onRemoveClick(row)">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </div>
+                    </div>
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+var catalogs = {{ catalogs|json_encode|raw }};
+init.length = 0;
+init = [ {
+    title: 'Listado Puestos',
+    file:  'HumanResources/Positions/list.js',
+    functions: [ {
+        name: 'initPositionsListModule',
+        args: [catalogs]
+    } ]
+} ];
+</script>
+{% endblock %}

@@ -1,0 +1,91 @@
+<section>
+    <div id="formPerception">
+      <div class="header-buttons">
+        <div class="btn-group main-buttons">
+          <button
+            class="btn btn-success"
+            @click="perceptionValidate">
+            <span class="glyphicon glyphicon-ok"></span>
+            Guardar
+          </button>
+          <button
+            class="btn btn-danger"
+            data-action="closeTab">
+            <span class="glyphicon glyphicon-remove"></span>
+             Cancelar
+          </button>
+        </div>
+      </div>
+      <div class="panel-content">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Tipos de Percepciones</h3>
+          </div>
+          <form v-on:submit.prevent="perceptionValidate('formPerception')" id="">
+            <div class="modal-body">
+              <input type="hidden" name="id" v-model="perception.id">
+              <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="contractType" class="">Tipo de Percepcion:</label>
+                      <input v-model="perception.c_TipoPercepcion" type="text" name="" @keypress="clearPerceptionValidatorError('c_TipoPercepcion')">
+                      <span v-if="perceptionValidatorErrors != null" class="cRed">
+                        ${ perceptionValidatorErrors.first('c_TipoPercepcion') }
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="contract_description" class="">Descripción:</label>
+                      <input v-model="perception.description" class="form-control" type="text" name="" @keypress="clearPerceptionValidatorError('Descripción')">
+                      <span v-if="perceptionValidatorErrors != null" class="cRed">
+                           ${ perceptionValidatorErrors.first('Descripción') }
+                      </span>
+                    </div>
+                  </div>
+                  <div class="clear clearfix"></div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="" for="">Fecha de inicio de vigencia:</label>
+                      <vue-datetimepicker
+                        class-name="form-control"
+                        v-bind:format="datePicker.format"
+                        v-bind:time-picker="datePicker.timePicker"
+                        v-model="validity_start_date">
+                      </vue-datetimepicker>
+                      <span v-if="perceptionValidatorErrors != null" class="cRed">
+                        ${ perceptionValidatorErrors.first('Vigencia Inicio') }
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label class="" for="">Fecha de fin de vigencia:</label>
+                      <vue-datetimepicker
+                        class-name="form-control"
+                        v-bind:format="datePicker.format"
+                        v-bind:time-picker="datePicker.timePicker"
+                        v-model="validity_end_date">
+                      </vue-datetimepicker>
+                    </div>
+                  </div>
+              </div>
+              </div>
+          </form>
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+ uiVars['title'] = '{{title}}';
+ uiVars['view'] = {{view}};
+ uiVars['data']   = {{data|json_encode|raw}};
+ init.lenght = 0;
+ init = [ {
+  title: uiVars['title'],
+  file: 'Payroll/Perceptions/form.js',
+  functions: [ {
+    name: 'initPayrollsFormPerception',
+    args: [ uiVars['data'], uiVars['view']]
+  } ]
+} ];
+</script>

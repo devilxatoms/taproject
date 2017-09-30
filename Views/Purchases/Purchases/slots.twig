@@ -1,0 +1,114 @@
+<template slot="test-custom-render" scope="row">
+    <div class="has-tooltip btn align-right">
+        <div class="secondary">
+            <a
+                role="button"
+                class="has-tooltip btn align-right"
+                data-tooltip="Editar"
+                v-on:click="onEditClick(row.object)">
+                <span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a
+                role="button"
+                class="has-tooltip btn align-right"
+                data-tooltip="Eliminar"
+                v-on:click="onRemoveClick(row.object)">
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        </div>
+    </div>
+</template>
+<template slot="expanded-row" scope="row">
+    <div>
+        <div class="col-md-12">
+            <p><strong>Fecha de requerido: </strong> ${ (row.object.requisition_date != 'Invalid date')? row.object.requisition_date : 'N/A' }
+            <h4>Detalle de Productos</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Codigo de Barras</th>
+                        <th>Producto</th>
+                        <th>Decripción</th>
+                        <th>Unidades</th>
+                        <th>Precio Por unidades</th>
+                        <th>Cantidad</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in row.object.details">
+                        <td>${ item.barcode  }</td>
+                        <td>${ item.name     }</td>
+                        <td><div class="col-lg expand">${ item.description }</div></td>
+                        <td>${ item.unit }</td>
+                        <td>${ item.unit_cost }</td>
+                        <td>${ item.quantity }</td>
+                        <td>${ item.subtotal }</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</template>
+<template slot="no-rows-found">
+    <span>No se encontraron resultados</span>
+</template>
+<template slot="comment" scope="row">
+    <div class="expand">
+        ${row.object.comment}
+    </div>
+</template>
+<template slot="actions" scope="row">
+    <div class="ui-button bg-Light-Blue overflowInherit">
+        <div class="secondary">
+            <a
+                role="button"
+                class="has-tooltip btn align-right"
+                v-on:click="showFiles(row.object.id)"
+                data-tooltip="Ver archivos">
+                <i class="fa fa-lg fa-folder-open" aria-hidden="true"></i>
+            </a>
+            <a
+                role="button"
+                class="has-tooltip btn align-right"
+                data-tooltip="Ver Compra"
+                @click="editPurchase(row.object)" >
+                <i class="fa fa-eye fa-lg" aria-hidden="true"></i>
+            </a>
+            <a
+                role="button"
+                class="has-tooltip btn align-right"
+                data-tooltip="Imprimir"
+                @click="printPurchase(row.object)">
+                <i class="fa fa-lg fa-print" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</template>
+<template slot="movement" scope="row">
+    <el-button v-if="row.object.movement_id" class="block" @click="onClickMovement(row.object)" size="mini" type="primary">
+        <i class="fa fa-truck" aria-hidden="true"></i>
+        Ver Movimiento
+    </el-button>
+    <el-button v-else class="block" @click="onClickMovement(row.object)" size="mini" type="default">
+        <i class="fa fa-truck" aria-hidden="true"></i>
+        Crear Movimiento
+    </el-button>
+</template>
+<template slot="payment" scope="row">
+    <el-button v-if="row.object.payment_id" class="block" @click="onClickPayment(row.object.payment_id)" size="mini" type="warning">
+        <i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+        Ver Pago
+    </el-button>
+    <el-button v-else class="block" @click="onClickCreatePayment(row.object)" size="mini" type="default">
+        <i class="fa fa-credit-card" aria-hidden="true"></i>
+        Crear Pago
+    </el-button>
+</template>
+<template slot="docs" scope="row">
+    <div class="ui-button bg-Light-Blue overflowInherit">
+        <div class="secondary">
+            <button @click="showDocsModal(row.object)" class="block btn btn-primary" size="mini"> <strong>PDF</strong> / <strong>XML</strong> </button>
+        </div>
+    </div>
+</template>

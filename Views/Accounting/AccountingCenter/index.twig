@@ -1,0 +1,29 @@
+{% block body %}
+    <section>
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a id="openTabNewWarehouse" role="button" class="btn btn-success pull-left"
+                   data-action="openLateral"
+                   data-route="contabilidad/centro-contable/nuevo"
+                   data-panelsize="sm">
+                   Nuevo centro</a>
+            </div>
+        </div>
+        <div class="panel-content">
+            {% include( 'Accounting/AccountingCenter/Partials/list.twig' ) %}
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.lenght = 0;
+        init = [ {
+            title: 'Centros Contables',
+            file: 'Accounting/AccountingCenter/list.js',
+            functions: [ {
+                name: 'initList',
+                args: []
+            } ]
+        } ];
+    </script>
+{% endblock %}

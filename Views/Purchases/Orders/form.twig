@@ -1,0 +1,224 @@
+{% block content  %}
+    <section>
+        <div id="formPurchaseOrders">
+            <div class="header-buttons">
+                <div class="btn-group main-buttons">
+                    <a @click="savePurchaseAjax" class="purchase_submit btn btn-success">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        Guardar Orden de Compra</a>
+                    <a v-if="id" @click="removePurchase" role="button" class="btn bgRed cWhite purchase_remove">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        Cancelar Orden de Compra</a>
+                </div>
+                {# <div class="btn-group secondary-buttons">
+                    <a rol="button" class="btn btn-primary cBlue" data-toggle="modal" data-target="#importModal">
+                        <i class="fa fa-file-text" aria-hidden="true"></i> Importar Archivos
+                    </a>
+                </div> #}
+            </div>
+            <div class="panel-content">
+                <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Datos de la Orden de Compra</h3> 
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target=".collapseFilter" aria-expanded="false" aria-controls="collapseFilter" data-toggle="tooltip"  title="Indicaciones">
+                                    <i class="ui ui-help_outline"></i>
+                                    </button>
+                                </div>
+                        </div>
+                        <div class="indication collapse collapseFilter">
+                            <div class="indication-content">
+                                <div class="indication-img">
+                                    <span class="indication-icon ui ui-help"></span>
+                                </div>
+                                <div class="indication-text">
+                                    Instrucciones: Añade los datos de la compra obligatorios (*).
+                                    Se debe asignar proveedor para enviar la orden de compra.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <vue-alert-validator ref="validator"></vue-alert-validator>
+                                </div>
+                            </div>
+                            <div id="headerSelects">
+                                <div class="row">
+                                    <div v-if="id" class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="id">Folio</label>
+                                            <input v-model="id" type="text" value="" disabled="">
+                                        </div>
+                                    </div>
+                                <div v-if="purchase_requisition_id" class="col-md-2">
+                                    <el-button class="block" type="default" size="small" @click="openRequisition()"><i class="fa fa-file-text-o" aria-hidden="true"></i> Ver Requisición de Compra</el-button>
+                                </div>
+                                </div>
+                                <div class="row">
+                                    {# <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="user_responsible_id">Comprador</label>
+                                            <input type="text" disabled="true" value="">
+                                            <input id="user_responsible_id" name="user_responsible_id" type="hidden" value="">
+                                        </div>
+                                    </div> #}
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="created_at">Fecha</label>
+                                        <input v-model="created_at" type="text" disabled>
+                                    </div>
+                                </div>
+                                <div v-if="spending">
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="spendingType">Tipo de gasto</label>
+                                            <el-select v-model="expenseValue" placeholder="Seleccione gasto...">
+                                                <el-option
+                                                v-for="item in expenses"
+                                                :key="item.id"
+                                                :label="item.name"
+                                                :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="form-group req">
+                                            <label for="warehouse">Almacen</label>
+                                            <el-select v-model="warehouse" filterable placeholder="Seleccione...">
+                                                <el-option
+                                                    v-for="item in warehouses"
+                                                    :key="item.id"
+                                                    :label="item.name"
+                                                    :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group req">
+                                            <label for="provider">Proveedor</label>
+                                            <el-select v-model="provider" filterable placeholder="Seleccione...">
+                                                <el-option
+                                                    v-for="item in providers"
+                                                    :key="item.id"
+                                                    :label="item.legal_name"
+                                                    :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="pull-right">
+                                            <div class="form-group req">
+                                                <label for="purchase_order_date">Fecha de orden</label>
+                                                <el-date-picker
+                                                    v-model="purchase_order_date"
+                                                    format="dd-MM-yyyy"
+                                                    type="date">
+                                                </el-date-picker>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                </div>        
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel-group" id="productsPanel" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="headingOne">
+                                    <div class="box-header">
+                                        <h4 class="box-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#productsPanel" href="#productsTablePurchases" aria-expanded="true" aria-controls="productsTablePurchases">
+                                        Lista de productos <i class="fa fa-caret-down" aria-hidden="true"></i>
+                                            </a>
+                                        </h4>
+                                        <div class="box-tools pull-right">
+                                                <button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target=".collapseVar" aria-expanded="false" aria-controls="collapseVar" data-toggle="tooltip"  title="Indicaciones">
+                                                <i class="ui ui-help_outline"></i>
+                                                </button>
+                                            </div>
+                                    </div>
+                                    <div class="indication collapse collapseVar">
+                                            <div class="indication-content">
+                                                <div class="indication-img">
+                                                <span class="indication-icon ui ui-help"></span>
+                                                </div>
+                                                 <div class="indication-text">
+                                                 Instrucciones: Agrega en la tabla los productos que deseas solicitar.
+                                                 Es necesario por lo menos un producto para poder continuar.
+                                                </div>
+                                            </div>
+                                        </div> 
+                                        
+                                        
+                                </div>
+                                <div id="productsTablePurchases" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <vue-products-table-david
+                                                    v-bind:barcode-options="barcodeOptions"
+                                                    v-bind:code-options="codeOptions"
+                                                    v-bind:name-options="nameOptions"
+                                                    v-bind:rows="rows"
+                                                    v-bind:taxes="taxes"
+                                                    v-bind:disable-add="true"
+                                                    v-bind:disable-add-row="disableAddRow"
+                                                    v-bind:on-delete="removeDetail">
+                                                </vue-products-table-david>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <br>
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="purchase_comment">Comentario:</label>
+                                                                <textarea v-model="comment" placeholder="Comentarios" ></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="pull-right">
+                                                    <vue-products-table-totals
+                                                        ref="tabletotals"
+                                                        v-bind:rows="rows">
+                                                    </vue-products-table-totals>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        uiVars['id'] = {{ id|json_encode|raw }};
+        init = [ {
+            title:  (uiVars['id']) ? 'Editar Orden de Compra ' + uiVars['id'] : 'Nueva Orden de Compra',
+            file: 'Purchase/Orders/form.js',
+            functions: [ {
+                name: 'initFormPurchaseOrder',
+                args: [ uiVars['id'] ]
+            } ]
+        } ];
+    </script>
+{% endblock %}

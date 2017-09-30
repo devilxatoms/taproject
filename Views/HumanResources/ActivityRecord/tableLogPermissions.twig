@@ -1,0 +1,48 @@
+{% block body %}
+<section>
+    <div id="log-permissions-module">
+        <div class="header-buttons">
+        </div>
+        <div class="panel-content">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary full-height"
+                class-name="table table-bordered table-hover"
+                :remote-method="ajaxLogPermissionSearch"
+                :source-columns="logPermissionSourceColumns"
+                :select-options="catalogs"
+                :data-model="logPermissionList"
+                :total-results="logPermissioneResults"
+                >
+                <template slot="userId" scope="row">
+                    <div class="expand">
+                        <button type="button" v-on:click="userData($event)" class="el-tag el-tag--lblue has-tooltip" data-tooltip="Mostrar Detalles"><i class="fa fa-user" aria-hidden="true" ></i> ${row.object.name}</button>
+                        <div class="list-dt">
+                            <ul>
+                                <li> nickname: <span>${row.object.nickname}</span></li>
+                                <li> name: <span>${row.object.name}</span></li>
+                                <li> lastname: <span>${row.object.lastname}</span></li>
+                                <li> surname: <span>${row.object.surname}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                        
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+var catalogs = {{ catalogs|json_encode|raw }};
+init.length = 0;
+init = [ {
+    title: 'Listado Log Permisos',
+    file:  'HumanResources/ActivityRecord/list.js',
+    functions: [ {
+        name: 'listLogPermissions',
+        args: [catalogs]
+    } ]
+} ];
+</script>
+{% endblock %}

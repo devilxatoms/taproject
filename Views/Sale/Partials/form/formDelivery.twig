@@ -1,0 +1,141 @@
+<div class="panel-group"
+	id="{{ prefix }}-accordion-entrega"
+	role="tablist"
+	aria-multiselectable="true">
+	<div class="panel panel-default" id="{{ prefix }}-forma-entrega">
+		<div class="panel-heading" role="tab" id="headingOne">
+			<h4 class="panel-title" style="width:100%;">
+				<a role="button"
+					data-toggle="collapse"
+					data-parent="#{{ prefix }}-accordion-entrega"
+					href="#{{ prefix }}-detalle-entrega"
+					aria-expanded="true"
+					aria-controls="{{ prefix }}-detalle-entrega"
+					style="width:100%;">
+					Datos de entrega/realización
+					<i class="fa fa-caret-down" aria-hidden="true"></i>
+				</a>
+			</h4>
+		</div>
+		<div id="{{ prefix }}-detalle-entrega"
+			class="panel-collapse collapse"
+			role="tabpanel"
+			aria-labelledby="headingOne">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-md-12 col-sm-12">
+						<div class="form-group">
+							<label>Tipo de entrega</label>
+							<select v-model="deliveryType" class="form-control">
+								<option value="0">En tienda</option>
+								<option value="1">Ruta local</option>
+								<option value="2">Paquetería</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12" v-if="paraEnvio">
+						<div class="form-group">
+							<label>Entregar a:</label>
+							<select v-model="deliveryTypeId" class="form-control">
+								<option value="1">Sucursal</option>
+								<option value="2">Consignatario</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12" v-if="paraEnvio">
+						<div class="form-group">
+							<label>Fecha de entrega:</label>
+							<vue-datetimepicker
+								class-name="form-control"
+								format="d/M/Y"
+								v-model="deliveryDate">
+							</vue-datetimepicker>
+							<span class="input-group-addon">
+								<span class="glyphicon glyphicon-calendar"></span>
+							</span>
+						</div>
+					</div>
+					<div v-if="paraEnvio">
+						<div class="col-md-12 col-sm-6 col-xs-11">
+							<div class="form-group">
+								<label>${ tEntrega }:</label>
+								<vue-selectize-js
+									v-bind:selectize-settings="selectizeSettings"
+									v-bind:selectize-options="selectizeAddressOptions"
+									v-bind:default-model="addressModel"
+									v-on:select-option="onSelectAddress($event, selectedAddress)"
+									v-model="selectedAddress.id">
+								</vue-selectize-js>
+								<span class="input-group-btn">
+									<a role="button" class="btn-sm btn-success" @click="">
+										<span class="glyphicon glyphicon-plus"></span>
+									</a>
+								</span>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-5">
+							<div class="form-group">
+								<label>Preguntar por:</label>
+								<input class="form-control" v-model="responsable">
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-6">
+							<div class="form-group">
+								<label>E-mail:</label>
+								<vue-selectize-js
+									selectize-type="Tags"
+									v-bind:selectize-settings="selectizeEmailSettings"
+									v-bind:selectize-options="selectizeEmailsOptions"
+									v-model="email">
+								</vue-selectize-js>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-6">
+							<div class="form-group">
+								<label>Tel:</label>
+								<vue-selectize-js
+									selectize-type="Tags"
+									v-bind:selectize-settings="selectizePhoneSettings"
+									v-bind:selectize-options="selectizePhonesOptions"
+									v-model="phone">
+								</vue-selectize-js>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<label>Dirección:</label>
+								<input class="form-control"
+									v-model="address.address_detail"
+									disabled>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<label>CP:</label>
+								<input class="form-control"
+									v-model="address.postal_code"
+									disabled>
+							</div>
+						</div>
+						<div class="col-md-12 col-sm-12">
+							<div class="form-group">
+								<label>Ubicación:</label>
+								<input class="form-control"
+									v-model="address.location"
+									disabled>
+							</div>
+						</div>
+						<div style="text-align:center;">
+							<div class="form-group">
+								<label style="display:inline;">Alertarme</label>
+								<input style="display:inline; width:30%;" v-model="notificationDays">
+								<label style="display:inline;">días antes.</label>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

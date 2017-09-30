@@ -1,0 +1,124 @@
+{% block content %}
+<section>
+	<div class="header-buttons">
+	<div class="btn-group main-buttons">
+	</div>
+</div>
+<div class="panel-content" id="costHistory">
+	<div class="box">
+		<div class="box-header">
+			<h3 class="box-title">Búsqueda de historial de costos</h3>
+			<div class="box-tools pull-right">
+				<button type="button" class="btn btn-box-tool" data-toggle="collapse" data-target=".collapseFiltro"
+					aria-expanded="false" aria-controls="collapseFiltro" data-toggle="tooltip" title="Indicaciones">
+					<i class="ui ui-help_outline"></i>
+				</button>
+			</div>
+		</div>
+		<div class="indication collapse collapseFiltro">
+			<div class="indication-content">
+				<div class="indication-img">
+					<span class="indication-icon ui ui-help"></span>
+				</div>
+				<div class="indication-text">
+					 Instrucciones: Busque un producto y usuario en los componentes de arriba para poder ver los resultados al presionar el boton "Ver", si lo prefiere puede marcar la opción "todos los usuarios" y dejar el campo usuario vacío
+				</div>
+			</div>
+		</div>
+		<div class="box-body">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="producto">Producto:</label>
+						<el-select
+							v-model="selectedProduct"
+							filterable
+							remote
+							placeholder="Escriba..."
+							loading-text="Buscando..."
+							no-match-text="Producto no encontrado"
+							no-data-text="Producto no encontrado"
+							:remote-method="ajaxSearchProducts"
+							:loading="loading"
+							id="selectizeProduct">
+								<el-option
+								v-for="item in selectProductsOptions"
+								:key="item.value"
+								:label="item.label"
+								:value="item.value"
+								id="selectUser">
+							</el-option>
+						</el-select>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label for="usuario">Usuario:</label>
+						<el-select
+							v-model="selectedUser"
+							filterable
+							remote
+							placeholder="Escriba..."
+							loading-text="Buscando..."
+							no-match-text="Usuario no encontrado"
+							no-data-text="Usuario no encontrado"
+							:remote-method="ajaxSearchUsers"
+							:loading="loading"
+							id="selectizeUser">
+								<el-option
+									v-for="item in selectUserOptions"
+									:key="item.value"
+									:label="item.label"
+									:value="item.value">
+								</el-option>
+						</el-select>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<input type="checkbox" name="allUsers">
+						Todos los usuarios
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div class="form-group">
+						<button id="btnFindCost" v-on:click="onClick" class="btn btn-success btn-block" type="button" name="button">Ver</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+		<div id="tableCosts">
+			<vue-dynamic-table
+				class-name="table table-bordered"
+				v-bind:class="{ fullHeight }"
+				v-bind:filter-enabled="true"
+				v-bind:expandable-row="true"
+				sort-indicator-asc-class="fa fa-caret-up"
+				sort-indicator-desc-class="fa fa-caret-down"
+				v-bind:columns="columns"
+				v-bind:pagination="true"
+				v-bind:pagination-options="paginationOptions"
+				v-on:go-to-page="goToPage"
+				v-bind:data-model="datasource">
+				<template slot="no-rows-found">
+					<span>No se encontrarón resultados</span>
+				</template>
+			</vue-dynamic-table>
+		</div>
+</div>
+</section>
+{% endblock %}
+{% block loadScripts  %}
+<script id="scriptContainer" type="text/javascript">
+	init.lenght =0;
+	init = [ {
+		title: 'Historial de costos',
+		file: 'Purchase/Purchases/history.js',
+		functions: [ {
+			name: 'init',
+			args: [ ]
+		} ]
+	} ];
+</script>
+{% endblock %}

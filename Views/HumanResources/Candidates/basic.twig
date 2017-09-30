@@ -1,0 +1,194 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Datos Básicos{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+        <div class="row">
+            <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
+                <div class="form-group">
+                    <div class="center-block" v-if="candidate.picture!=undefined">
+                        <vue-image-picker
+                            v-model="candidate.images[0].file"
+                            :image-url="'https://cdn.tuadmin.com/'+candidate.picture"
+                            placeholder=""
+                            width="140"
+                            height="140"
+                            text="Foto"
+                            show-delete="true"
+                            delete-class="delete-image-picker"
+                            id-button-delete="dropdownMenu1"
+                            :show-input="true">
+                        </vue-image-picker>
+                    </div>
+                    <div v-else class="center-block">
+                        <vue-image-picker
+                            v-model="candidate.images[0].file"
+                            placeholder=""
+                            width="140"
+                            height="140"
+                            text="Foto"
+                            show-delete="true"
+                            delete-class="delete-image-picker"
+                            id-button-delete="dropdownMenu1"
+                            :show-input="true">
+                        </vue-image-picker>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name">Nombre(s):</label>
+                            <input id="name" name="name" v-model="candidate.name" @keypress="clearCandidateError('Nombre')">
+                            <span v-if="candidateValidatorErrors != null" class="error-validate" :class="candidateErrorsClass">
+                            ${ candidateValidatorErrors.first('Nombre') }
+                            </span>
+                        </div>
+                        <div class="form-group">
+                            <label for="fatherSurname" >Apellido Paterno:</label>
+                            <input id="fatherSurname" name="fatherSurname" v-model="candidate.father_surname" @keypress="clearCandidateError('Apellido Paterno')">
+                            <span v-if="candidateValidatorErrors != null"  class="error-validate" :class="candidateErrorsClass">${ candidateValidatorErrors.first('Apellido Paterno') }</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="motherSurname" >Apellido Materno:</label>
+                            <input id="motherSurname" name="motherSurname" v-model="candidate.mother_surname" @keypress="clearCandidateError('Apellido Materno')">
+                            <span v-if="candidateValidatorErrors != null"  class="error-validate" :class="candidateErrorsClass">${ candidateValidatorErrors.first('Apellido Materno') }</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                        <div class="form-group">
+                            <label for="" >Sexo:</label>
+                            <template>
+                                <el-radio-group v-model="sex">
+                                    <el-radio :label="1">M</el-radio>
+                                    <el-radio :label="0">F</el-radio>
+                                </el-radio-group>
+                            </template>
+                            <span v-if="candidateValidatorErrors != null"  class="error-validate" :class="candidateErrorsClass">
+                            ${ candidateValidatorErrors.first('Sexo') }
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="form-group">
+                    <label for="rfc" >RFC:</label>
+                    <input id="rfc" name="rfc" v-model="candidate.rfc" @keypress="clearCandidateError('RFC')">
+                    <span  class="error-validate" :class="candidateErrorsClass" v-if="candidateValidatorErrors != null">${ candidateValidatorErrors.first('RFC') }</span>
+                </div>
+                <div class="form-group">
+                    <label for="curp" >CURP:</label>
+                    <input id="curp" name="curp" v-model="candidate.curp" @keypress="clearCandidateError('CURP')">
+                    <span  class="error-validate" :class="candidateErrorsClass" v-if="candidateValidatorErrors != null">${ candidateValidatorErrors.first('CURP') }</span>
+                </div>
+                <div class="form-group">
+                    <label for="ssn" >NSS:</label>
+                    <input id="ssn" name="ssn" v-model="candidate.ssn" @keypress="clearCandidateError('NSS')">
+                    <span  class="error-validate" :class="candidateErrorsClass" v-if="candidateValidatorErrors != null">${ candidateValidatorErrors.first('NSS') }</span>
+                </div>
+                <div class="form-group">
+                    <label for="maritalStatus" >Estado Civil:</label>
+                    <vue-selectize-js
+                        ref="candidate.maritalStatus"
+                        selectize-type="select"
+                        v-bind:selectize-settings="maritalStatusSelectize.settings"
+                        v-bind:selectize-options="data.maritalStatus"
+                        v-bind:selectize-enabled="maritalStatusSelectize.enabled"
+                        v-model="candidate.marital_status_id"
+                        @change="clearCandidateError('Estado Civil')">
+                    </vue-selectize-js>
+                    <span  class="error-validate" :class="candidateErrorsClass" v-if="candidateValidatorErrors != null">${ candidateValidatorErrors.first('Estado Civil') }
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="nationality" >Nacionalidad:</label>
+                    <vue-selectize-js
+                        ref="candidate.nationality"
+                        selectize-type="select"
+                        v-bind:selectize-settings="nationalitySelectize.settings"
+                        v-bind:selectize-options="data.nationalities"
+                        v-bind:selectize-enabled="nationalitySelectize.enabled"
+                        v-model="candidate.nationality_id"
+                        @change="clearCandidateError('Nacionalidad')">
+                    </vue-selectize-js>
+                    <span v-if="candidateValidatorErrors != null"  class="error-validate" :class="candidateErrorsClass">
+                    ${ candidateValidatorErrors.first('Nacionalidad') }
+                    </span>
+                </div>
+                <div class="form-group">
+                    <label for="birth_city" >Ciudad de Nacimiento:</label>
+                    <input id="birth_city" name="birth_city" v-model="candidate.birth_city"{#  @keypress="clearCandidateError('Apellido Materno')" #}>
+                    {# <span v-if="candidateValidatorErrors != null"  class="error-validate" :class="candidateErrorsClass">
+                    ${ candidateValidatorErrors.first('birth_city') }
+                    </span> #}
+                </div>
+                <div class="form-group">
+                    <label for="birthday" >Fecha de Nacimiento:</label>
+                    <el-date-picker
+                        v-model="birthday"
+                        type="date"
+                        :picker-options="birthdayDatePickerOptions"
+                        placeholder="Selecciona una fecha">
+                    </el-date-picker>
+                    <span  class="error-validate" :class="candidateErrorsClass" v-if="candidateValidatorErrors != null">${ candidateValidatorErrors.first('Fecha de Nacimiento') }</span>
+                </div>
+                <div class="form-group">
+                    <label for="languages" >Idiomas:</label>
+                    <input id="languages" name="languages" v-model="candidate.languages" @keypress="clearCandidateError('Idiomas')">
+                    <span v-if="candidateValidatorErrors != null"  class="error-validate" :class="candidateErrorsClass">${ candidateValidatorErrors.first('Idiomas') }</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="emails" >Emails Personales:</label>
+                    <vue-selectize-js
+                        selectize-type="Tags"
+                        v-bind:selectize-settings="emailsPersonalSelectize.settings"
+                        v-bind:selectize-enabled="emailsPersonalSelectize.enabled"
+                        v-model="candidate.emails_personal">
+                    </vue-selectize-js>
+                </div>
+                <div class="form-group">
+                    <label for="phones" >Celulares Personales:</label>
+                    <vue-selectize-js
+                        selectize-type="Tags"
+                        v-bind:selectize-settings="cellsPersonalSelectize.settings"
+                        v-bind:selectize-enabled="cellsPersonalSelectize.enabled"
+                        v-model="candidate.cells_personal">
+                    </vue-selectize-js>
+                </div>
+                <div class="form-group">
+                    <label for="phones" >Teléfonos Personales:</label>
+                    <vue-selectize-js
+                        selectize-type="Tags"
+                        v-bind:selectize-settings="phonesPersonalSelectize.settings"
+                        v-bind:selectize-enabled="phonesPersonalSelectize.enabled"
+                        v-model="candidate.phones_personal">
+                    </vue-selectize-js>
+                </div>
+                <div class="form-group">
+                    <label for="skill" >Competencias:</label>
+                    <vue-selectize-js
+                        selectize-type="Tags"
+                        v-bind:selectize-settings="skillPersonalSelectize.settings"
+                        v-bind:selectize-enabled="skillPersonalSelectize.enabled"
+                        v-model="candidate.skill">
+                    </vue-selectize-js>
+                </div>
+            </div>
+        </div>
+        {% include '/HumanResources/Candidates/address.twig' %}
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        {%include '/HumanResources/Candidates/documents.twig' %}
+    </div>   
+</div>
+{% endblock %}

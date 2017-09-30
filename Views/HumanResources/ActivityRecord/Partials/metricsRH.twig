@@ -1,0 +1,41 @@
+{% extends "/HumanResources/Partials/box.twig" %}
+{% block boxTitle %}Redes Sociales{% endblock %}
+{% block boxContent %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <div class="form-group">
+            {#<vue-datetimepicker
+                 v-bind:min-date="venta.createdAt"
+                 class-name="form-control"
+                 format="d/M/Y"
+                 v-model="paymentDate">
+             </vue-datetimepicker>
+             <span class="input-group-addon">
+                 <span class="glyphicon glyphicon-calendar"></span>
+             </span>#}
+             <div class="box-body">
+                 <vue-chart
+                     :chart-data-model="pieChart">
+                 </vue-chart>
+             </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 " >
+        <div class="box-table">
+            <vue-dynamic-table-rbc
+                box-classes="box box-primary"
+                class-name="table table-bordered table-hover"
+                :remote-method="ajaxSystemLogSearch"
+                :source-columns="systemLogSourceColumns"
+                :select-options="catalogs"
+                :data-model="systemLogList"
+                :total-results="systemLogResults"
+                >
+                <template slot="user" scope="row">
+                    ${getUser(row.object)}
+                </template>
+            </vue-dynamic-table-rbc>
+        </div>
+    </div>
+</div>
+{% endblock %}

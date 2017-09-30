@@ -1,0 +1,40 @@
+<template slot="custom-authorize" scope="row">
+    <div v-if="row.object.payment_status_id === 1">
+        <el-popover
+            ref="popover-auth"
+            placement="right"
+            width="200"
+            trigger="click">
+            <el-button style="margin-top: 5px" size="small" class="btn-block" type="primary" @click="changeAuth(1, row.object.id)"><i class="fa fa-check" aria-hidden="true"></i> Autorizar</el-button>
+            <br>
+            <el-button style="margin-top: 5px" size="small" class="btn-block" type="danger" @click="changeAuth(0, row.object.id)"><i class="fa fa-times" aria-hidden="true"></i> Rechazar</el-button>
+        </el-popover>
+        <el-button type="primary" class="block" @click="showStatus(row.object.purchase_order_status_id)" size="mini" v-popover:popover-auth>Autorización</el-button>
+    </div>
+    <el-button v-else type="default" size="mini" disabled class="block">Autorización</el-button>
+</template>
+<template slot="payments" scope="row">
+    <a role="button" class="has-tooltip" data-tooltip="Ver detalles" @click="loadPaymentDetails(row.object)">
+        Ver abonos <i class="glyphicon glyphicon-eye-open"></i>
+    </a>
+</template>
+<template slot="custom-make" scope="row">
+    <el-button v-if="row.object.payment_status_id === 3" class="block" @click="showBankMovementModal(row.object)" type="success" size="mini">Efectuar</el-button>
+    <el-button v-else class="block" type="default" size="mini" disabled>Efectuar</el-button>
+</template>
+<template slot="cancel" scope="row">
+    <div class="ui-button bgRed overflowInherit">
+        <div class="secondary">
+            <a class="has-tooltip btn align-right" role="button" data-tooltip="Cancelar movimiento" v-on:click="deletePayment(row.object)">
+                <i class="fa fa-ban" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</template>
+<template slot="purchase" scope="row">
+    <el-button v-if="row.object.purchase_id" class="block" @click="onClickPurchase(row.object.purchase_id)" size="mini" type="primary">
+        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+        Ver Compra
+    </el-button>
+</template>
+

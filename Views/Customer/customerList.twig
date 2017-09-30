@@ -1,0 +1,203 @@
+{% block content %}
+    <section>
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    data-action="openLateral"
+                    data-panelsize="lg"
+                    data-route="customer/nuevo"
+                    class="btn btn-success pull-right">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Nuevo Cliente</a>
+
+            </div>
+
+            <div class="btn-group main-buttons">
+                <a
+                    role="button"
+                    class="btn btn-success pull-left"
+                    data-action="openLateral"
+                    data-route="AdditionalFeatures/customers"
+                    data-panelsize="md">
+                    Caracteristicas</a>
+                  </div>
+        </div>
+        <div class="panel-content">
+            <div id="customers-module" >
+                <vue-dynamic-table-rbc
+                    box-classes="box box-primary"
+                    class-name="table table-bordered"
+                    v-bind:class="{ fullHeight }"
+                    :show-visibility-options="true"
+                    :remote-method="loadMovements"
+                    :show-numeration="true"
+                    :show-filter-stats="true"
+                    :filter-enabled="true"
+                    v-on:go-to-page="goToPage"
+                    v-on:action-link-click="actionLink"
+                    v-bind:pagination-options="customerTablePageOptions"
+                    v-bind:source-columns="sourceColumns"
+                    v-bind:data-model="listCustomers">
+
+                     <template slot="actions" scope="row">
+                         <div class="ui-button bg-Light-Blue overflowInherit">
+                            <div class="secondary">
+                                <a
+                                     class="has-tooltip btn align-right"
+                                     data-tooltip="añadir valor"
+                                     v-on:click="addId(row.object)"
+                                     data-toggle="modal"
+                                     data-target="#AddValue">
+                                    <span class="glyphicon glyphicon-plus-sign"></span>
+                                </a>
+
+                                <a
+                                    class="has-tooltip btn align-right"
+                                    role="button"
+                                    data-tooltip="ver valores"
+                                    v-on:click="showValues(row.object)"
+                                    >
+                                    <span class="glyphicon glyphicon-eye-open"></span>
+                                </a>
+
+                                <a  
+                                    class="has-tooltip btn align-right"  
+                                    role="button"
+                                    data-tooltip="ver valores" 
+                                    v-on:click="editColumn(row.object)"
+                                    >
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                </a>
+
+                                <a  
+                                    class="has-tooltip btn align-right"  
+                                    role="button"
+                                    data-tooltip="ver valores" 
+                                    v-on:click="deleteColumn(row.object)"
+                                    >
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+
+                            </div>
+                         </div>
+                    </template>
+
+                    <template slot="promissory_note" scope="row">
+            <div class="ui-button btn btn-warning overflowInherit">
+                <div class="secondary">
+
+                    <a
+                        class="has-tooltip btn align-right"
+                        role="button"
+                        data-tooltip="Crear pagare"
+                        data-toggle="modal" data-target="#ModalPrommissory"
+                        v-on:click="createPromissoryNote(row.object)"
+                        >
+                         <span class="glyphicon glyphicon-plus-sign"></span>
+                         Crear
+                    </a>
+                </div>
+            </div>
+        </template>
+                </vue-dynamic-table-rbc>
+
+                {# <vue-dynamic-table
+                    class-name="table table-bordered"
+                    v-on:go-to-page="goToPage"
+                    v-bind:class="{ fullHeight }"
+                    v-on:action-link-click="actionLink"
+                    v-bind:pagination-options="customerTablePageOptions"
+                    v-bind:columns="sourceColumns"
+                    v-bind:data-model="listCustomers">
+                </vue-dynamic-table> #}
+            </div>
+
+            {# <div id="customers-inactive-module" > #}
+                {# <vue-dynamic-table-rbc
+                    box-classes="box box-primary"
+                    class-name="table table-bordered"
+                    v-on:go-to-page="goToPage"
+                    v-on:action-link-click="actionLink"
+                    v-on:action-button-click="actionButton"
+                    v-bind:pagination-options="customerTablePageOptions"
+                    v-bind:source-columns="sourceColumns"
+                    v-bind:data-model="listCustomers">
+                </vue-dynamic-table-rbc> #}
+
+
+                {# <vue-dynamic-table class-name="table table-bordered"
+                    v-on:go-to-page="goToPage"
+                    v-on:action-link-click="actionLink"
+                    v-on:action-button-click="actionButton"
+                    v-bind:pagination-options="customerTablePageOptions"
+                    v-bind:columns="sourceColumns"
+                    v-bind:data-model="listCustomers">
+                </vue-dynamic-table> #}
+            {# </div> #}
+
+        </div>
+
+        <!--Modal for add value-->
+<div class="modal fade" id="AddValue" role="dialog">
+        <div class="modal-dialog">
+
+
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">AÑADIR VALOR A CARACTERISTICA</h4>
+                </div>
+                <div class="modal-body">
+                   <form method="POST" id="addValue">
+                    <input type="hidden" id="id">
+                    <div class="form-group">
+                        <label for="">Valor</label>
+                        <input type="text" class="form-control" maxlength="255" name="value" id="value" placeholder="Valor">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Seleccione la caracteristica</label>
+
+                         <select id="additionalFeatures">
+
+                         </select>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success" data-dismiss="modal" id="buttonSave">Guardar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+
+                </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+    </section>
+{% endblock %}
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        init.length = 0;
+        init = [ {
+            title: 'Clientes',
+            file: 'Customer/customer.js',
+            functions: [ {
+                name: 'iniciarModuloListCustomers',
+                args: [ ]
+            },
+            // {
+            //     name: 'iniciarModuloListInactiveCustomers',
+            //     args: [ ]
+            // }
+            ]
+        } ];
+    </script>
+{% endblock %}
+
+{# en movements listMovement.js Movement\list.twig #}
+{# MovementController #}

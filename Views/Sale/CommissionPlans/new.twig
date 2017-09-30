@@ -1,0 +1,144 @@
+{% block content %}
+<section>
+	<div id="new-commission-plan-container">
+		<div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="saveCommissionPlan()">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                    Guardar
+                </button>
+            </div>
+        </div>
+		<div class="panel-content">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="form-group">
+								<label>Nombre: </label>
+								<input type="text" v-model="commissionPlan.name">
+							</div>
+							<div class="form-group">
+								<label>Descripción: </label>
+								<textarea v-model="commissionPlan.description"></textarea>
+							</div>
+							<div class="form-group">
+								<label>Porcentaje por defecto: </label>
+								<input type="number" v-model="commissionPlan.defaultValue">
+							</div>
+							<br><br>
+							<h4>Creación de comisiones</h4>
+							<div class="form-group">
+								<input type="radio" id="create-op-one" value="0" v-model="commissionPlan.createPerPartial">
+								<label style="display: inline; vertical-align: middle;" for="create-op-one" class="has-tooltip" data-tooltip="Se crea una comisión por venta"> Por venta</label>
+								<input type="radio" id="create-op-two" value="1" v-model="commissionPlan.createPerPartial">
+								<label style="display: inline; vertical-align: middle;" for="create-op-two" class="has-tooltip" data-tooltip="Se crea una comisión por cada parcialidad"> Por parcialidad de venta</label>
+							</div>
+							<h4>Activación de comisiones</h4>
+							<div class="form-group">
+								<input type="radio" id="create-op-three" value="0" v-model="commissionPlan.activateUponCreation">
+								<label style="display: inline; vertical-align: middle;" for="create-op-three" class="has-tooltip" data-tooltip="Se activan las comisiones hasta que se aplica el cobro"> Al completar cobro</label>
+								<input type="radio" id="create-op-four" value="1" v-model="commissionPlan.activateUponCreation">
+								<label style="display: inline; vertical-align: middle;" for="create-op-four" class="has-tooltip" data-tooltip="Se activan las comisiones cuando se crean"> Al crear la comisión</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+                            <el-tabs v-model="activeExceptionTab">
+    							<el-tab-pane label="Productos" name="products">
+    								<product-exceptions-module
+    									:product-exceptions="commissionPlan.productExceptions"
+    									:list-value-types="valueTypes"
+    									:deleted="deleted.productExceptions">
+    								</product-exceptions-module>
+    							</el-tab-pane>
+    							<el-tab-pane label="Mercados" name="markets">
+    								<market-exceptions-module
+    									:market-exceptions="commissionPlan.marketExceptions"
+    									:list-value-types="valueTypes"
+    									:deleted="deleted.marketExceptions">
+    								</market-exceptions-module>
+    							</el-tab-pane>
+    							<el-tab-pane label="Lineas" name="lines">
+    								<line-exceptions-module
+    									:line-exceptions="commissionPlan.lineExceptions"
+    									:list-value-types="valueTypes"
+    									:deleted="deleted.lineExceptions">
+    								</line-exceptions-module>
+    							</el-tab-pane>
+    							<el-tab-pane label="Grupos" name="groups">
+    								<group-exceptions-module
+    									:group-exceptions="commissionPlan.groupExceptions"
+    									:list-value-types="valueTypes"
+    									:deleted="deleted.groupExceptions">
+    								</group-exceptions-module>
+    							</el-tab-pane>
+    							<el-tab-pane label="Categorías" name="categories">
+    								<category-exceptions-module
+    									:category-exceptions="commissionPlan.categoryExceptions"
+    									:list-value-types="valueTypes"
+    									:deleted="deleted.categoryExceptions">
+    								</category-exceptions-module>
+    							</el-tab-pane>
+    							<el-tab-pane label="Marcas" name="brands">
+    								<brand-exceptions-module
+    									:brand-exceptions="commissionPlan.brandExceptions"
+    									:list-value-types="valueTypes"
+    									:deleted="deleted.brandExceptions">
+    								</brand-exceptions-module>
+    							</el-tab-pane>
+    						</el-tabs>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+var arguments = [], title = 'Nuevo plan de comisiones';
+arguments.push({{ valueTypes | json_encode | raw }});
+
+{% if commissionPlan %}
+arguments.push({{ commissionPlan | json_encode | raw }});
+title = 'Editar plan de comisiones';
+{% endif %}
+
+init.length = 0;
+init = [
+	{
+		title: title,
+		file: 'Sale/components/cpProductExceptions.js'
+	},
+	{
+		file: 'Sale/components/cpMarketExceptions.js'
+	},
+	{
+		file: 'Sale/components/cpLineExceptions.js'
+	},
+	{
+		file: 'Sale/components/cpGroupExceptions.js'
+	},
+	{
+		file: 'Sale/components/cpCategoryExceptions.js'
+	},
+	{
+		file: 'Sale/components/cpBrandExceptions.js'
+	},
+    {
+        file: 'Sale/newCommissionPlan.js',
+        functions: [{
+            name: 'initNewCommissionPlan',
+            args: arguments
+        }]
+    },
+];
+</script>
+{% endblock %}

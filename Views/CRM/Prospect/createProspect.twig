@@ -1,0 +1,107 @@
+{#
+Created by: Carlos Sifuentes
+Created at: 2017/07/27
+#}
+{% block content %}
+<section>
+    <div id="formCreateProspect">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">${prospectDetailsTitle}</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% include 'crm/Prospect/partials/createProspectForm.twig' %}
+                    </div>
+                    <div class="panel-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {# empieza sucursales del prospecto #}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Sucursales</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-success" @click="newSubsidiary()" :disabled="prospect.id ? false : true">
+                                    <span class="fa fa-plus"></span> Nueva Sucursal
+                                </button>
+                            </div>
+                        </div>
+                        <vue-dynamic-table-rbc
+                            box-classes="box box-primary full-height"
+                            class-name="table table-bordered table-hover"
+                            :remote-method="remoteSearch"
+                            :source-columns="columns"
+                            :data-model="subsidiariesDatasource"
+                            :total-results="totalResults"
+                            hide-export
+                            hide-import
+                            hide-favorites
+                            {# @export="exportTable"
+                            template-file-name="Requisiciones de Envio" #}>
+                            <template slot="no-rows-found">
+                                Sin sucursales
+                            </template>
+                            <template slot="actions" scope="row">
+                                <div class="ui-button bg-Light-Blue overflowInherit">
+                                    <div class="secondary">
+                                        <a
+                                            data-tooltip="Editar"
+                                            role="button"
+                                            class="btn btn-info"
+                                            v-on:click="editSubsidiary(row.object)"
+                                            style="color:  #fff;">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                        <a
+                                            data-tooltip="Eliminar"
+                                            role="button"
+                                            class="has-tooltip btn align-right"
+                                            v-on:click="askForDeleteSubsidiary(row.object)">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </template>
+                        </vue-dynamic-table-rbc>
+                    </div>
+                    <div class="panel-footer"></div>
+                </div>
+            </div>
+        </div>
+        {# termina sucursales del prospecto #}
+    </div>
+</section>
+{% endblock %}
+{% block loadScripts %}
+<script id="scriptContainer" type="text/javascript">
+init.length = 0;
+{% if prospect %}
+uiVars['prospect'] = {{ prospect | json_encode | raw }};
+uiVars['tabTitle'] = "Editar prospecto";
+uiVars['prospectDetailsTitle'] = "Editar datos de prospecto";
+{% else %}
+uiVars['prospect'] = null;
+uiVars['tabTitle'] = "Nuevo prospecto";
+uiVars['prospectDetailsTitle'] = "Agregar nuevo prospecto";
+{% endif %}
+init=[{
+    title: uiVars['tabTitle'],
+    file: 'CrmJs/Prospect/createProspect.js',
+    functions: [{
+      name: 'initCreateProspect',
+      args: [
+        uiVars['prospect'],
+        uiVars['prospectDetailsTitle']
+      ]
+    }]
+}];
+</script>
+{% endblock %}

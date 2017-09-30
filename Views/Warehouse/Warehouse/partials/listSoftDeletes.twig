@@ -1,0 +1,34 @@
+<!--<h2>Almacenes inactivos</h2>-->
+
+<!--sugerencia-<div class="box box-default panel-body">
+    <h2 style="margin: 0px;">Almacenes inactivos</h2>
+</div>-->
+
+<div id="tableListSoftWarehouses">
+    <!-- Dynamic Table -->
+    <vue-dynamic-table
+            class-name="table table-bordered"
+            v-bind:filter-enabled="true"
+            v-bind:columns="sourceColumns"
+            v-bind:data-model="listSoftDataWarehouse"
+            v-on:go-to-page="goToPage"
+            v-bind:pagination-options="pageOptions">
+        <template slot="actions" scope="row">
+           <div class="ui-button bg-Light-blue overflowInherit">
+               <div class="secondary">
+                    <a 
+                        class="has-tooltip xtooltip btn align-right" 
+                        role="button" 
+                        data-tooltip="Recuperar almacén" 
+                        v-on:click="onRestoreClick(row.object)">
+                        <span class="glyphicon glyphicon-repeat"></span>
+                    </a>
+               </div>
+           </div>
+        </template>
+        <template slot="no-rows-found">
+            <span>No se encontraron resultados</span>
+        </template>
+    </vue-dynamic-table>
+    <!-- Dynamic Table -->
+</div>

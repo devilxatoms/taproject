@@ -1,0 +1,37 @@
+<section>
+    <div id="create-attendance">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="saveAttendance">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                    Guardar
+                </button>
+                <button
+                    class="btn btn-danger"
+                    data-action="closeTab">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+        <div class="panel-content">
+            {% include '/Payrolls/Attendance/day.twig' %}
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+    uiVars['title'] = '{{title}}';
+    uiVars['data']   = {{data|json_encode|raw}};
+    uiVars['info']   = {{info|json_encode|raw}};
+    init.lenght = 0;
+    init = [ {
+        title: uiVars['title'],
+            file: 'Payroll/Attendance/form.js',
+            functions: [ {
+                name: 'initAttendance',
+                args: [ uiVars['data'], uiVars['info']]
+        } ]
+    }];
+</script>

@@ -1,0 +1,87 @@
+<section>
+    <div id="formTypeExtraHour">
+        <div class="header-buttons">
+      <div class="btn-group main-buttons">
+        <button
+            class="btn btn-success"
+            @click="typeExtraHourValidate">
+            <span class="glyphicon glyphicon-ok"></span>
+            Guardar
+        </button>
+        <button
+            class="btn btn-danger"
+            data-action="closeTab">
+            <span class="glyphicon glyphicon-remove"></span>
+            Cancelar
+        </button>
+      </div>
+    </div>
+    <div class="panel-content">
+        <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Datos del tipo de hora extra</h3>
+                    </div>
+                    <form v-on:submit.prevent="typeExtraHourValidate('formTypeExtraHour')" id="">
+                        <div class="panel-body">
+                            <input type="hidden" name="id" v-model="typeExtraHour.id">
+
+
+
+                                    <div class="form-group">
+                                    <label for="contractType">Tipo de Horas:</label>
+                                        <input
+                                            v-model="typeExtraHour.c_TipoHoras"
+                                            class="form-control"
+                                            type="text"
+                                            name="">
+                                        <span v-if="typeExtraHourValidatorErrors != null" class="cRed">
+                                            ${ typeExtraHourValidatorErrors.first('c_TipoHoras') }
+                                        </span>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                    <label for="contract_description">Descripción:</label>
+                                        <input
+                                            v-model="typeExtraHour.description"
+                                            class="form-control"
+                                            type="text"
+                                            name="">
+                                        <span v-if="typeExtraHourValidatorErrors != null" class="cRed">
+                                            ${ typeExtraHourValidatorErrors.first('Descripción') }
+                                        </span>
+                                    </div>
+
+
+                        </div>
+                    </form>
+                </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+    uiVars['title'] = '{{title}}';
+    uiVars['view'] = {{view}};
+    uiVars['data']   = {{data|json_encode|raw}};
+    init.lenght = 0;
+    init = [ {
+        title: uiVars['title'],
+        file: 'Payroll/TypesExtraHour/form.js',
+        functions: [ {
+            name: 'initPayrollFormTypeExtraHour',
+            args: [ uiVars['data'], uiVars['view']]
+        } ]
+    } ];
+</script>

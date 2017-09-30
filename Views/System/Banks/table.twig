@@ -1,0 +1,45 @@
+<div id="tableBanks">
+    <!-- Dynamic Table -->
+    <vue-dynamic-table
+        class-name="table table-bordered"
+        v-bind:class="{ fullHeight }"
+        v-bind:filter-enabled="true"
+        v-bind:expandable-row="true"
+        sort-indicator-asc-class="fa fa-caret-up"
+        sort-indicator-desc-class="fa fa-caret-down"
+        v-bind:columns="columns"
+        v-bind:pagination="true"
+        v-bind:pagination-options="paginationOptions"
+        v-on:go-to-page="goToPage"
+        v-bind:data-model="datasource">
+        <template slot="test-custom-render" scope="row">
+           <div class="ui-button bg-Light-Blue overflowInherit">
+               <div class="secondary">
+                   <a 
+                       class="has-tooltip btn align-right"
+                       role="button"
+                       data-tooltip="Editar" 
+                       v-on:click="onEditClick(row.object)">
+                       <span class="glyphicon glyphicon-edit"></span>
+                   </a>
+                   <a 
+                       class="has-tooltip btn align-right"
+                       role="button"
+                       data-tooltip="Eliminar" 
+                       v-on:click="onRemoveClick(row.object)">
+                       <span class="glyphicon glyphicon-trash"></span>
+                   </a>
+               </div>
+           </div>
+        </template>
+        <template slot="no-rows-found">
+            <span>No se encontrarón resultados</span>
+        </template>
+        <template slot="socialReason" scope="row">
+            <div class="expand">
+                ${ row.object.reference }
+            </div>
+        </template>
+    </vue-dynamic-table>
+    <!-- Dynamic Table -->
+</div>

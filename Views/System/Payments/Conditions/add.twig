@@ -1,0 +1,56 @@
+<div id="modalFormConditions" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Agregar Condición de pago</h4>
+            </div>
+            <div id="formConditions">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="concept">Concepto:
+                        </label>
+                        <input
+                            v-model="concept"
+                            class="form-control"
+                            type="text"
+                            name="concept"
+                            v-validate="'required'"
+                            autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Descripción:
+                        </label>
+                        <input
+                            v-model="description"
+                            class="form-control"
+                            type="text"
+                            name="description"
+                            v-validate="'required'">
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="purchase">Aplicable a compras</label>
+                        <input type="checkbox" v-model="purchase" name="purchase">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="sale">Aplicable a ventas</label>
+                        <input type="checkbox" name="sale" v-model="sale">
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" v-on:click="onSubmit" class="btn btn-success">Guardar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

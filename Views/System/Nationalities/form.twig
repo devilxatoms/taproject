@@ -1,0 +1,89 @@
+<section>
+  <div class="window container-fluid" id="formNationality">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Datos del régimen fiscal</h3>
+          </div>
+          <form v-on:submit.prevent="nationalityValidate('formNationality')" id="">
+            <div class="modal-body">
+              <input type="hidden" name="id" v-model="nationality.id">
+              <div class="row">
+                <div class="col-md-4">
+                      <div class="form-group">
+                          <label for="nationality" class="block">Nacionalidad:</label>
+                          <input v-model="nationality.nationality" type="text" name="nationality" @keypress="clearNationalityValidatorError('Nacionalidad')">
+                          <span v-if="nationalityValidatorErrors != null" class="cRed">
+                              ${ nationalityValidatorErrors.first('Nacionalidad') }
+                          </span>
+                      </div>
+                </div>
+                <div class="col-md-4">
+                      <div class="form-group">
+                          <label for="country" class="block">Pais</label>
+                          <input v-model="nationality.country" class="form-control" type="text" name="country" @keypress="clearNationalityValidatorError('Pais')">
+                          <span v-if="nationalityValidatorErrors != null" class="cRed">
+                               ${ nationalityValidatorErrors.first('Pais') }
+                          </span>
+                      </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <div class="form-group">
+                      <label for="c_Pais" class="block">c_Pais</label>
+                      <input v-model="nationality.c_Pais" class="form-control" type="text" name="c_Pais">
+                   </div>
+                 </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="row" v-if="see === false">
+      <div class="row col-md-12 ">
+        <div class="block centered h100 ">
+          <div class="content contentMiddle text-center">
+            <a class="btn btn-success" @click="nationalityValidate"><i class="glyphicon glyphicon-ok"></i> Guardar</a>
+            <a class="btn btn-danger" data-action="closeTab"><i class="glyphicon glyphicon-remove"></i> Cancelar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+    {% if id %}
+        uiVars['see'] = false;
+        uiVars['id']   = {{id}};
+        uiVars['data']   = {{data|json_encode|raw}};
+        {% if uiVars['see'] %}
+            uiVars['title'] = "Ver Nacionalidad";
+            uiVars['see'] = true;
+        {% else %}
+            uiVars['title'] = "Editar Nacionalidad";
+        {% endif %}
+        init.lenght = 0;
+        init = [ {
+            title: uiVars['title'],
+            file: 'System/Nationalities/form.js',
+            functions: [ {
+                name: 'initSystemsFormNationality',
+                args: [ uiVars['id'], uiVars['data'], uiVars['see']]
+            } ]
+        } ];
+    {% else %}
+        uiVars['title'] = "Nuevo Nacionalidad";
+        init.lenght = 0;
+        init = [ {
+            title: uiVars['title'],
+            file: 'System/Nationalities/form.js',
+            functions: [ {
+                name: 'initSystemsFormNationality',
+                args: []
+            } ]
+        } ];
+    {% endif %}
+</script>

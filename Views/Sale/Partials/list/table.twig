@@ -1,0 +1,73 @@
+<div class="panel-content">
+    <vue-dynamic-table-rbc
+        box-classes="box box-primary full-height"
+        class-name="table table-bordered table-hover"
+        :remote-method="cargarLista"
+        :source-columns="sourceColumns"
+        :select-options="catalogos"
+        :data-model="listSales"
+        :total-results="saleResults">
+        <template slot="slotTax" scope="row">
+            <a role="button" v-on:click="mostrarDetalles(row.object)">
+                $ ${row.object.tax_price}
+            </a>
+        </template>
+        <template slot="slotDevol" scope="row">
+            <button v-on:click="" class="btn btn-info btn-xs">Devolución</button>
+        </template>
+        <template slot="slotFactura" scope="row">
+            <div class="ui-button">
+                <a role="button" class="btn bgLightBlue"
+                    @click=""
+                    :disabled="typeof row.object.cancelationMotive != 'undefined' && row.object.cancelationMotive">
+                    Facturar
+                </a>
+            </div>
+        </template>
+        <template slot="slotCobros" scope="row">
+            <div class="ui-button">
+                <a role="button" class="btn bgLightBlue"
+                    @click="mostrarCargos(row.object)"
+                    :disabled="typeof row.object.cancelationMotive != 'undefined' && row.object.cancelationMotive">
+                    Cobros
+                </a>
+            </div>
+        </template>
+        <template slot="files" scope="row">
+            <div class="ui-button">
+                <div class="secondary">
+                    <a role="button" class="btn bgGreen"
+                        @click="">
+                        XML
+                    </a>
+                    <a role="button" class="btn bgRed"
+                        @click="imprimir(row.object.id)">
+                        PDF
+                    </a>
+                </div>
+            </div>
+        </template>
+        <template slot="options" scope="row">
+            <div class="ui-button overflowInherit">
+                <div class="secondary">
+                    <a role="button" class="btn bgLightBlue align-right has-tooltip"
+                        data-tooltip="Editar"
+                        @click="editar(row.object.id)"
+                        :disabled="typeof row.object.cancelationMotive != 'undefined' && row.object.cancelationMotive">
+                        <span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                    <a role="button" class="btn bgRed align-right has-tooltip"
+                        data-tooltip="Eliminar"
+                        @click="cancelar(row.object.id)"
+                        :disabled="typeof row.object.cancelationMotive != 'undefined' && row.object.cancelationMotive">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                </div>
+            </div>
+        </template>
+        <template slot="productDetails" scope="row">
+            <a role="button" @click="mostrarDetalles(row.object)">
+                <span class="glyphicon glyphicon-info-sign"></span> Detalles</a>
+        </template>
+    </vue-dynamic-table-rbc>
+</div>

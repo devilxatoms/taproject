@@ -1,0 +1,167 @@
+<section>
+    <div id="FormSocialNetwork">
+        <div class="header-buttons">
+            <div class="btn-group main-buttons">
+                <button
+                    class="btn btn-success"
+                    @click="onClicktoSave">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                    Guardar
+                </button>
+                <button
+                    class="btn btn-danger"
+                    data-action="closeTab">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+        <div class="panel-content">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Redes Sociales</h3>
+                </div>
+                <div class="panel-body">
+                    <form v-on:submit.prevent="socialNetworkValidate('FormSocialNetwork')" id="">
+                        <input type="hidden" name="id" v-model="socialNetwork.id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="name">Nombre:</label>
+                                    <input v-model="socialNetwork.name" class="form-control" type="text" name="name" id="name" @keypress="clearSocialNetworkValidatorError('Nombre')" >
+                                    <span v-if="socialNetworkValidatorErrors != null" class="cRed">
+                                        ${ socialNetworkValidatorErrors.first('Nombre') }
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="url">URL:</label>
+                                    <input  v-model="socialNetwork.url" class="form-control" name="url" @keypress="clearSocialNetworkValidatorError('URL')">
+                                    <span v-if="socialNetworkValidatorErrors != null" class="cRed">
+                                        ${ socialNetworkValidatorErrors.first('URL') }
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="socialNetwork_description">Escoge un ícono haciendo clic en él:</label>
+                                <div class="form-group">
+                                    <input  type="hidden" v-model="socialNetwork.icon" class="form-control" name="socialNetwork_icon" @keypress="clearSocialNetworkValidatorError('Icono')">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <span class="s25 fa fa-twitter"></span>
+                                    <div class="col-md-12 mTop20 h30">
+                                        <label>Twitter</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <span class="s25 fa fa-facebook-official"></span>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>Facebook</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <span class="s25 fa fa-telegram"></span>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>Telegram</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <span class="s25 fa fa-tumblr-square"></span>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>Tumblr</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <span class="s25 fa fa-youtube-square"></span>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>YouTube</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <span class="s25 fa fa-reddit"></span>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>Reddit</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <div class="col-md-12 h30">
+                                        <span class="s25 fa fa-steam-square"></span>
+                                    </div>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>Steam</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <div class="col-md-12 h30">
+                                        <span class="s25 fa fa-linkedin"></span>
+                                    </div>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>LinkedIn</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <div class="col-md-12 h30">
+                                        <span class="s25 fa fa-instagram"></span>
+                                    </div>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>Instagram</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div v-on:click="sendIconClass" class="row text-center">
+                                    <div class="col-md-12 h30">
+                                        <span class="s25 fa fa-google-plus-official "></span>
+                                    </div>
+                                    <div class="col-md-12 h30 mTop20">
+                                        <label>Google Plus</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script id="scriptContainer" type="text/javascript">
+uiVars['title'] = '{{title}}';
+uiVars['view'] = {{view}};
+uiVars['data']   = {{data|json_encode|raw}};
+init.lenght = 0;
+init = [ {
+    title: uiVars['title'],
+    file: 'HumanResources/SocialNetworks/form.js',
+    functions: [ {
+        name: 'initHumanResourcesFormSocialNetworks',
+        args: [ uiVars['data'], uiVars['view']]
+    } ]
+} ];
+</script>

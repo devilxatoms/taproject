@@ -1,0 +1,111 @@
+{% block body %}
+    <section>
+        <div id="backorders_list-module">
+            <div class="header-buttons">
+                <div class="row">
+                    <div class="col-sm-9">
+                        (userId: {{ session.userData.id }})
+                    </div>
+                    <div class="col-sm-3" style="text-align: right">
+                        <a class="btn btn-success" role="button"
+                        data-action="openTab"
+                        data-module="almacenes/backorders"
+                        data-route="almacenes/backorders/nuevo">Nuevo Backorder</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-content">
+                <!-- Dynamic Table -->
+                    <vue-dynamic-table-rbc
+                        {# table-id="backordersTable" #}
+                        box-classes="box box-primary full-height"
+                        class-name="table table-bordered table-hover"
+
+                        {# hide-main-bar #}
+                        {# hide-results-info #}
+                        {# hide-column-tools #}
+
+                        {# hide-filters-stats #}
+                        {# hide-numeration-column #}
+
+                        {# hide-filters #}
+
+                        :remote-method="remoteSearch"
+
+                        :loading-from-server="listBackorders.loading"
+                        :loading-error="listBackorders.error"
+
+                        :total-results="listBackorders.totalResults"
+
+                        {# :show-footer="true" #}
+
+                        :source-columns="sourceColumns"
+                        :select-options="selectOptions"
+                        :data-model="listBackorders.data"
+
+                        {# Guardar orden y visibilidad de columnas #}
+
+                        {# :columns-save-config="{varName: 'backordersListColumns', saveMethod: saveColumnsConfig}" #}
+                        :columns-save-config="{varName: 'backordersListColumns'}"
+
+                        @expand-row="expandedRow"
+
+                        {# hide-export #}
+                        {# hide-import #}
+
+                        {# Favoritos #}
+                        {# hide-favorites #}
+                        :favorites="dynamicTableFavorites"
+                        @save-to-favorites="saveToFavorites"
+                        @loaded-favorite="loadedFavorite"
+
+
+                        {# Exportar / Importar #}
+                        @export="exportTable"
+                        @import="importTable"
+                        @download-template-file="downloadTemplateFile"
+                        template-file-name="Listado de Backorders"
+
+
+                        :pagination-options="{pageSizes: [10, 30], pageSize: 30}"
+
+
+                        {# :importProgress="importProgress" #}
+
+
+
+                        {# @load-favorites="loadFavorites" #}
+                        {# @load-favorite-by-id="loadFavoriteById" #}
+
+
+
+                        {# @page-size-change="pageSizeChange"
+                        @current-page-change="currentPageChange" #}
+
+                        >
+
+                        {# SLOTS #}
+                        {% include 'warehouse/Backorders/BackorderList/slots.twig' %}
+
+                    </vue-dynamic-table-rbc>
+                <!-- Dynamic Table -->
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block loadScripts %}
+    <script id="scriptContainer" type="text/javascript">
+        uiVars['userId']= '{{ session.userData.id }}';
+        init.length = 0;
+        init = [ {
+            title: 'Lista de Backorders',
+            file: 'Warehouse/Backorders/backorderList.js',
+            functions: [ {
+                name: 'iniciarModuloBackorders',
+                args: [ uiVars['userId'] ]
+            } ]
+        } ];
+    </script>
+{% endblock %}
