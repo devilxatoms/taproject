@@ -1,4 +1,4 @@
-FROM richarvey/nginx-php-fpm
+FROM php:latest
 MAINTAINER Brayan Caldera <ing.brayan.cm@gmail.com>
 ADD app/ /var/www/html
 #ADD sites.conf /etc/nginx/sites-enabled/default.conf
