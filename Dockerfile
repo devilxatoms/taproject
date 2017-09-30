@@ -1,4 +1,4 @@
-FROM laradock/php-fpm:latest
+FROM laradock/php-fpm
 MAINTAINER Brayan Caldera <ing.brayan.cm@gmail.com>
 
 ADD app/ /var/www/html
