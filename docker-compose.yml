@@ -7,8 +7,3 @@ services:
       - "80:80"
     volumes:
       - c:/xampp/htdocs/david:/var/www/html
-  node:
-    hostname: node-container
-    image: node:latest
-    ports:
-      - "3000:3000"
