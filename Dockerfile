@@ -10,6 +10,6 @@ RUN apt-get update && \
 RUN curl --silent --show-error https://getcomposer.org/installer | php
 
 WORKDIR /var/www/html
-RUN composer install --no-dev --no-interaction -o
+RUN composer install
 
 EXPOSE 80
