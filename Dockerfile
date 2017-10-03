@@ -5,7 +5,12 @@ RUN a2enmod rewrite
 RUN service apache2 restart
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git zip
+    apt-get install -y --no-install-recommends \
+    git \
+    zip \
+    pdo \
+    pdo_mysql
+
 
 RUN curl --silent --show-error https://getcomposer.org/installer | php
 
