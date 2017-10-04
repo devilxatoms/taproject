@@ -10,4 +10,7 @@ RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
 &&  docker-php-ext-enable redis
 
+RUN mkdir /var/lib/php/session
+RUN chmod -R 777 /var/lib/php/sessio
+
 EXPOSE 80
