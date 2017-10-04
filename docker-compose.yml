@@ -6,4 +6,4 @@ services:
     ports:
       - "88:80"
     volumes:
-      - c:/xampp/htdocs/david:/var/www/html
+      - C:/taproject/app:/var/www/html
