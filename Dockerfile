@@ -10,4 +10,9 @@ RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
 &&  docker-php-ext-enable redis
 
+# Workaround https://bugs.php.net/bug.php?id=71880
+ENV LOG_STREAM="/tmp/stdout"
+RUN mkfifo $LOG_STREAM && chmod 777 $LOG_STREAM
+CMD ["/bin/sh", "-c", "php-fpm -D | tail -f $LOG_STREAM"]
+
 EXPOSE 80
