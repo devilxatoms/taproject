@@ -6,4 +6,4 @@ services:
     ports:
       - "88:80"
     volumes:
-      - C:/taproject/app:/var/www/html
+      - c:/taproject/app:/var/www/html

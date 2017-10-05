@@ -1,4 +1,4 @@
-FROM php:fpm
+FROM php:7.0-apache
 MAINTAINER Brayan Caldera <ing.brayan.cm@gmail.com>
 
 RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev libpq-dev \
