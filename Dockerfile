@@ -12,6 +12,10 @@ RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
 &&  docker-php-ext-enable redis
 
+RUN chown -R www-data:www-data \
+        /var/www/html/storage \
+        /var/www/html/bootstrap/cache
+
 # Workaround https://bugs.php.net/bug.php?id=71880
 ENV LOG_STREAM="/tmp/stdout"
 RUN mkfifo $LOG_STREAM && chmod 777 $LOG_STREAM
