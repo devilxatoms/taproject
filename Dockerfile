@@ -1,6 +1,8 @@
 FROM php:7.0-fpm
 MAINTAINER Brayan Caldera <ing.brayan.cm@gmail.com>
 
+USER root
+
 RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev libpq-dev libxml2-dev php-soap\
 && rm -rf /var/lib/apt/lists/* \
 && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
