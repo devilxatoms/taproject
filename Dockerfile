@@ -14,7 +14,7 @@ RUN pecl install -o -f redis \
 &&  docker-php-ext-enable redis
 
 # ssh2
-RUN apt-get -y install libssh2-1-dev \
+RUN apt-get -y install libssh2-dev \
 && pecl7.X-sp install ssh2-alpha \
 && docker-php-ext-enable ssh2
 
