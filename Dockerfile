@@ -14,8 +14,9 @@ RUN pecl install -o -f redis \
 &&  docker-php-ext-enable redis
 
 # ssh2
-RUN pecl install -o -f ssh2 \
-&&  docker-php-ext-enable ssh2
+RUN sudo apt-get -y install libssh2-1-dev \
+&& pecl7.X-sp install ssh2-alpha \
+&& docker-php-ext-enable ssh2
 
 ENV LOG_STREAM="/tmp/stdout"
 RUN mkfifo $LOG_STREAM && chmod 777 $LOG_STREAM
