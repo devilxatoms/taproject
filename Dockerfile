@@ -15,7 +15,6 @@ RUN pecl install -o -f redis \
 
 # ssh2
 RUN pecl install -o -f ssh2 \
-&&  rm -rf /tmp/pear \
 &&  docker-php-ext-enable ssh2
 
 ENV LOG_STREAM="/tmp/stdout"
