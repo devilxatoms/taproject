@@ -15,7 +15,8 @@ RUN pecl install -o -f redis \
 
 # ssh2
 RUN apt-get update && \
-apt-get install -y libssh2-1-dev \
+apt-get install -y install gcc make autoconf libc-dev pkg-config \
+&& apt-get install -y libssh2-1-dev \
 && docker-php-ext-enable ssh2
 
 ENV LOG_STREAM="/tmp/stdout"
