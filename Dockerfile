@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev libpq-dev libx
 && docker-php-ext-install gd mbstring pdo pdo_mysql pdo_pgsql zip soap
 
 # Set the locale
-RUN locale-gen es_MX.UTF-8 && dpkg-reconfigure locales
-
+RUN apt-get clean && apt-get update && apt-get install -y locales
+RUN locale-gen es_MX.UTF-8
 
 # Redis
 RUN pecl install -o -f redis \
