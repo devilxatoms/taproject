@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev libpq-dev libx
 # Set the locale
 RUN apt-get clean && apt-get update && apt-get install -y locales
 RUN locale-gen es_MX.UTF-8
+ENV LANG es_MX.UTF-8
+ENV LANGUAGE es_MX:es
+ENV LC_ALL es_MX.UTF-8
 
 # Redis
 RUN pecl install -o -f redis \
