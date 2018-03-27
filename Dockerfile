@@ -9,11 +9,7 @@ RUN apt-get update && apt-get install -y libpng12-dev libjpeg-dev libpq-dev libx
 && docker-php-ext-install gd mbstring pdo pdo_mysql pdo_pgsql zip soap
 
 # Set the locale
-RUN sed -i -e 's/# es_MX.UTF-8 UTF-8/es_MX.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen
-ENV LANG es_MX.UTF-8
-ENV LANGUAGE es_MX:es  
-ENV LC_ALL es_MX.UTF-8     
+RUN locale-gen es_MX.UTF-8 && dpkg-reconfigure locales
 
 
 # Redis
