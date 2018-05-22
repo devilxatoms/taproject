@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y git redis-tools libpng12-dev libjpeg-de
 && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
 && docker-php-ext-install gd mbstring pdo pdo_mysql pdo_pgsql zip soap
 
+#MySQLi
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+
 #Redis PHP
 RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
