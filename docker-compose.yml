@@ -1,9 +1,13 @@
-version: "3"
+version: '2'
 services:
-  php:
-    hostname: php-container
-    image: devilxatoms/taproject
+  taproject:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: tuadmin
+    restart: always
+    environment:
+      TZ: America/Mexico_City
     ports:
-      - "88:80"
-    volumes:
-      - c:/taproject/app:/var/www/html
+      - 9000:9000
+    tty: true
