@@ -3,6 +3,17 @@ LABEL maintainer="ing.brayan.cm@gmail.com"
 
 USER root
 
+ENV LOG_STREAM="/tmp/stdout"
+
+# Set the locale
+RUN apt-get clean && apt-get update && apt-get install -y locales\
+&& sed -i -e 's/# es_MX.UTF-8 UTF-8/es_MX.UTF-8 UTF-8/' /etc/locale.gen\
+&& locale-gen
+
+ENV LANG es_MX.UTF-8 
+ENV LANGUAGE es_MX:es  
+ENV LC_ALL es_MX.UTF-8
+
 RUN apt-get update && apt-get install -y git redis-tools libpng-dev libjpeg-dev libpq-dev libxml2-dev\
 && rm -rf /var/lib/apt/lists/* \
 && docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr \
@@ -11,20 +22,11 @@ RUN apt-get update && apt-get install -y git redis-tools libpng-dev libjpeg-dev 
 #MySQLi
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-#Redis PHP
-RUN pecl install -o -f redis \
-&&  rm -rf /tmp/pear \
-&&  echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
-
-# Set the locale
-RUN apt-get clean && apt-get update && apt-get install -y locales
-RUN sed -i -e 's/# es_MX.UTF-8 UTF-8/es_MX.UTF-8 UTF-8/' /etc/locale.gen && \
-    locale-gen
-
 # Redis
 RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
-&&  docker-php-ext-enable redis
+&&  docker-php-ext-enable redis \
+&& cat /usr/local/etc/php/conf.d/redis.ini
 
 #install latex
 RUN apt-get update \
@@ -40,7 +42,7 @@ apt-get install -y gcc make autoconf libc-dev pkg-config \
 && pecl install ssh2-1.1.2 \
 && docker-php-ext-enable ssh2
 
-ENV LOG_STREAM="/tmp/stdout"
+
 RUN mkfifo $LOG_STREAM && chmod 777 $LOG_STREAM
 CMD ["/bin/sh", "-c", "php-fpm -D | tail -f $LOG_STREAM"]
 
