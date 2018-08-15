@@ -25,8 +25,7 @@ RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 # Redis
 RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
-&&  docker-php-ext-enable redis \
-&& cat /usr/local/etc/php/conf.d/redis.ini
+&&  docker-php-ext-enable redis
 
 #install latex
 RUN apt-get update \
