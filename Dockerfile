@@ -10,8 +10,8 @@ RUN apt-get clean && apt-get update && apt-get install -y locales\
 && sed -i -e 's/# es_MX.UTF-8 UTF-8/es_MX.UTF-8 UTF-8/' /etc/locale.gen\
 && locale-gen
 
-ENV LANG es_MX.UTF-8 
-ENV LANGUAGE es_MX:es  
+ENV LANG es_MX.UTF-8
+ENV LANGUAGE es_MX:es
 ENV LC_ALL es_MX.UTF-8
 
 RUN apt-get update && apt-get install -y git redis-tools libpng-dev libjpeg-dev libpq-dev libxml2-dev\
@@ -29,10 +29,10 @@ RUN pecl install -o -f redis \
 
 #install latex
 RUN apt-get update \
-    && apt-get install -y \
-    texlive \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+   && apt-get install -y \
+   texlive \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/*
 
 # ssh2
 RUN apt-get update && \
@@ -40,6 +40,10 @@ apt-get install -y gcc make autoconf libc-dev pkg-config \
 && apt-get install -y libssh2-1-dev \
 && pecl install ssh2-1.1.2 \
 && docker-php-ext-enable ssh2
+
+# Xdebug <c0305@cobos.xyz>
+RUN apt install php-xdebug;
+RUN docker-php-ext-enable xdebug
 
 
 RUN mkfifo $LOG_STREAM && chmod 777 $LOG_STREAM
