@@ -42,8 +42,8 @@ apt-get install -y gcc make autoconf libc-dev pkg-config \
 && docker-php-ext-enable ssh2
 
 # Xdebug <c0305@cobos.xyz>
-RUN apt install php-xdebug;
-RUN docker-php-ext-enable xdebug
+RUN pecl install xdebug \
+&& docker-php-ext-enable xdebug
 
 
 RUN mkfifo $LOG_STREAM && chmod 777 $LOG_STREAM
