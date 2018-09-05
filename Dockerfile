@@ -41,12 +41,7 @@ apt-get install -y gcc make autoconf libc-dev pkg-config \
 && pecl install ssh2-1.1.2 \
 && docker-php-ext-enable ssh2
 
-# Xdebug <c0305@cobos.xyz>
-RUN pecl install xdebug \
-&& docker-php-ext-enable xdebug
-
-
 RUN mkfifo $LOG_STREAM && chmod 777 $LOG_STREAM
 CMD ["/bin/sh", "-c", "php-fpm -D | tail -f $LOG_STREAM"]
 
-EXPOSE 80
+EXPOSE 9000
