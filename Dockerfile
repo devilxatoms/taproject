@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y git redis-tools libpng-dev libjpeg-dev 
 && docker-php-ext-install gd mbstring pdo pdo_mysql pdo_pgsql zip soap
 
 #MySQLi
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+RUN docker-php-ext-install mysqli opcache  && docker-php-ext-enable mysqli opcache
 
 # Redis
 RUN pecl install -o -f redis \
