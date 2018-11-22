@@ -22,6 +22,10 @@ RUN apt-get update && apt-get install -y git redis-tools libpng-dev libjpeg-dev 
 #MySQLi
 RUN docker-php-ext-install mysqli opcache  && docker-php-ext-enable mysqli opcache
 
+# APC
+RUN pecl install apcu \
+&& docker-php-ext-enable apcu
+
 # Redis
 RUN pecl install -o -f redis \
 &&  rm -rf /tmp/pear \
