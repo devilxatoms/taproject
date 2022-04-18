@@ -1,4 +1,4 @@
-FROM php:7.3.33-fpm
+FROM php:7.4.21-fpm
 LABEL maintainer="ing.brayan.cm@gmail.com"
 
 USER root
